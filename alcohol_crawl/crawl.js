@@ -1,4 +1,47 @@
-// 크롤링 상세구현할 때 붙여넣기할 스크립트입니다. 신경쓰지마세용
+// ============================================================================
+// 0. 필수 라이브러리 불러오기
+// ============================================================================
+import dotenv from 'dotenv';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import fs from 'fs';
+import path from 'path';
+import { parse } from 'csv-parse';
+import { stringify } from 'csv-stringify';
+import AWS from 'aws-sdk';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
+
+// ============================================================================
+// 1. AWS S3 설정
+// ============================================================================
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION
+});
+
+const s3 = new AWS.S3();
+const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
+
+// ============================================================================
+// 2. 유틸리티 함수
+// ============================================================================
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+function normalizeName(name) {
+    return name?.replace(/\s+/g, '')
+                .replace(/[^\w가-힣]/g, '') // 특수문자 제거
+                .toLowerCase()
+                .trim();
+}
+
 
 // ============================================================================
 // 3. 크롤링 함수
@@ -9,58 +52,52 @@
  * @returns {Promise<string[]>} - 수집된 상세 페이지 URL들의 배열
  */
 async function crawlAllPagesUrls(baseUrl) {
-    let allDetailUrls = [];
-    let currentPage = 1;
-    let hasNextPage = true; // 다음 페이지가 있는지 여부를 추적
+    const visitedPages = new Set();
+    const allDetailUrls = new Set();
+    let pageQueue = [baseUrl];
 
-    while (hasNextPage) {
-        const currentUrl = `${baseUrl}&page=${currentPage}`;
-        console.log(`\n크롤링 시작: ${currentUrl} (페이지 ${currentPage})`);
-        await sleep(1000); // 서버 부하를 줄이기 위해 페이지 요청 간 1초 딜레이
+    while (pageQueue.length > 0) {
+        const currentUrl = pageQueue.shift();
+        if (visitedPages.has(currentUrl)) continue;
+        visitedPages.add(currentUrl);
+
+        console.log(`\n크롤링 시작: ${currentUrl}`);
+        await sleep(1000);
 
         try {
             const response = await axios.get(currentUrl);
             const $ = cheerio.load(response.data);
 
-            const pageDetailUrls = [];
-            $('ul.content_list > li').each((_, el) => {
-                const href = $(el).find('.info_area .subject .title a').attr('href');
+            // 1. 컨텐츠 URL 수집
+            $('ul.content_list > li .info_area .subject .title a').each((_, el) => {
+                const href = $(el).attr('href');
                 if (href && href.startsWith('/entry.naver')) {
                     const absoluteUrl = new URL(href, currentUrl).href;
-                    pageDetailUrls.push(absoluteUrl);
+                    allDetailUrls.add(absoluteUrl);
                 }
             });
 
-            if (pageDetailUrls.length > 0) {
-                allDetailUrls.push(...pageDetailUrls);
-                console.log(`페이지 ${currentPage}에서 ${pageDetailUrls.length}개의 URL 발견. (총 ${allDetailUrls.length}개 누적)`);
-
-                // 다음 페이지 존재 여부 확인: '다음' 버튼이나 다음 페이지 번호가 있는지 확인
-                // 네이버 지식백과의 페이지네이션 구조를 확인하여 'next' 버튼 또는 마지막 페이지 번호가 있는지 확인해야 합니다.
-                // 일반적인 네이버 용어사전 페이지네이션은 .paginate_group 안에 strong.now 또는 a 태그로 다음 페이지를 나타냅니다.
-                const nextPageLink = $('.paginate_group a.next_page'); // '다음' 버튼
-                const lastPageNum = parseInt($('.paginate_group .last').text().trim()); // 마지막 페이지 번호 (있다면)
-                const currentPageNum = parseInt($('.paginate_group strong.now').text().trim()); // 현재 페이지 번호
-
-                if (nextPageLink.length > 0 || (lastPageNum && currentPageNum < lastPageNum)) {
-                    currentPage++; // 다음 페이지로 이동
-                } else {
-                    hasNextPage = false; // 더 이상 다음 페이지가 없음
-                    console.log(`마지막 페이지에 도달했습니다. 총 ${allDetailUrls.length}개의 고유 URL을 수집했습니다.`);
+            // 2. 다음 페이지 링크 수집
+            $('#paginate a').each((_, el) => {
+                const href = $(el).attr('href');
+                if (href && href.includes('page=')) {
+                    const absoluteUrl = new URL(href, currentUrl).href;
+                    if (!visitedPages.has(absoluteUrl)) {
+                        pageQueue.push(absoluteUrl);
+                    }
                 }
-            } else {
-                // 현재 페이지에서 더 이상 상세 URL을 찾지 못했다면, 마지막 페이지로 간주
-                hasNextPage = false;
-                console.log(`페이지 ${currentPage}에서 더 이상 상세 URL을 찾을 수 없습니다. 크롤링을 종료합니다.`);
-            }
+            });
 
         } catch (err) {
-            console.error(`URL 수집 오류 (페이지 ${currentPage}):`, err.message);
-            hasNextPage = false; // 오류 발생 시 크롤링 중단
+            console.error(`❌ 오류 발생 (${currentUrl}):`, err.message);
         }
     }
-    return [...new Set(allDetailUrls)]; // 중복 제거 후 반환
+
+    console.log(`\n✅ 모든 페이지 순회 완료. 총 ${allDetailUrls.size}개의 상세 페이지 URL 수집.`);
+    return Array.from(allDetailUrls);
 }
+
+
 
 /**
  * 전통주 상세 페이지를 방문하여 데이터를 추출하고, 대표 이미지를 S3에 직접 업로드합니다.
@@ -77,7 +114,7 @@ async function crawlAlcoholDetails(detailPageUrl) {
         const name = $('h2.headword').text().trim();
         const docId = new URLSearchParams(new URL(detailPageUrl).search).get('docId');
 
-        // 상세 정보 추출 (이전 crawl.js에서 가져온 더 상세한 추출 로직 적용)
+        // 상세 정보 추출
         const alcoholData = {
             detailPageUrl: detailPageUrl,
             docId: docId,
@@ -171,7 +208,7 @@ async function crawlAlcoholDetails(detailPageUrl) {
         // 필요한 모든 필드가 있는지 확인하고 없으면 빈 문자열로 초기화
         const allExpectedFields = [
             '', 'index', '제품명', '단맛', '신맛', '청량감', '바디감', '도수%', '탄산', '주종', 'keyword',
-            '용량', '가격', '제조사', '원재료', '어울리는음식', '사진URL', 'detailPageUrl', 'docId', '사진경로'
+            '용량', '가격', '제조사', '원재료', '어울리는음식', '사진URL', 'detailPageUrl', 'docId'
         ];
         for (const field of allExpectedFields) {
             if (!Object.hasOwn(alcoholData, field)) {
@@ -209,7 +246,7 @@ function getContentType(filePath) {
 // ============================================================================
 async function runDemo() {
     const mainListPageBaseUrl = 'https://terms.naver.com/list.naver?cid=58636&categoryId=58636&so=st3.asc&viewType=&categoryType=';
-    const newCsvFilePath = path.join(__dirname, 'merged_traditional_alcohol_data.csv');
+    const newCsvFilePath = path.join(__dirname, 'merged_traditional_alcohol.csv');
     const originalCsvFilePath = path.join(__dirname, 'traditional_liquor_df_final.csv');
 
     const finalHeaders = [

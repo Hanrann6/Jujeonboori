@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-df = pd.read_csv("merged_traditional_alcohol_data.csv", dtype=str)
+df = pd.read_csv("merged_traditional_alcohol.csv", dtype=str)
 
 df = df.drop(columns=[col for col in df.columns if 'Unnamed' in col or col == 'index'])
 

@@ -70,7 +70,8 @@ async function uploadSoolDataFromCSV(csvFilePath) {
 // 서버 시작 전 CSV 업로드
 (async () => {
   try {
-    await uploadSoolDataFromCSV("../liquor_crawl/merged_traditional_alcohol_data.csv");
+    // await uploadSoolDataFromCSV("../liquor_crawl/merged_traditional_alcohol_data.csv");
+    await uploadSoolDataFromCSV("../alcohol_crawl/sorted_traditional_alcohol.csv");
     app.listen(PORT, () =>
       console.log(`서버 실행됨: http://localhost:${PORT}`)
     );
