@@ -10,7 +10,6 @@ const PORT = process.env.SERVER_PORT;
 app.use(cors());
 app.use(express.json());
 
-// --- 기존 날씨 정보만 제공하는 엔드포인트 유지 ---
 app.get('/weather-info', async (req, res) => {
     const lat = req.query.lat;
     const lon = req.query.lon;
@@ -35,10 +34,10 @@ app.get('/weather-info', async (req, res) => {
 
 // --- 날씨 기반 Recombee 추천 테스트 API 엔드포인트 ---
 app.get('/test-recombee-weather-recommendation', async (req, res) => {
-    // 사용자 ID와 기본 선호도는 임시로 설정하거나 쿼리 파라미터로 받을 수 있습니다.
+    // 서울 위치로 임시 설정
     const userId = req.query.userId || "test_user_for_weather"; 
-    const lat = req.query.lat || 37.5665; // 기본 서울 위치
-    const lon = req.query.lon || 126.9780; // 기본 서울 위치
+    const lat = req.query.lat || 37.5665;
+    const lon = req.query.lon || 126.9780;
 
     // 사용자의 기본 선호도 (임시 값, 실제 앱에서는 DB에서 가져옴)
     const userBasePref = {
