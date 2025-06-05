@@ -1,1 +1,85 @@
-# HabitAI
+# 🥂 전통주 추천 (Soolmate)
+
+전통주에 관심이 많지만 관련 지식이 부족한 입문자들을 위해, 사용자의 주류 선호도를 학습하고 위치·시간 등의 맥락을 반영하여, 
+개인 맞춤형 전통주를 추천해주는 AI 기반의 전통주 큐레이션 서비스입니다.
+
+---
+
+## 🛠 기술 스택 및 프레임워크
+
+| 항목           | 내용                              |
+|----------------|-----------------------------------|
+| 언어           | JavaScript (ES6+), Node.js v22.14.0 |
+| 런타임         | Node.js                            |
+| 백엔드 프레임워크 | Express v4.18.2                      |
+| 챗봇 API       | OpenAI GPT-4                       |
+| CSV 파서       | `csv-parser`                       |
+| HTTP 클라이언트 | `axios`                            |
+| 플랫폼         | GitHub, VSCode, Terminal (CLI 기반)
+
+---
+
+## 📁 폴더 구조
+
+HabitAI/
+
+├── Server/ </br>
+│ ├── chatbot/ # GPT 챗봇 관련 코드 </br>
+│ │ └── chat.js </br>
+│ ├── recommend/ # Recombee 기반 추천 로직 </br>
+│ │ └── recombeeWeatherTest.js # 날씨 기반 추천 </br>
+│ │ └── recommend_test1.js #사용자 선호도 기반 추천 </br>
+│ │ └── recommend_test2.js #사용자 선호도 + 행동 기록 기반 추천 </br>
+│ ├── weather-api/ # 날씨 기반 추천 </br>
+│ │ └── weatherService.js </br>
+│ ├── alcohol_crawl # 전통주 데이터셋 크롤링 </br>
+│ │ └── crawl.js </br>
+│ │ └── sorted_traditional_alcohol.csv </br>
+│ ├── .env # 환경변수 파일 </br>
+│ └── package.json </br>
+└── README.md </br>
+
+
+---
+
+## 👥 팀원
+
+| 이름       | 역할              |
+|------------|-------------------|
+| 육란     | 백엔드 / AI 설계. gpt 챗봇, Recombee 추천 api |
+| 송연우     | 백엔드. 전통주 세부 정보 크롤링, 위치 기반 날씨 api |
+| 안유경     | 프론트엔드, 문서 작업 |
+
+---
+
+## 🔌 사용 API 및 리소스
+
+- [OpenAI GPT-4 API](https://platform.openai.com/)
+- [Recombee API](https://www.recombee.com/)
+- [단기 예보 조회](http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0)
+- [웹 스크래핑 JS 라이브러리](https://cheerio.js.org/)
+- 전통주 데이터셋 (CSV, 약 720개 품목 포함)
+
+---
+
+## ✅ 주요 기능
+
+- 음식, 기분, 날씨, 상황 키워드 기반 전통주 추천
+- GPT-4를 통한 자연어 입력 인식 및 응답
+
+---
+
+## 🧾 커밋 메시지 규칙 (Conventional Commits)
+
+
+| ✨ | feat | 새로운 기능 추가 |
+| --- | --- | --- |
+| 🔧 | fix | 버그 수정 |
+| 📝 | docs | 문서 수정 |
+| 🎨 | style | 코드 포맷팅, 오타 수정, 주석 수정 및 삭제 등 |
+| ♻️ | refactor | 코드 리팩토링 |
+| ✅ | test | 테스트 코드 |
+| 💚 | chore | 빌드 및 패키지 수정 및 삭제 |
+| 💄 | ui | UI 및 스타일 파일 추가 및 수정 |
+| 🔀 | merge | 브랜치를 머지 |
+
