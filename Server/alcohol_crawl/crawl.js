@@ -1,6 +1,3 @@
-// ============================================================================
-// 0. 필수 라이브러리 불러오기
-// ============================================================================
 import dotenv from 'dotenv';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
@@ -16,10 +13,7 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
-
-// ============================================================================
 // 1. AWS S3 설정
-// ============================================================================
 AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -29,9 +23,7 @@ AWS.config.update({
 const s3 = new AWS.S3();
 const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 
-// ============================================================================
 // 2. 유틸리티 함수
-// ============================================================================
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -42,15 +34,7 @@ function normalizeName(name) {
                 .trim();
 }
 
-
-// ============================================================================
 // 3. 크롤링 함수
-// ============================================================================
-/**
- * 전통주 목록 페이지를 끝까지 크롤링하여 모든 상세 페이지 URL들을 수집합니다.
- * @param {string} baseUrl - 전통주 목록 페이지의 기본 URL
- * @returns {Promise<string[]>} - 수집된 상세 페이지 URL들의 배열
- */
 async function crawlAllPagesUrls(baseUrl) {
     const visitedPages = new Set();
     const allDetailUrls = new Set();
@@ -68,7 +52,7 @@ async function crawlAllPagesUrls(baseUrl) {
             const response = await axios.get(currentUrl);
             const $ = cheerio.load(response.data);
 
-            // 1. 컨텐츠 URL 수집
+            // 컨텐츠 URL 수집
             $('ul.content_list > li .info_area .subject .title a').each((_, el) => {
                 const href = $(el).attr('href');
                 if (href && href.startsWith('/entry.naver')) {
@@ -77,7 +61,7 @@ async function crawlAllPagesUrls(baseUrl) {
                 }
             });
 
-            // 2. 다음 페이지 링크 수집
+            // 다음 페이지 링크 수집
             $('#paginate a').each((_, el) => {
                 const href = $(el).attr('href');
                 if (href && href.includes('page=')) {
@@ -99,11 +83,7 @@ async function crawlAllPagesUrls(baseUrl) {
 
 
 
-/**
- * 전통주 상세 페이지를 방문하여 데이터를 추출하고, 대표 이미지를 S3에 직접 업로드합니다.
- * @param {string} detailPageUrl - 크롤링할 전통주 상세 페이지의 URL
- * @returns {Promise<Object|null>} - 크롤링된 전통주 데이터 객체 또는 오류 발생 시 null
- */
+// 4. 상세 페이지 크롤링 및 S3 업로드
 async function crawlAlcoholDetails(detailPageUrl) {
     console.log(`  상세 페이지 크롤링 시작: ${detailPageUrl}`);
     await sleep(500); // 상세 페이지 요청 간 0.5초 딜레이
@@ -223,11 +203,6 @@ async function crawlAlcoholDetails(detailPageUrl) {
     }
 }
 
-/**
- * 파일 경로의 확장자에 따라 적절한 Content-Type을 반환합니다.
- * @param {string} filePath - 파일의 전체 경로 또는 파일명
- * @returns {string} - 파일의 Content-Type (MIME 타입)
- */
 function getContentType(filePath) {
     const extname = path.extname(filePath).toLowerCase();
     switch (extname) {
@@ -241,9 +216,7 @@ function getContentType(filePath) {
 }
 
 
-// ============================================================================
-// 4. 메인 실행 함수
-// ============================================================================
+// 5. 메인 실행 함수
 async function runDemo() {
     const mainListPageBaseUrl = 'https://terms.naver.com/list.naver?cid=58636&categoryId=58636&so=st3.asc&viewType=&categoryType=';
     const newCsvFilePath = path.join(__dirname, 'merged_traditional_alcohol.csv');
@@ -258,7 +231,7 @@ async function runDemo() {
     let existingAlcoholData = [];
     const updatedAlcoholDataMap = new Map();
 
-    // 1. 기존 CSV 로드
+    // 기존 CSV 로드
     if (fs.existsSync(originalCsvFilePath)) {
         console.log(`\n기존 CSV 파일 (${originalCsvFilePath}) 로드 중...`);
         const fileContent = fs.readFileSync(originalCsvFilePath, 'utf8');
@@ -295,7 +268,7 @@ async function runDemo() {
         console.log(`\n기존 CSV 파일 (${originalCsvFilePath})이 없습니다. 새로운 파일을 처음부터 생성합니다.`);
     }
 
-    // 2. 모든 페이지 크롤링
+    // 모든 페이지 크롤링
     const allCollectedDetailUrls = await crawlAllPagesUrls(mainListPageBaseUrl);
     console.log(`\n총 ${allCollectedDetailUrls.length}개의 고유한 상세 페이지 URL 수집 완료.`);
 
@@ -309,7 +282,7 @@ async function runDemo() {
         }
     }
 
-    // 3. 병합 (기존 로직 유지, normalizeName 기반)
+    // 병합 (기존 로직 유지, normalizeName 기반)
     let maxIndex = Math.max(
         0,
         ...Array.from(updatedAlcoholDataMap.values())
@@ -348,7 +321,7 @@ async function runDemo() {
         updatedAlcoholDataMap.set(key, merged);
     });
 
-    // 4. 최종 데이터 정리 및 새로운 CSV 파일로 저장
+    // 최종 데이터 정리 및 새로운 CSV 파일로 저장
     const finalAlcoholData = Array.from(updatedAlcoholDataMap.values()).map(item => {
         const row = {};
         finalHeaders.forEach(header => {
