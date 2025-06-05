@@ -80,5 +80,5 @@ app.get('/test-recombee-weather-recommendation', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`✅ 백엔드 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
     console.log(`날씨 기반 추천 테스트 URL: http://localhost:${PORT}/recommend/weather?lat=37.5665&lon=126.9780`);
-    console.log(`Recombee 날씨 추천 테스트 URL: http://localhost:${PORT}/test-recombee-weather-recommendation?lat=37.5665&lon=126.9780&userId=your_test_user`);
+    console.log(`Recombee 날씨 추천 테스트 URL: http://localhost:${PORT}/test-recombee-weather-recommendation?lat=37.5665&lon=126.9780&userId=test_user_for_weather`);
 });
