@@ -12,6 +12,7 @@
 | 언어           | JavaScript (ES6+), Node.js v22.14.0 |
 | 런타임         | Node.js                            |
 | 백엔드 프레임워크 | Express v4.18.2                      |
+| 프론트엔드 프레임워크 | React Navtive                      |
 | 챗봇 API       | OpenAI GPT-4                       |
 | CSV 파서       | `csv-parser`                       |
 | HTTP 클라이언트 | `axios`                            |
@@ -64,7 +65,7 @@ HabitAI/
 
 ## ✅ 주요 기능
 
-- 음식, 기분, 날씨, 상황 키워드 기반 전통주 추천
+- 음식, 날씨, 상황(기분) 키워드 기반 전통주 추천
 - GPT-4를 통한 자연어 입력 인식 및 응답
 
 ---
