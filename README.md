@@ -37,6 +37,7 @@ HabitAI/
 │ │ └── crawl.js </br>
 │ │ └── sorted_traditional_alcohol.csv </br>
 │ ├── .env # 환경변수 파일 </br>
+│ ├── server.js #서버 실행 파일 </br>
 │ └── package.json </br>
 └── README.md </br>
 
