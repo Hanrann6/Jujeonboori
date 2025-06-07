@@ -3,12 +3,39 @@ import cors from 'cors';
 import 'dotenv/config';
 import { getWeatherData } from './weather-api/weatherService.js';
 import { recommendItemsBasedOnWeather } from './recommend/recombeeWeatherTest.js';
+import { recommendByUserPref } from "./recommend/recommend_test.js";
+import { recommendByUserPref2 } from "./recommend/recommend_test2.js";
+import { askGPT, loadCSVData } from "./chatbot/chat.js";
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
 
 app.use(cors());
 app.use(express.json());
+
+
+app.get("/recommend", async (req, res) => {
+  const { userId, preference } = req.body;
+
+  try {
+    const result = await recommendByUserPref(userId, 5, preference);
+    res.json(result); // JSON 응답
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/recommend2", async (req, res) => {
+  const { userId, preference } = req.body;
+
+  try {
+    const result = await recommendByUserPref2(userId, 5, preference);
+    res.json(result); // JSON 응답
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+  
 
 app.get('/weather-info', async (req, res) => {
     const lat = req.query.lat;
@@ -75,10 +102,41 @@ app.get('/test-recombee-weather-recommendation', async (req, res) => {
     }
 });
 
-// (추후) 챗봇 API 엔드포인트 추가될 위치
+let drinksData = [];
+
+// 서버 시작 전에 CSV 파일 로딩
+(async () => {
+  try {
+    drinksData = await loadCSVData(
+      "./alcohol_crawl/sorted_traditional_alcohol.csv"
+    );
+    console.log("CSV 데이터 로딩 완료");
+  } catch (err) {
+    console.error("CSV 로드 실패:", err.message);
+  }
+})();
+
+app.post("/chat", async (req, res) => {
+  const { question } = req.body;
+  let parsed;
+  if (!question) return res.status(400).json({ error: "질문이 없습니다." });
+
+  try {
+    const reply = await askGPT(question, drinksData);
+    parsed = JSON.parse(reply);
+    res.json(parsed);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.listen(PORT, () => {
     console.log(`✅ 백엔드 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
     console.log(`날씨 기반 추천 테스트 URL: http://localhost:${PORT}/recommend/weather?lat=37.5665&lon=126.9780`);
     console.log(`Recombee 날씨 추천 테스트 URL: http://localhost:${PORT}/test-recombee-weather-recommendation?lat=37.5665&lon=126.9780&userId=test_user_for_weather`);
+    console.log(`Recombee 기본 추천 테스트 URL: http://localhost:${PORT}/recommend`);
+    console.log(`Recombee 행동 기반 추천 테스트 URL: http://localhost:${PORT}/recommend2`);
+    console.log(
+      `Chatbot URL: http://localhost:${PORT}/chat`
+    );
 });

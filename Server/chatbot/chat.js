@@ -11,7 +11,7 @@ const openai = new OpenAI({
 });
 
 // csv 파일 읽어오기
-function loadCSVData(filePath) {
+export async function loadCSVData(filePath) {
   return new Promise((resolve, reject) => {
     const results = [];
     fs.createReadStream(filePath)
@@ -23,7 +23,7 @@ function loadCSVData(filePath) {
 }
 
 // 질문하기
-async function askGPT(userQuestion, drinksData) {
+export async function askGPT(userQuestion, drinksData) {
   const context = drinksData // tokens maximum 에러나서 slice함
     .slice(0, 200)
     .map((drink) => `- ${drink["제품명"]}`)
@@ -40,12 +40,17 @@ async function askGPT(userQuestion, drinksData) {
 ### 중요 조건:
 
 1. 반드시 아래 전통주 목록 내의 제품명에서만 추천을 골라야 하며, 외부 지식이나 추가 정보를 사용해서 새로운 전통주를 생성하거나 추론하지 마세요.
-2. 추천 결과는 단순히 이름만 나열하는 것이 아니라, 아래 요소들을 포함해 구체적이고 실용적으로 구성하세요:
-   - 제품명
-   - 전통주의 특징 요약 (도수, 맛, 주종 등 중요한 특성)
-   - 어떤 점이 사용자 상황/질문과 잘 어울리는지 간단한 이유
-   - 이미지 URL
-   - 상세페이지 URL
+2. 추천 결과는 단순히 이름만 나열하는 것이 아니라, 아래 요소들을 반드시 json 형식으로 출력하세요. 문자열 형태로 감싸지 마세요. 응답 전체가 JSON 객체여야 합니다.:
+   [
+  {
+    "name": "제품명",
+    "summary": "특징 요약",
+    "reason": "사용자 질문에 어울리는 이유",
+    "image": "이미지 URL",
+    "detailPage": "상세페이지 URL"
+  },
+  ...
+]
 3. 추천 순서는 관련도 순으로 가장 잘 맞는 술부터 배치하세요.
 4. 추천 항목마다 줄바꿈과 구분을 통해 사용자 입장에서 보기 쉽게 구성하세요.
 
@@ -71,28 +76,23 @@ ${userQuestion}
     messages: [{ role: "user", content: prompt }],
   });
 
-  console.log("\n GPT 응답:\n" + response.choices[0].message.content);
+  return response.choices[0].message.content;
 }
 
 
+// //콘솔에서 질문 입력
+// async function run() {
+//   const drinksData = await loadCSVData("../alcohol_crawl/sorted_traditional_alcohol.csv");
 
-// // 질문 (txt에 있음)
-// const question = fs.readFileSync("question.txt", "utf-8");
-// askQuestion(question);
+//   const rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+//   });
 
-//콘솔에서 질문 입력
-async function run() {
-  const drinksData = await loadCSVData("../alcohol_crawl/sorted_traditional_alcohol.csv");
+//   rl.question("전통주에 대해 궁금한 점을 입력하세요: ", async (userInput) => {
+//     await askGPT(userInput, drinksData);
+//     rl.close();
+//   });
+// }
 
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  rl.question("전통주에 대해 궁금한 점을 입력하세요: ", async (userInput) => {
-    await askGPT(userInput, drinksData);
-    rl.close();
-  });
-}
-
-run();
+// run();
