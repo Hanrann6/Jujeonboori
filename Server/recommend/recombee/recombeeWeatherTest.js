@@ -1,6 +1,6 @@
 import * as recombee from "recombee-api-client";
 import 'dotenv/config';
-import { getWeatherData } from '../weather-api/weatherService.js';
+import { getWeatherData } from '../../weather-api/weatherService.js';
 
 const rqs = recombee.requests;
 
