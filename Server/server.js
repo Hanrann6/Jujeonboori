@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
+import mongoose from "mongoose";
 import recommendRoutes from "./routes/recommend.routes.js";
+import bookmarkRoutes from "./routes/bookmark.routes.js";
 import { getWeatherData } from './weather-api/weatherService.js';
 import { recommendItemsBasedOnWeather } from './recommend/recombee/recombeeWeatherTest.js';
 import { askGPT, loadCSVData } from "./chatbot/chat.js";
@@ -20,7 +22,15 @@ app.listen(PORT, () => {
   console.log(`Chatbot URL: http://localhost:${PORT}/chat`);
 });
 
+// 몽고DB 연결
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB 연결 완료"))
+  .catch((err) => console.error("MongoDB 연결 실패", err));
+
+// 추천 라우터
 app.use("/recommend", recommendRoutes);
+// 북마크 라우터
+app.use("/bookmark", bookmarkRoutes);
 
 app.get('/weather-info', async (req, res) => {
     const lat = req.query.lat;
