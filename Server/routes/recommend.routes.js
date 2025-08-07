@@ -3,6 +3,6 @@ import { recommendController } from "../recommend/controller/recommend.controlle
 
 const router = express.Router();
 
-router.get("/", recommendController);
+router.get("/:userId", recommendController);
 
 export default router;

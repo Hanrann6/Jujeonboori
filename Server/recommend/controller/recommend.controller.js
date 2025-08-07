@@ -2,7 +2,7 @@ import { getRecommendations } from "../service/recommend.service.js";
 
 export const recommendController = async (req, res) => {
   try {
-    const userId = req.query.userId || "1";
+    const userId = req.params.userId;
     const recommendations = await getRecommendations(userId);
     res.json({ userId, recommendations });
   } catch (error) {
