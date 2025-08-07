@@ -1,7 +1,11 @@
 import Bookmark from "../model/bookmark.model.js";
 import User from "../../user/model/user.model.js";
 import Alcohol from "../../alcohol/model/alcohol.model.js";
-import { sendBookmarkEvent } from "../../personalize/service/personalize.service.js";
+import {
+  sendBookmarkEvent,
+  sendReviewEvent,
+  sendViewDetailEvent,
+} from "../../personalize/service/personalize.service.js";
 
 
 
