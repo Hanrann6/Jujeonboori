@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Hanrann6/HabitAI#readme",
   "dependencies": {
+    "@aws-sdk/client-personalize-events": "^3.862.0",
     "axios": "^1.9.0",
     "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
