@@ -4,6 +4,7 @@ import 'dotenv/config';
 import mongoose from "mongoose";
 import recommendRoutes from "./routes/recommend.routes.js";
 import bookmarkRoutes from "./routes/bookmark.routes.js";
+import ocrRoutes from "./routes/ocr.routes.js";
 import { getWeatherData } from './weather-api/weatherService.js';
 import { recommendItemsBasedOnWeather } from './recommend/recombee/recombeeWeatherTest.js';
 import { askGPT, loadCSVData } from "./chatbot/chat.js";
@@ -31,6 +32,10 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 app.use("/recommend", recommendRoutes);
 // 북마크 라우터
 app.use("/bookmark", bookmarkRoutes);
+// 챗봇 라우터
+//app.use("/chatbot", chatbotRouter);
+// ocr 라우터
+app.use("/api", ocrRoutes);
 
 app.get('/weather-info', async (req, res) => {
     const lat = req.query.lat;
