@@ -4,9 +4,8 @@ const userSchema = new mongoose.Schema({
   nickname: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   provider: { type: String, required: true },
-  status: {
-    type: String,
-    enum: ['active', 'inactive', 'suspended'],
+  status: { 
+    type: String, 
     default: 'active'
   },
   createdAt: { type: Date, default: Date.now },

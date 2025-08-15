@@ -1,4 +1,5 @@
 import oauthService from '../service/oauth.service.js'
+import jwt from 'jsonwebtoken';
 
 // GET /oauth/{provider} - OAuth 인증 URL 생성
 const getOAuthUrl = async (req, res) => {
@@ -84,8 +85,6 @@ const handleOAuthLogin = async (req, res) => {
         // OAuth 토큰 교환 처리
         const tokenData = await oauthService.exchangeCodeForToken(provider, authorization_code, code_verifier, redirect_uri);
         const userInfo = await oauthService.getUserInfo(provider, tokenData.access_token);
-
-        // TODO: 실제 JWT 생성 로직 구현 필요
         const appTokens = await oauthService.generateAppTokens(userInfo);
 
         res.status(200).json({

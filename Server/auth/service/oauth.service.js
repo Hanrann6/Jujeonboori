@@ -1,4 +1,5 @@
 import jwt, { decode } from 'jsonwebtoken';
+import RefreshToken from '../model/refreshToken.model.js';
 
 const OAUTH_CONFIG = {
     google: {
@@ -27,7 +28,7 @@ const generateOAuthUrl = async (provider, codeChallenge, codeChallengeMethod) =>
         response_type: 'code',
         scope: config.scope,
         code_challenge: codeChallenge,
-        code_challege_method: codeChallengeMethod
+        code_challenge_method: codeChallengeMethod
     });
 
     const oauthUrl = `${config.authUrl}?${params.toString()}`;
@@ -35,7 +36,7 @@ const generateOAuthUrl = async (provider, codeChallenge, codeChallengeMethod) =>
     return oauthUrl;
 };
 
-const exchangeCodeForToken = async (provider, authrizationCode, codeVerifier, redirectUri) => {
+const exchangeCodeForToken = async (provider, authorizationCode, codeVerifier, redirectUri) => {
     const config = OAUTH_CONFIG[provider];
 
     try {
@@ -48,12 +49,12 @@ const exchangeCodeForToken = async (provider, authrizationCode, codeVerifier, re
             grant_type: 'authorization_code',
             client_id: config.clientId,
             client_secret: config.clientSecret,
-            code: authrizationCode,
+            code: authorizationCode,
             redirect_uri: redirectUri,
             code_verifier: codeVerifier
         };
 
-        const response = await fetch(tokenEndPoints[provider], {
+        const response = await fetch(tokenEndpoints[provider], {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -82,7 +83,7 @@ const exchangeCodeForToken = async (provider, authrizationCode, codeVerifier, re
 
         return {
             access_token: tokenResponse.access_token,
-            refresh_token: tokenResponse.response_token,
+            refresh_token: tokenResponse.refresh_token,
             expires_in: tokenResponse.expires_in,
             token_type: tokenResponse.token_type || 'Bearer'
         };
@@ -126,7 +127,7 @@ const getUserInfo = async (provider, accessToken) => {
                 isEmailVerified: userInfo.verified_email || false
             };
         } else if (provider === 'kakao') {
-            const kakaoAccount = userInfo.kakao_acoount || {};
+            const kakaoAccount = userInfo.kakao_account || {};
             const profile = kakaoAccount.profile || {};
 
             standardUserInfo = {
@@ -147,6 +148,61 @@ const getUserInfo = async (provider, accessToken) => {
         }
         
         throw error;
+    }
+};
+
+const saveRefreshTokenToDB = async (userId, provider, token) => {
+    try {
+        // 만료 시간 계산 (14일 후)
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 14);
+
+        await RefreshToken.findOneAndUpdate(
+            { user_id: userId, provider: provider},
+            {
+                token: token,
+                expires_at: expiresAt,
+                created_at: new Date()
+            },
+            {
+                upsert: true,
+                new: true
+            }
+        );
+
+        console.log(`Refresh token 저장 완료: ${userId} (${provider})`);
+    } catch (error) {
+        console.error('Refresh token 저장 중 오류:', error);
+        throw new Error('토큰 저장에 실패했습니다.');
+    }
+};
+
+const checkRefreshTokenInDB = async (userId, provider, token) => {
+    try {
+        const refreshTokenDoc = await RefreshToken.findOne({
+            user_id: userId,
+            provider: provider,
+            token: token
+        });
+
+        return refreshTokenDoc !== null;
+    } catch (error) {
+        console.error('Refresh token 조회 중 오류:', error);
+        return false;
+    }
+};
+
+const removeRefreshTokenFromDB = async (userId, provider) => {
+    try {
+        await RefreshToken.deleteOne({
+            user_id: userId,
+            provider: provider
+        });
+
+        console.log(`Refresh token 삭제 완료: ${userId} (${provider})`);
+    } catch (error) {
+        console.error('Refresh token 삭제 중 오류:', error);
+        throw new Error('토큰 삭제에 실패했습니다.');
     }
 };
 
@@ -186,7 +242,8 @@ const generateAppTokens = async (userInfo) => {
             }
         );
 
-        // TODO: refresh token을 DB에 저장
+        // Refresh token을 DB에 저장
+        await saveRefreshTokenToDB(userInfo.providerId, userInfo.provider, refreshToken);
 
         return {
             accessToken,
@@ -197,7 +254,7 @@ const generateAppTokens = async (userInfo) => {
         console.error('JWT 토큰 생성 오류:', error);
         throw new Error('토큰 생성 중 오류가 발생했습니다.');
     }
-}
+};
 
 const reissueTokens = async (refreshToken) => {
     try {
@@ -207,7 +264,11 @@ const reissueTokens = async (refreshToken) => {
             throw new Error('올바르지 않은 토큰 타입입니다.');
         }
 
-        // TODO: DB에서 refresh token 존재 여부 확인
+        // DB에서 refresh token 존재 여부 확인
+        const isValidRefreshToken = await checkRefreshTokenInDB(decoded.userId, decoded.provider, refreshToken);
+        if (!isValidRefreshToken) {
+            throw new Error('유효하지 않은 refresh token입니다.');
+        }
 
         const newTokens = await generateAppTokens({
             providerId: decoded.userId,
@@ -215,8 +276,6 @@ const reissueTokens = async (refreshToken) => {
             email: decoded.email || '',
             name: decoded.name || ''
         });
-
-        // TODO: 새로운 refresh token을 DB에 저장
 
         return newTokens;
 
@@ -249,8 +308,8 @@ const revokeTokens = async (accessToken, refreshToken) => {
             throw new Error('토큰이 일치하지 않습니다.');
         }
 
-        // TODO: 토큰 무효화 처리
-        // DB에서 refresh token 삭제하거나 JWT blacklist에 추가하거나...
+        // DB에서 refresh token 삭제
+        await removeRefreshTokenFromDB(decoded.userId, decoded.provider);
 
     } catch (error) {
         if (error.name === 'JsonWebTokenError') {
