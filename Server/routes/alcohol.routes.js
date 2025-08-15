@@ -5,6 +5,7 @@ import reviewController from '../review/controller/review.controller.js';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import { S3Client } from '@aws-sdk/client-s3';
+import validateObjectId from '../middleware/validateObjectId.js';
 
 const router = express.Router();
 
@@ -101,5 +102,12 @@ router.use((error, req, res, next) => {
 
     next(error);
 });
+
+// alcoholId 파라미터 유효성 검사
+router.get(
+    '/:alcoholId', 
+    validateObjectId('alcoholId'),
+    alcoholController.getAlcoholDetail
+);
 
 export default router;

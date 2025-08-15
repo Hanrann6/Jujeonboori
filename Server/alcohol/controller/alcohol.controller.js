@@ -86,7 +86,24 @@ const getAlcoholDetail = async (req, res) => {
     }
 };
 
+const getKeywords = async (req, res) => {
+    try {
+        const keywords = await alcoholService.getAvailableKeywords();
+        res.status(200).json({ keywords });
+    } catch (error) {
+        console.error('키워드 목록 조회 오류:', error);
+        res.status(500).json({
+            timestamp: new Date().toISOString(),
+            status: 500,
+            error: "Internal Server Error",
+            message: "키워드 목록 조회 중 오류가 발생했습니다.",
+            path: req.path
+        });
+    }
+};
+
 export default {
     getAlcoholList,
-    getAlcoholDetail
+    getAlcoholDetail,
+    getKeywords
 };

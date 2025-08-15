@@ -115,7 +115,7 @@ const deleteUser = async (userInfo, refreshToken) => {
     user.status = 'deleted';
     user.updatedAt = new Date();
     await user.save();
-    
+
     return true;
 };
 
@@ -123,7 +123,8 @@ const deleteUser = async (userInfo, refreshToken) => {
 const validateNickname = async (nickname, currentUserId) => {
     const existingUser = await User.findOne({ 
         nickname: nickname,
-        _id: { $ne: currentUserId }
+        _id: { $ne: currentUserId },
+        status: { $ne: 'deleted' }
     });
 
     if (existingUser) {
@@ -168,11 +169,6 @@ const validateImageFile = (file) => {
         error.statusCode = 400;
         throw error;
     }
-};
-
-// MongoDB ObjectId 유효성 검사
-const isValidObjectId = (id) => {
-    return /^[0-9a-fA-F]{24}$/.test(id);
 };
 
 // S3 클라이언트 설정
