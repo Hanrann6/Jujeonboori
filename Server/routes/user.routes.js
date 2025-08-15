@@ -5,6 +5,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 import userController from '../user/controller/user.controller.js';
 import authMiddleware from '../auth/middleware/auth.middleware.js';
 import reviewController from '../review/controller/review.controller.js';
+import validateObjectId from '../middleware/validateObjectId.js';
 
 const router = express.Router();
 
@@ -109,5 +110,12 @@ router.use((error, req, res, next) => {
 
     next(error);
 });
+
+// userId 파라미터 유효성 검사
+router.get(
+    '/:userId',
+    validateObjectId('userId'),
+    userController.getUserProfile
+);
 
 export default router;
