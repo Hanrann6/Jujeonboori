@@ -25,7 +25,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "fonts": {
-      "BagelFatOne-Regular": "./assets/fonts/BagelFatOne-Regular.ttf"
+      "BagelFatOne": "./assets/fonts/BagelFatOne-Regular.ttf"
     },
     "splash": {
       "image": "./assets/images/splash-icon.png",

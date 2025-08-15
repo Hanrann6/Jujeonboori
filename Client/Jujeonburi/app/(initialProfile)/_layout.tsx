@@ -26,6 +26,16 @@ export default function InitialProfileLayout() {
           headerShadowVisible: true,
         }}
       />
+      <Stack.Screen
+        name="testResult"
+        options={{
+          headerShown: true,
+          title: "주류 취향 분석",
+          headerTitleStyle: { fontSize: 17, fontWeight: "bold" },
+          headerTitleAlign: "center",
+          headerLeft: () => <BackBtn />,
+          headerShadowVisible: true,
+        }}/>
     </Stack>
   );
 }
