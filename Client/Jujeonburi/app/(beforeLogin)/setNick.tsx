@@ -1,3 +1,5 @@
+//app/(beforeLogin)/setNick.tsx
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useState } from "react";
