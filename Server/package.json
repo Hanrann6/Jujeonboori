@@ -21,6 +21,8 @@
   "homepage": "https://github.com/Hanrann6/HabitAI#readme",
   "dependencies": {
     "@aws-sdk/client-personalize-events": "^3.862.0",
+    "@aws-sdk/client-personalize-runtime": "^3.864.0",
+    "@aws-sdk/client-s3": "^3.864.0",
     "@google-cloud/vision": "^5.3.3",
     "@langchain/community": "^0.3.50",
     "@langchain/core": "^0.3.67",
@@ -32,9 +34,11 @@
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "jimp": "^0.16.1",
+    "jsonwebtoken": "^9.0.2",
     "langchain": "^0.3.30",
     "mongoose": "^8.17.0",
     "multer": "^2.0.2",
+    "multer-s3": "^3.0.1",
     "openai": "^4.103.0",
     "recombee-api-client": "^5.0.2",
     "tesseract.js": "^6.0.1"
