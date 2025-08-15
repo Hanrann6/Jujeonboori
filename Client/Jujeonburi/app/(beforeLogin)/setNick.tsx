@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import {
@@ -21,8 +22,8 @@ export default function NicknameScreen() {
     const valid = useMemo(() => /^[A-Za-z0-9가-힣]{2,12}$/.test(name), [name]);
 
     const onContinue = async () => {
-        // TODO: 서버 저장 or 전역 상태 저장
-        // await api.signup({ nickname: name });
+        // TODO: 서버 저장
+        await AsyncStorage.setItem("nickname", name.trim());
         router.replace({
             pathname: "/(initialProfile)", 
             params: { nickname: name }, // 입력받은 닉네임을 넘겨줌 

@@ -73,8 +73,8 @@ export default function TasteTest() {
         const { profile } = accumulateProfile(finalAnswers);
         console.log("특성 프로필:", profile);
     
-        router.push({
-          pathname: "./testResult",
+        router.replace({
+          pathname: "./(initialProfile)/testResult",
           params: {
             nickname,
             profile: JSON.stringify(profile)
