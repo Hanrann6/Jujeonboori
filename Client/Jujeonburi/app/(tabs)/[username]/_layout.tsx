@@ -28,10 +28,21 @@ export default function UserProfileLayout() {
         }}
       />
       <Stack.Screen
+        name="myProfile"
+        options={{
+          headerShown: true,
+          title: "주류 취향 프로필",
+          headerTitleStyle: { fontSize: 16, fontWeight: "700" },
+          headerTitleAlign: "center",
+          headerLeft: () => <BackBtn />,
+          headerShadowVisible: true,
+        }}
+      />
+      <Stack.Screen
         name="liked"
         options={{
           headerShown: true,
-          title: "마이 페이지",
+          title: "찜한 전통주",
           headerTitleStyle: { fontSize: 16, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,
@@ -54,6 +65,17 @@ export default function UserProfileLayout() {
         options={{
           headerShown: true,
           title: "설정",
+          headerTitleStyle: { fontSize: 16, fontWeight: "700" },
+          headerTitleAlign: "center",
+          headerLeft: () => <BackBtn />,
+          headerShadowVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="delete"
+        options={{
+          headerShown: true,
+          title: "회원탈퇴",
           headerTitleStyle: { fontSize: 16, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,

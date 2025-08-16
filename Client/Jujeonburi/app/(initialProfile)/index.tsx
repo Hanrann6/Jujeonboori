@@ -1,4 +1,5 @@
 /* 사용자 선호도 테스트 */
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -69,10 +70,11 @@ export default function TasteTest() {
         return { profile, };
     };
 
-    const handleFinish = (finalAnswers: ("A" | "B" | undefined)[]) => {
+    const handleFinish = async(finalAnswers: ("A" | "B" | undefined)[]) => {
         const { profile } = accumulateProfile(finalAnswers);
         console.log("특성 프로필:", profile);
-    
+        await AsyncStorage.setItem("tasteProfile", JSON.stringify(profile));
+        
         router.replace({
           pathname: "./(initialProfile)/testResult",
           params: {

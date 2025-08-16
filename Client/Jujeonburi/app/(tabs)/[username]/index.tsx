@@ -24,6 +24,11 @@ export default function MyPage() {
           <Text style={styles.nick}>{nickname || "사용자"}</Text>님의 정보
         </Text>
         <View style={styles.optionContainer}>
+         <ListItem
+            icon={<Ionicons name="podium-outline" size={25} color="#F59E0B" />}
+            label="주류 취향 프로필"
+            onPress={() => router.push("/(tabs)/[username]/myProfile")}
+          />
           <ListItem
             icon={<Ionicons name="heart-outline" size={25} color="#F59E0B" />}
             label="찜한 전통주"
