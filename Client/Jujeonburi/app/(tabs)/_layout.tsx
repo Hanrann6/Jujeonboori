@@ -18,6 +18,19 @@ export default function TabLayout() {
                         />
                     )
                 }} />
+            <Tabs.Screen name="(chatbot)"
+                options={{
+                    tabBarLabel: () => null,
+                    tabBarIcon: ({ focused }) => (
+                        <Ionicons
+                            name="chatbubble-outline"
+                            size={24}
+                            color={focused ? "black" : "gray"}
+                        />
+                    )
+                }} />
+
+
             <Tabs.Screen name="[username]"
                 options={{
                     tabBarLabel: () => null,

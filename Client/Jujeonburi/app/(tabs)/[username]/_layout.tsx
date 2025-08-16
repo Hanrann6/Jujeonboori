@@ -11,8 +11,8 @@ function BackBtn() {
           <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
   );
-
 }
+
 export default function UserProfileLayout() {
   return (
     <Stack>
