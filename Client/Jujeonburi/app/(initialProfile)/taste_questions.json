@@ -1,0 +1,129 @@
+[
+    {
+        "id": 1,
+        "question": "전통주를 마셔본 적이 있나요?",
+        "options": [
+            {
+                "id": "A",
+                "text": "네, 마셔본 적 있어요.",
+                "effects": {
+                    "body": 0
+                }
+            },
+            {
+                "id": "B",
+                "text": "아니요, 처음이에요.",
+                "effects": {
+                    "sweetness": 1,
+                    "carbonation": 1
+                }
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "question": "어느 정도의 단맛을 원하시나요?",
+        "options": [
+            {
+                "id": "A",
+                "text": "모스카토, 모히또처럼\n달콤한 술",
+                "effects": {
+                    "sweetness": 1
+                }
+            },
+            {
+                "id": "B",
+                "text": "드라이 와인, 소주처럼\n단맛이 적은 술",
+                "effects": {
+                    "sweetness": -1
+                }
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "question": "원하는 산미는 어느 정도인가요?",
+        "options": [
+            {
+                "id": "A",
+                "text": "화이트 와인처럼\n산미가 높고 가벼운 맛",
+                "effects": {
+                    "sourness": 1,
+                    "body": -1
+                }
+            },
+            {
+                "id": "B",
+                "text": "레드 와인처럼\n산미가 낮고 묵직한 맛",
+                "effects": {
+                    "sourness": -1,
+                    "body": 1
+                }
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "question": "어느 정도의 청량감을 선호하시나요?",
+        "options": [
+            {
+                "id": "A",
+                "text": "청량하고\n탄산이 있는 술",
+                "effects": {
+                    "sparkling": 1,
+                    "carbonation": 0
+                }
+            },
+            {
+                "id": "B",
+                "text": "부드럽고\n탄산이 적은(없는) 술",
+                "effects": {
+                    "sparkling": -1,
+                    "carbonation": -1
+                }
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "question": "어떤 느낌의 목넘김을 선호하시나요?",
+        "options": [
+            {
+                "id": "A",
+                "text": "흑맥주, 레드 와인처럼\n묵직하고 진한 맛",
+                "effects": {
+                    "body": 1,
+                    "sparkling": -1
+                }
+            },
+            {
+                "id": "B",
+                "text": "라거, 화이트와인처럼\n가볍고 산뜻한 맛",
+                "effects": {
+                    "body": -1,
+                    "sparkling": 1
+                }
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "question": "어느 정도의 도수의 술을 즐겨 마시나요?",
+        "options": [
+            {
+                "id": "A",
+                "text": "도수가 낮은 술\n(약 4~6도)",
+                "effects": {
+                    "abv": 0
+                }
+            },
+            {
+                "id": "B",
+                "text": "도수가 높은 술\n(16도 이상)",
+                "effects": {
+                    "abv": 11
+                }
+            }
+        ]
+    }
+]
