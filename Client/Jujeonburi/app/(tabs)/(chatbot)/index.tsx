@@ -1,21 +1,24 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo, useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+//챗봇 아바타 이미지 가져오기기
 const AVATAR = require("../../../assets/images/avatar.png");
 
+//챗봇 or 사용자 메시지 타입 정의
 type Role = "assistant" | "user";
 type Msg = { id: string; role: Role; text: string; createdAt: number };
 
@@ -31,6 +34,32 @@ const SEED: Msg[] = [
   },
 ];
 
+//말풍선 컴포넌트 정의 함수
+function Bubble({ role, text }: { role: Role; text: string; createdAt: number }) {
+  const isUser = role === "user";
+
+  //사용자 말풍선
+  if (isUser) {
+    return (
+      <View style={[styles.row, styles.rowRight]}>
+        <View style={[styles.bubble, styles.userBubble, styles.userRadius]}>
+          <Text style={[styles.bubbleText, styles.userText]}>{text}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  //챗봇 말풍선
+  return (
+    <View style={[styles.row, styles.rowLeft]}>
+      <Image source={AVATAR} style={styles.avatar} />
+      <View style={[styles.bubble, styles.botBubble, styles.botRadius]}>
+        <Text style={[styles.bubbleText, styles.botText]}>{text}</Text>
+      </View>
+    </View>
+  );
+}
+
 export default function ChatBot() {
   const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState<Msg[]>(SEED);
@@ -40,6 +69,7 @@ export default function ChatBot() {
 
   const dayLabel = useMemo(() => {
     const d = new Date(messages[0]?.createdAt ?? Date.now());
+    //날짜 객체 d를 한국어(Korea) 로케일 규칙에 맞춰 문자열로 포맷
     return d.toLocaleString("ko-KR", {
       year: "numeric",
       month: "long",
@@ -144,31 +174,6 @@ export default function ChatBot() {
   );
 }
 
-function Bubble({ role, text }: { role: Role; text: string; createdAt: number }) {
-    const isUser = role === "user";
-  
-    // 사용자 말풍선(오른쪽)
-    if (isUser) {
-      return (
-        <View style={[styles.row, styles.rowRight]}>
-          <View style={[styles.bubble, styles.userBubble, styles.userRadius]}>
-            <Text style={[styles.bubbleText, styles.userText]}>{text}</Text>
-          </View>
-        </View>
-      );
-    }
-  
-    // 봇 말풍선(왼쪽) + 아바타
-    return (
-      <View style={[styles.row, styles.rowLeft]}>
-        <Image source={AVATAR} style={styles.avatar} />
-        <View style={[styles.bubble, styles.botBubble, styles.botRadius]}>
-          <Text style={[styles.bubbleText, styles.botText]}>{text}</Text>
-        </View>
-      </View>
-    );
-  }
-
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#FFFFFF" },
   container: { flex: 1, backgroundColor: "#FFFFFF" },
@@ -188,7 +193,6 @@ const styles = StyleSheet.create({
   rowLeft: { justifyContent: "flex-start", alignItems: "flex-start" }, // ⬅️ 상단 정렬
   rowRight: { justifyContent: "flex-end" },
 
-  // 말풍선
   avatar: {
     width: 41,
     height: 38,
@@ -196,21 +200,20 @@ const styles = StyleSheet.create({
     marginRight: 8,
     backgroundColor: "#FFF7ED",
   },
+
   bubble: {
     maxWidth: "78%",
     paddingVertical: 10,
     paddingHorizontal: 12,
   },
-  botBubble: { backgroundColor: "#FDBA74" }, // 주황(밝은)
-  userBubble: { backgroundColor: "#E5E7EB" }, // 회색
-
-  // 둥근 모서리: 꼬리 느낌
+  botBubble: { backgroundColor: "#FFBF60" }, 
   botRadius: {
     borderTopLeftRadius: 6,
     borderTopRightRadius: 14,
     borderBottomLeftRadius: 14,
     borderBottomRightRadius: 14,
   },
+  userBubble: { backgroundColor: "#E5E7EB" },
   userRadius: {
     borderTopLeftRadius: 14,
     borderTopRightRadius: 6,

@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     },
     //버튼
     btn: {
-        height: 44,
+        height: 46,
         borderRadius: 10,
         backgroundColor: "#FBBC05",
         alignItems: "center",
