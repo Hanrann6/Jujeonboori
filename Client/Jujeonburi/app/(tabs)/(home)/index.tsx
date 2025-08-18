@@ -9,11 +9,13 @@ import {
     Platform,
     Pressable,
     SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     View,
 } from "react-native";
+import Weathercard from "../../components/Weathercard";
 
 type Filters = {
     query: string;
@@ -27,6 +29,10 @@ const CATEGORIES = ["탁주", "약주/청주", "과실주", "증류주", "기타
 const BORDER = "#E5E7EB";
 const BLACK = "#111827";
 const MUTED = "#6B7280";
+
+//위치 권한 → 현재 위치 → 서버 날씨 API 호출 후 카드에 표시
+
+
 
 export default function HomeScreen() {
     const [query, setQuery] = useState("");
@@ -70,7 +76,7 @@ export default function HomeScreen() {
 
     return (
         <SafeAreaView style={s.safe}>
-            <View style={s.container}>
+            <ScrollView style={s.container}>
                 <View
                     onLayout={(e) => {
                         const { y, height } = e.nativeEvent.layout;
@@ -113,8 +119,9 @@ export default function HomeScreen() {
                 </View>
 
                 {/* 메인 콘텐츠 자리 */}
-                <View style={{ flex: 1 }} />
-            </View>
+                <Weathercard />
+                
+            </ScrollView>
 
             {/* 필터 적용 패널 외부 영역을 터치하면 닫히도록 */}
             {open && <Pressable style={[s.backdrop, { top: backdropTop }]} onPress={toggle} />}
@@ -197,7 +204,7 @@ function FilterContent({
 
 const s = StyleSheet.create({
     safe: { flex: 1, backgroundColor: "#fff" },
-    container: { flex: 1 },
+    container: { flex: 1,paddingBottom: 24 },
 
     header: {
         height: 48,

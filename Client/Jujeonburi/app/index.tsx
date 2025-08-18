@@ -1,22 +1,34 @@
 // app/index.tsx
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { View } from "react-native";
+import { Redirect } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 
-export default function Index() {
-  const router = useRouter();
+export default function RootIndex() {
+  const [ready, setReady] = useState(false);
+  const [hasNick, setHasNick] = useState<boolean | null>(null);
 
   useEffect(() => {
     (async () => {
-      const nick = await AsyncStorage.getItem("nickname");
-      if (nick && nick.trim().length > 0) {
-        router.replace("/(tabs)/(home)");        // 닉네임 있으면 메인
-      } else {
-        router.replace("/(beforeLogin)/index"); // 없으면 온보딩
+      try {
+        const nick = await AsyncStorage.getItem("nickname");
+        setHasNick(!!nick);
+      } finally {
+        setReady(true);
       }
     })();
   }, []);
 
-  return <View style={{ flex: 1, backgroundColor: "#fff" }} />;
+  if (!ready) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  // 닉네임 없으면 (beforeLogin)로, 있으면 메인 탭으로
+  return hasNick
+    ? <Redirect href="/(tabs)/(home)" />
+    : <Redirect href="/(beforeLogin)/index" />;
 }
