@@ -1,7 +1,8 @@
 //app/(tabs)/(home)/index.tsx
 
 import { Ionicons } from "@expo/vector-icons";
-import React, { useRef, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
     Easing,
@@ -73,7 +74,14 @@ export default function HomeScreen() {
         }).start();
         console.log("검색/필터 적용:", next);
     };
+    const [nickname, setNickname] = useState<string>("");
 
+    useEffect(() => {
+      (async () => {
+        const nick = (await AsyncStorage.getItem("nickname")) ?? "";
+        setNickname(nick);
+      })();
+    }, []);
     return (
         <SafeAreaView style={s.safe}>
             <ScrollView style={s.container}>
@@ -118,8 +126,19 @@ export default function HomeScreen() {
                     </Animated.View>
                 </View>
 
-                {/* 메인 콘텐츠 자리 */}
+                {/* 메인 콘텐츠*/}
                 <Weathercard />
+                <View style={s.recContainer}>
+                    <View style={s.personalRec}>
+                    <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
+
+                    </View>
+                    <View style={s.pricedRec}>
+                    <Text style={s.recTitle}><Text style={s.nick}>3만원 이하</Text> 추천 전통주</Text>
+
+                    </View>
+                    
+                </View>
                 
             </ScrollView>
 
@@ -249,6 +268,27 @@ const s = StyleSheet.create({
         gap: 6,
     },
     filterBtnText: { color: BLACK, fontWeight: "700" },
+    
+    recContainer: {
+        flex:1,
+    },
+    personalRec: {
+        padding: 20,
+        gap: 8,
+    },
+    pricedRec: {
+        padding: 20,
+        gap: 8,
+    },
+    recTitle: {
+        fontSize: 22,
+        fontWeight: "800",
+        color: "#111827",
+        margin:10,
+      },
+      nick: {
+         color: "#F59E0B" 
+      },
 
     // 드롭다운 패널
     dropdown: {
