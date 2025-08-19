@@ -30,5 +30,5 @@ export default function RootIndex() {
   // 닉네임 없으면 (beforeLogin)로, 있으면 메인 탭으로
   return hasNick
     ? <Redirect href="/(tabs)/(home)" />
-    : <Redirect href="/(beforeLogin)/index" />;
+    : <Redirect href="/(beforeLogin)" />;
 }
