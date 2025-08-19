@@ -56,7 +56,12 @@ function statusOf(s: string | Date, e: string | Date) {
   if (now > end) return { label: "종료", color: "#9CA3AF" };
   return { label: "진행중", color: "#19BB55" };
 }
-
+function statusRank(s: string | Date, e: string | Date) {
+    const { label } = statusOf(s, e);
+    // 진행중(0) → 예정(1) → 종료(2)
+    return label === "진행중" ? 0 : label === "예정" ? 1 : 2;
+  }
+  
 /** ---------- 원본 더미 → Date 통일 ---------- */
 const festivalsPrepared: Festival[] = festivalsJson.map((f) => ({
   ...f,
@@ -90,15 +95,32 @@ export default function FestivalScreen() {
 
   const [year, setYear] = useState<number>(defaultYear);
 
-  /** 선택 연도 필터 + 시작일 오름차순 정렬 */
+  /** 선택 연도별 필터링 */
   const data = useMemo(() => {
     const list = festivalsPrepared.filter(
       (f) => toDate(f.start_date).getFullYear() === year
     );
-    return list.sort(
-      (a, b) => +toDate(a.start_date) - +toDate(b.start_date)
-    );
+  
+    return list.sort((a, b) => {
+      const ra = statusRank(a.start_date, a.end_date);
+      const rb = statusRank(b.start_date, b.end_date);
+      if (ra !== rb) return ra - rb; // 진행중/예정 먼저, 종료는 아래로
+  
+      // 같은 상태끼리의 세부 정렬
+      const sa = statusOf(a.start_date, a.end_date).label;
+      if (sa === "진행중") {
+        // 진행중: 곧 끝나는 순으로
+        return +new Date(a.end_date as any) - +new Date(b.end_date as any);
+      }
+      if (sa === "예정") {
+        // 예정: 가까운 시작일 순
+        return +new Date(a.start_date as any) - +new Date(b.start_date as any);
+      }
+      // 종료: 최근에 끝난 것 먼저 보고 싶으면 내림차순, 아니면 오름차순
+      return +new Date(b.end_date as any) - +new Date(a.end_date as any);
+    });
   }, [year]);
+  
 
   const changeYear = useCallback((y: number) => setYear(y), []);
 
