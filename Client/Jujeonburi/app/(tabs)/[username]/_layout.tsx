@@ -39,7 +39,7 @@ export default function UserProfileLayout() {
         }}
       />
       <Stack.Screen
-        name="liked"
+        name="bookmark"
         options={{
           headerShown: true,
           title: "찜한 전통주",
