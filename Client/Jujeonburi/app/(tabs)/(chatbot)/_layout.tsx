@@ -21,7 +21,7 @@ export default function ChatbotLayout() {
                 options={{
                     headerShown: true,
                     title: "챗봇",
-                    headerTitleStyle: {fontSize: 16, fontWeight: "700"},
+                    headerTitleStyle: { fontSize: 18, fontWeight: "700" },
                     headerTitleAlign: "center",
                     headerLeft: () => <BackBtn />,
                     headerShadowVisible: true,

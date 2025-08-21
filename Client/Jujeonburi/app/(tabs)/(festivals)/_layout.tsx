@@ -1,6 +1,16 @@
 // app/(tabs)/(festival)/_layout.tsx
-import { Stack } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { Stack, useRouter } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
+function BackBtn() {
+    const router = useRouter();
+    return (
+        <TouchableOpacity onPress={() => router.back()} style={{ paddingHorizontal: 12 }}>
+            <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+    );
+  }
 export default function FestivalLayout() {
     return (
         <Stack>
@@ -11,6 +21,7 @@ export default function FestivalLayout() {
                     title: "우리 전통주 축제",
                     headerTitleStyle: { fontSize: 18, fontWeight: "700" },
                     headerTitleAlign: "center",
+                    headerLeft: () => <BackBtn />,
                     headerShadowVisible: true,
                 }} />
         </Stack>

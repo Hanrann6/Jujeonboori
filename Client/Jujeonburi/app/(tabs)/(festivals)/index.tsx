@@ -2,16 +2,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useCallback, useMemo, useState } from "react";
 import {
-    FlatList,
-    Image,
-    Linking,
-    Platform,
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  FlatList,
+  Image,
+  Linking,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import festivalsJson from "./festival_dummy.json";
 
@@ -74,7 +74,6 @@ const CARD_BG = "#FFFFFF";
 const BORDER = "#E5E7EB";
 const TITLE = "#111827";
 const MUTED = "#6B7280";
-const BRAND = "#111827"; // 선택된 연도 칩 배경색
 
 export default function FestivalScreen() {
   /** 연도 목록 만들기 (더미에서 추출) */

@@ -18,8 +18,10 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.cozyu.Jujeonburi",
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
-
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -45,7 +47,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#F5F5F5"
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

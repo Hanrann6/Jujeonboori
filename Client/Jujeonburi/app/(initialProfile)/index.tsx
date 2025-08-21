@@ -47,10 +47,10 @@ export default function TasteTest() {
     // 특성 벡터 집계
     const accumulateProfile = (finalAnswers: ("A" | "B" | undefined)[]) => {
         const profile: Required<Effects> = {
-            sweetness: 2.5,
-            sourness: 2.5,
-            sparkling: 2.5,
-            body: 2.5,
+            sweetness: 3,
+            sourness: 3,
+            sparkling: 3,
+            body: 3,
             abv: 6, // 기본 도수 6% (낮은 도수)
             carbonation: 1
         };

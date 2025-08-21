@@ -16,6 +16,7 @@ import {
     TextInput,
     View,
 } from "react-native";
+import AlcoholRecommend from "../../components/AlcoholRecommend";
 import Weathercard from "../../components/Weathercard";
 
 type Filters = {
@@ -30,10 +31,6 @@ const CATEGORIES = ["탁주", "약주/청주", "과실주", "증류주", "기타
 const BORDER = "#E5E7EB";
 const BLACK = "#111827";
 const MUTED = "#6B7280";
-
-//위치 권한 → 현재 위치 → 서버 날씨 API 호출 후 카드에 표시
-
-
 
 export default function HomeScreen() {
     const [query, setQuery] = useState("");
@@ -131,6 +128,7 @@ export default function HomeScreen() {
                 <View style={s.recContainer}>
                     <View style={s.personalRec}>
                     <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
+                    <AlcoholRecommend limit={5} />
 
                     </View>
                     <View style={s.pricedRec}>

@@ -21,7 +21,7 @@ export default function UserProfileLayout() {
         options={{
           headerShown: true,
           title: "마이 페이지",
-          headerTitleStyle: { fontSize: 16, fontWeight: "700" },
+          headerTitleStyle: { fontSize: 18, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,
           headerShadowVisible: true,
@@ -32,7 +32,7 @@ export default function UserProfileLayout() {
         options={{
           headerShown: true,
           title: "주류 취향 프로필",
-          headerTitleStyle: { fontSize: 16, fontWeight: "700" },
+          headerTitleStyle: { fontSize: 18, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,
           headerShadowVisible: true,
@@ -43,7 +43,7 @@ export default function UserProfileLayout() {
         options={{
           headerShown: true,
           title: "찜한 전통주",
-          headerTitleStyle: { fontSize: 16, fontWeight: "700" },
+          headerTitleStyle: { fontSize: 18, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,
           headerShadowVisible: true,
@@ -53,8 +53,8 @@ export default function UserProfileLayout() {
         name="review"
         options={{
           headerShown: true,
-          title: "마이 페이지",
-          headerTitleStyle: { fontSize: 16, fontWeight: "700" },
+          title: "작성한 리뷰",
+          headerTitleStyle: { fontSize: 18, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,
           headerShadowVisible: true,
@@ -65,7 +65,7 @@ export default function UserProfileLayout() {
         options={{
           headerShown: true,
           title: "설정",
-          headerTitleStyle: { fontSize: 16, fontWeight: "700" },
+          headerTitleStyle: { fontSize: 18, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,
           headerShadowVisible: true,
@@ -76,7 +76,7 @@ export default function UserProfileLayout() {
         options={{
           headerShown: true,
           title: "회원탈퇴",
-          headerTitleStyle: { fontSize: 16, fontWeight: "700" },
+          headerTitleStyle: { fontSize: 18, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,
           headerShadowVisible: true,
