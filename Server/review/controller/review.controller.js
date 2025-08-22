@@ -39,6 +39,8 @@ const createReview = async (req, res) => {
                 errorType = "Bad Request";
             } else if (error.statusCode === 403) {
                 errorType = "Forbidden";
+            } else if (error.statusCode === 409) {
+                errorType = "Conflict";
             } else {
                 errorType = "Internal Server Error";
             }
@@ -50,6 +52,11 @@ const createReview = async (req, res) => {
                 message: error.message,
                 path: req.path
             };
+            
+            // 중복 리뷰의 경우 기존 리뷰 ID 추가
+            if (error.statusCode === 409 && error.existingReviewId) {
+                errorResponse.existingReviewId = error.existingReviewId;
+            }
             return res.status(error.statusCode).json(errorResponse);
         }
 

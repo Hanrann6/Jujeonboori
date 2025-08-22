@@ -47,7 +47,7 @@ reviewSchema.index({ alcohol: 1, createdAt: -1 });
 reviewSchema.index({ author: 1, createdAt: -1 });
 
 // 중복 리뷰 방지 (한 사용자가 같은 전통주에 리뷰 여러 개 작성 가능하게 할지)
-// reviewSchema.index({ author: 1, alcohol: 1 }, { unique: true });
+reviewSchema.index({ author: 1, alcohol: 1 }, { unique: true });
 
 const Review = mongoose.model("Review", reviewSchema);
 
