@@ -27,6 +27,19 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
             throw error;
         }
 
+        // 중복 리뷰 검증
+        const existingReview = await Review.findOne({
+            author: user._id,
+            alcohol: alcohol._id
+        });
+        
+        if (existingReview) {
+            const error = new Error('이미 이 전통주에 대한 리뷰를 작성하셨습니다. 기존 리뷰를 수정해주세요.');
+            error.statusCode = 409;
+            error.existingReviewId = existingReview._id; // 기존 리뷰 ID
+            throw error;
+        }
+
         // 필수 필드 검증
         const { rating, title, content } = reviewData;
         
