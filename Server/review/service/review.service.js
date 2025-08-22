@@ -36,7 +36,7 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
         if (existingReview) {
             const error = new Error('이미 이 전통주에 대한 리뷰를 작성하셨습니다. 기존 리뷰를 수정해주세요.');
             error.statusCode = 409;
-            error.existingReviewId = existingReview._id; // 기존 리뷰 ID
+            error.existingReviewId = existingReview._id; // 기존 리뷰 ID 반환
             throw error;
         }
 
