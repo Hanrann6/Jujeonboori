@@ -3,9 +3,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system";
+import { router } from "expo-router";
 import Papa from "papaparse";
 import React, { useEffect, useMemo, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import csvAsset from "../../assets/data/trad_alcohol.csv";
 
 /** ===== CSV 컬럼 타입 ===== */
@@ -71,7 +72,7 @@ function validHttpUrl(u?: string) {
   return !!u && /^https?:\/\//i.test(u.trim());
 }
 
-/** ===== CSV → 아이템 ===== */
+/** CSV → 아이템 */
 function rowToItem(r: AlcoholRow): AlcoholItem {
   const img = (r["사진URL"] ?? "").toString().trim();
   return {
@@ -96,7 +97,7 @@ function rowToItem(r: AlcoholRow): AlcoholItem {
   };
 }
 
-/** CSV 로드 */
+/** 저장된 전통주 CSV 로드 */
 async function loadAlcoholDataset(): Promise<AlcoholItem[]> {
   const asset = Asset.fromModule(csvAsset);
   await asset.downloadAsync();
@@ -129,19 +130,19 @@ const DEFAULT_PROFILE: TasteProfile = {
   sweetness: 3, sourness: 3, sparkling: 3, body: 3, abv: 6, carbonation: 1, abvTolerance: 5,
 };
 
-/** 스코어링 & 추천 */
+/** 전통주 추천에 사용하는 스코어링 */
 function score(item: AlcoholItem, p: TasteProfile): number {
-  const W = { sweetness:1, sourness:1, sparkling:1, body:1, carbonation:1, abv:0.5, ...(p.weights||{}) };
-
+  const W = { sweetness:1, sourness:1, sparkling:1, body:1, carbonation:0, abv:0.5, ...(p.weights||{}) };
+  //각 축(단맛/신맛/청량감/바디감/탄산)의 차이가 0이면 5점(최고), 차이가 5면 0점(최저).
   const sSweet = W.sweetness * (5 - Math.abs(item.sweetness - p.sweetness));
   const sSour  = W.sourness  * (5 - Math.abs(item.sourness  - p.sourness));
   const sSpark = W.sparkling * (5 - Math.abs(item.sparkling - p.sparkling));
   const sBody  = W.body      * (5 - Math.abs(item.body      - p.body));
   const sCarb  = W.carbonation * (5 - Math.abs(item.carbonation - p.carbonation));
-
-  const tol = p.abvTolerance ?? 5;
+  //도수의 경우, ±5% 오차 범위를 허용하고, 차이가 10% 이상이면 0점, 0~10% 이내면 0~5점으로 계산
+  const tol = p.abvTolerance ?? 5; 
   const abvDiff = Math.abs(item.abv - p.abv);
-  const sAbvRaw = Math.max(0, 1 - Math.max(0, abvDiff - tol) / 20); // 0~1
+  const sAbvRaw = Math.max(0, 1 - Math.max(0, abvDiff - tol) / 10); // 0~1
   const sAbv = W.abv * (5 * sAbvRaw);
 
   return sSweet + sSour + sSpark + sBody + sCarb + sAbv;
@@ -197,18 +198,29 @@ export default function AlcoholRecommend({ limit = 5, title = "내 취향 추천
         data={picks}
         keyExtractor={(it) => it.docId ?? it.name}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <Pressable
+            style={styles.card}
+            onPress={() =>
+              router.push({
+                pathname: "/(tabs)/(home)/[id]",
+                params: { id: item.docId ?? encodeURIComponent(item.name) },
+              })
+            }
+            android_ripple={{ color: "#F3F4F6" }}
+          >
             <Image
               source={
                 item.imageUrl
-                  ? { uri: item.imageUrl } // ✅ CSV의 사진URL 사용
+                  ? { uri: item.imageUrl } // CSV에 저장된 전통주 이미지 렌더링, 없을시 placeholder 이미지
                   : require("../../assets/images/bottle_placeholder.png")
               }
+              onError={() => { /* 필요시 로깅/대체 처리 */ }}
               style={styles.thumb}
+              resizeMode="cover"
             />
             <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
             <Text style={styles.meta}>{item.category} · {item.abv}%</Text>
-          </View>
+          </Pressable>
         )}
       />
     </View>
