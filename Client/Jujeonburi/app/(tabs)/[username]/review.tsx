@@ -213,10 +213,10 @@ export default function MyReviewsByCategory() {
                 sections={sections}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
+                contentContainerStyle={{ flex:1, paddingHorizontal: 16, paddingBottom: 24 }}
                 ListEmptyComponent={
                     <View style={styles.center}>
-                        <Text style={{ color: "#6B7280" }}>아직 작성한 리뷰가 없어요.</Text>
+                        <Text style={{color: "#6B7280" }}>아직 작성한 리뷰가 없어요.</Text>
                     </View>
                 }
                 renderSectionHeader={({ section }) => (
