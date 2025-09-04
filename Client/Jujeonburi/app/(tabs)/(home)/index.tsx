@@ -1,7 +1,8 @@
 //app/(tabs)/(home)/index.tsx
 
 import { Ionicons } from "@expo/vector-icons";
-import React, { useRef, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
     Easing,
@@ -9,11 +10,14 @@ import {
     Platform,
     Pressable,
     SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     View,
 } from "react-native";
+import AlcoholRecommend from "../../components/AlcoholRecommend";
+import Weathercard from "../../components/Weathercard";
 
 type Filters = {
     query: string;
@@ -67,10 +71,17 @@ export default function HomeScreen() {
         }).start();
         console.log("검색/필터 적용:", next);
     };
+    const [nickname, setNickname] = useState<string>("");
 
+    useEffect(() => {
+        (async () => {
+            const nick = (await AsyncStorage.getItem("nickname")) ?? "";
+            setNickname(nick);
+        })();
+    }, []);
     return (
         <SafeAreaView style={s.safe}>
-            <View style={s.container}>
+            <ScrollView style={s.container}>
                 <View
                     onLayout={(e) => {
                         const { y, height } = e.nativeEvent.layout;
@@ -98,7 +109,7 @@ export default function HomeScreen() {
                     </View>
 
                     {/* 필터 적용 패널 */}
-                    <Animated.View style={[s.dropdown, { height: animH}]}>
+                    <Animated.View style={[s.dropdown, { height: animH }]}>
                         <View
                             style={s.dropdownInner}
                             onLayout={(e) => { contentH.current = e.nativeEvent.layout.height; }}
@@ -112,9 +123,18 @@ export default function HomeScreen() {
                     </Animated.View>
                 </View>
 
-                {/* 메인 콘텐츠 자리 */}
-                <View style={{ flex: 1 }} />
-            </View>
+                {/* 메인 콘텐츠*/}
+                <Weathercard />
+                <View style={s.recContainer}>
+                    <View style={s.personalRec}>
+                        <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
+                        <AlcoholRecommend limit={5} />
+                    </View>
+                    <View style={s.pricedRec}>
+                        <Text style={s.recTitle}><Text style={s.nick}>3만원 이하</Text> 추천 전통주</Text>
+                    </View>
+                </View>
+            </ScrollView>
 
             {/* 필터 적용 패널 외부 영역을 터치하면 닫히도록 */}
             {open && <Pressable style={[s.backdrop, { top: backdropTop }]} onPress={toggle} />}
@@ -197,7 +217,7 @@ function FilterContent({
 
 const s = StyleSheet.create({
     safe: { flex: 1, backgroundColor: "#fff" },
-    container: { flex: 1 },
+    container: { flex: 1, paddingBottom: 24 },
 
     header: {
         height: 48,
@@ -243,6 +263,27 @@ const s = StyleSheet.create({
     },
     filterBtnText: { color: BLACK, fontWeight: "700" },
 
+    recContainer: {
+        flex: 1,
+    },
+    personalRec: {
+        padding: 20,
+        gap: 8,
+    },
+    pricedRec: {
+        padding: 20,
+        gap: 8,
+    },
+    recTitle: {
+        fontSize: 22,
+        fontWeight: "800",
+        color: "#111827",
+        margin: 10,
+    },
+    nick: {
+        color: "#F59E0B"
+    },
+
     // 드롭다운 패널
     dropdown: {
         overflow: "hidden",
@@ -277,16 +318,16 @@ const s = StyleSheet.create({
     },
     formRow: {
         flexDirection: "row",
-        alignItems: "flex-start",   
+        alignItems: "flex-start",
         gap: 10,
         marginTop: 10,
-        marginHorizontal: 12, 
+        marginHorizontal: 12,
     },
     formLabel: {
-        width: 44,                 
+        width: 44,
         fontWeight: "700",
         color: "#374151",
-        paddingTop: 10,             
+        paddingTop: 10,
     },
     formValueRow: {
         flex: 1,
@@ -299,7 +340,7 @@ const s = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         flexWrap: "wrap",
-        alignContent: "flex-start", 
+        alignContent: "flex-start",
     },
     chipBreak: {
         width: "100%",     // 한 줄 차단 → 다음 요소가 새 줄에서 시작

@@ -32,7 +32,7 @@ export default function MyPage() {
           <ListItem
             icon={<Ionicons name="heart-outline" size={25} color="#F59E0B" />}
             label="찜한 전통주"
-            onPress={() => router.push("/(tabs)/[username]/liked")}
+            onPress={() => router.push("/(tabs)/[username]/bookmark")}
           />
           <ListItem
             icon={<Ionicons name="chatbubble-ellipses-outline" size={25} color="#F59E0B" />}
