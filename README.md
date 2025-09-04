@@ -51,14 +51,12 @@ HabitAI/
 │ │ │ ├── taste_questions.json # 테스트 질문 및 선지 파일 </br>
 │ │ │ ├── testResult.tsx # 주류 프로필 설정 결과 화면 </br>
 │ │ ├── (tabs)/ # 탭 라우터 구조 </br>
-│ │ │ ├── (chatbot)/ <br>
-│ │ │ │ ├── index.tsx # 챗봇 탭 화면 </br>
+│ │ │ ├── (chatbot)/index.tsx # 챗봇 탭 화면 </br>
 │ │ │ ├── (festivals)/ <br>
 │ │ │ │ ├── festival_dummy.json # 축제 더미데이터 <br>
 │ │ │ │ ├── index.tsx # 축제 탭 화면 </br>
 │ │ │ ├── (home)/ <br>
-│ │ │ │ ├── review/ <br>
-│ │ │ │ │ ├──[reviewId].tsx # 개별 리뷰 화면 <br>
+│ │ │ │ ├── review/[reviewId].tsx # 개별 리뷰 화면 <br>
 │ │ │ │ ├── [id].tsx # 개별 전통주 상세페이지<br>
 │ │ │ │ ├── index.tsx # 어플 메인화면 <br>
 │ │ │ │ ├── reviewList.tsx # 개별 전통주 전체 리뷰 목록 <br>
@@ -76,10 +74,8 @@ HabitAI/
 │ │ ├── _layout.tsx <br>
 │ │ ├── index.tsx <br>
 │ ├── assets/ </br>
-│ │ ├── data/<br>
-│ │ │ ├── trad_alcohol.csv # 전통주 데이터셋 <br>
-│ │ ├── fonts/ <br>
-│ │ │ ├── BagelFatOne-Regular.ttf # 추가로 사용할 폰트 <br>
+│ │ ├── data/trad_alcohol.csv # 전통주 데이터셋 <br>
+│ │ ├── fonts/BagelFatOne-Regular.ttf # 추가로 사용할 폰트 <br>
 │ │ ├── images/ <br>
 │ │ │ ├── avatar.png # 챗봇 아바타 이미지 <br>
 │ │ │ ├── splash-icon.png # 스플래시 화면 이미지 <br>
