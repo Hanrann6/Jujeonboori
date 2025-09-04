@@ -12,7 +12,7 @@
 | 언어           | JavaScript (ES6+), Node.js v22.14.0 |
 | 런타임         | Node.js                            |
 | 백엔드 프레임워크 | Express v4.18.2                      |
-| 프론트엔드 프레임워크 | React Navtive                      |
+| 프론트엔드 프레임워크 | React Navtive, Expo                      |
 | 챗봇 API       | OpenAI GPT-4                       |
 | CSV 파서       | `csv-parser`                       |
 | HTTP 클라이언트 | `axios`                            |
@@ -39,6 +39,52 @@ HabitAI/
 │ ├── .env # 환경변수 파일 </br>
 │ ├── server.js #서버 실행 파일 </br>
 │ └── package.json </br>
+├── Client/ </br>
+│ ├── app/ </br>
+│ │ ├── (beforeLogin)/ # 로그인 화면 </br>
+│ │ │ ├── index.tsx # 온보딩 화면 </br>
+│ │ │ ├── login.tsx # 로그인 화면</br>
+│ │ │ ├── setNick.tsx # 닉네임 설정 화면 </br>
+│ │ │ ├── signUp.tsx # 회원가입 화면 </br>
+│ │ ├── (initialProfile)/ # 사용자 주류 프로필 설정 화면 </br>
+│ │ │ ├── index.tsx # 테스트 화면 </br>
+│ │ │ ├── taste_questions.json # 테스트 질문 및 선지 파일 </br>
+│ │ │ ├── testResult.tsx # 주류 프로필 설정 결과 화면 </br>
+│ │ ├── (tabs)/ # 탭 라우터 구조 </br>
+│ │ │ ├── (chatbot)/ <br>
+│ │ │ │ ├── index.tsx # 챗봇 탭 화면 </br>
+│ │ │ ├── (festivals)/ <br>
+│ │ │ │ ├── festival_dummy.json # 축제 더미데이터 <br>
+│ │ │ │ ├── index.tsx # 축제 탭 화면 </br>
+│ │ │ ├── (home)/ <br>
+│ │ │ │ ├── review/ <br>
+│ │ │ │ │ ├──[reviewId].tsx # 개별 리뷰 화면 <br>
+│ │ │ │ ├── [id].tsx # 개별 전통주 상세페이지<br>
+│ │ │ │ ├── index.tsx # 어플 메인화면 <br>
+│ │ │ │ ├── reviewList.tsx # 개별 전통주 전체 리뷰 목록 <br>
+│ │ │ ├── [username]/ # 마이페이지 <br>
+│ │ │ │ ├── bookmark.tsx # 찜한 전통주 화면</br>
+│ │ │ │ ├── delete.tsx # 회원탈퇴 화면 </br>
+│ │ │ │ ├── index.tsx # 마이페이지 메인 화면 </br>
+│ │ │ │ ├── myProfile.tsx # 사용자의 주류 취향 프로필 화면 </br>
+│ │ │ │ ├── review.tsx # 작성한 리뷰 화면</br>
+│ │ │ │ ├── setting.tsx # 설정 화면 <br>
+│ │ ├── components/ # 모달, 컴포넌트 <br>
+│ │ │ ├── AlcoholRecommend.tsx # 주류 추천 컴포넌트 <br>
+│ │ │ ├── ReviewModal.tsx # 리뷰 작성 모달 <br>
+│ │ │ ├── Weathercard.tsx # 날씨 렌더링 컴포넌트 <br>
+│ │ ├── _layout.tsx <br>
+│ │ ├── index.tsx <br>
+│ ├── assets/ </br>
+│ │ ├── data/<br>
+│ │ │ ├── trad_alcohol.csv # 전통주 데이터셋 <br>
+│ │ ├── fonts/ <br>
+│ │ │ ├── BagelFatOne-Regular.ttf # 추가로 사용할 폰트 <br>
+│ │ ├── images/ <br>
+│ │ │ ├── avatar.png # 챗봇 아바타 이미지 <br>
+│ │ │ ├── splash-icon.png # 스플래시 화면 이미지 <br>
+│ ├── app.json/ </br>
+│ ├── package.json/ </br>
 └── README.md </br>
 
 
@@ -50,7 +96,7 @@ HabitAI/
 |------------|-------------------|
 | 육란     | 백엔드 / AI 설계. gpt 챗봇, Recombee 추천 api |
 | 송연우     | 백엔드. 전통주 세부 정보 크롤링, 위치 기반 날씨 api |
-| 안유경     | 프론트엔드, 문서 작업 |
+| 안유경     | 프론트엔드, UI 설계, 문서 작업 |
 
 ---
 
