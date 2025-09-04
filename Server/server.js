@@ -19,13 +19,15 @@ const PORT = process.env.SERVER_PORT;
 app.use(cors());
 app.use(express.json());
 
-app.listen(PORT, () => {
-  console.log(`✅ 백엔드 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`백엔드 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
   console.log(
     `날씨 기반 추천 테스트 URL: http://localhost:${PORT}/recommend/weather?lat=37.5665&lon=126.9780`
   );
   console.log(`Chatbot URL: http://localhost:${PORT}/chat`);
-  console.log(`OAuth 테스트 URL: http://localhost:${PORT}/oauth/google?code_challenge=test123&code_challenge_method=S256`);
+  console.log(
+    `OAuth 테스트 URL: http://localhost:${PORT}/oauth/google?code_challenge=test123&code_challenge_method=S256`
+  );
   console.log(`User 프로필 API: http://localhost:${PORT}/users/me`);
   console.log(`축제 연결 테스트: http://localhost:${PORT}/festivals`);
 });
