@@ -22,7 +22,7 @@ type AlcoholRow = {
 type AlcoholItem = {
     docId?: string;
     name: string; category: string; abv: number;
-    sweetness: number; sourness: number; sparkling: number; body: number; carbonation: number;
+    sweetness: number; sourness: number; freshness: number; body: number; carbonation: number;
     ingredients?: string; volume?: string; price?: string; maker?: string; pairings?: string;
     imageUrl?: string; detailUrl?: string;
 };
@@ -37,7 +37,7 @@ function rowToItem(r: AlcoholRow): AlcoholItem {
         abv: Number(r["도수%"]) || 0,
         sweetness: Number(r["단맛"]) || 0,
         sourness: Number(r["신맛"]) || 0,
-        sparkling: Number(r["청량감"]) || 0,
+        freshness: Number(r["청량감"]) || 0,
         body: Number(r["바디감"]) || 0,
         carbonation: Number(r["탄산"]) || 0,
         ingredients: r["원재료"] || undefined,
@@ -209,7 +209,7 @@ export default function AlcoholDetailRoute() {
                 <ProfileCard>
                     <Dots label="단맛" value={item.sweetness} />
                     <Dots label="신맛" value={item.sourness} />
-                    <Dots label="청량감" value={item.sparkling} />
+                    <Dots label="청량감" value={item.freshness} />
                     <Dots label="바디감" value={item.body} />
                 </ProfileCard>
             </View>
@@ -343,7 +343,7 @@ function Dots({ label, value }: { label: string; value: number }) {
                     <View
                         key={i}
                         style={{
-                            width: 25, height: 25, borderRadius: 999, marginRight: 8,
+                            width: 20, height: 20, borderRadius: 999, marginRight: 8,
                             borderWidth: 1, borderColor: "lightgray",
                             backgroundColor: filled ? "#FFBF60" : "#FAFAFA",
                         }}

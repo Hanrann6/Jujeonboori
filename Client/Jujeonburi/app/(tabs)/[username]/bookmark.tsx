@@ -122,8 +122,8 @@ export default function BookmarkScreen() {
             data={data}
             keyExtractor={(m) => m.id}
             numColumns={2}
-            columnWrapperStyle={{ paddingHorizontal: 35, justifyContent: "space-between", marginBottom: 12 }}
-            contentContainerStyle={{ paddingBottom: 24, gap: 12 }}
+            columnWrapperStyle={{ paddingHorizontal: 45, justifyContent: "space-between", marginBottom: 12 }}
+            contentContainerStyle={{ paddingBottom: 24, gap: 8 }}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             renderItem={({ item }) => (
               <View style={styles.card}>
@@ -185,17 +185,16 @@ const styles = StyleSheet.create({
     color: "#F59E0B",
     fontWeight: "800"
   },
-  card: {
-    backgroundColor: "#fff",
+  card:{        
+    backgroundColor: '#fff',
     borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: "lightgray",
-    alignItems: "center",
-    height: 200,
-    width: "50%",
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    flexBasis: '48%',  
+    flexGrow: 0,  
     padding: 10,
-    position: "relative", 
-    
+    alignItems: 'center',
+    minHeight: 200,     
   },
   thumb: {
     width: 90,

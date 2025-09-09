@@ -37,7 +37,7 @@ type AlcoholItem = {
   name: string;
   sweetness: number;
   sourness: number;
-  sparkling: number;
+  freshness: number;
   body: number;
   abv: number;
   carbonation: number;
@@ -56,13 +56,13 @@ type AlcoholItem = {
 type TasteProfile = {
   sweetness: number;
   sourness: number;
-  sparkling: number;
+  freshness: number;
   body: number;
   abv: number;
   carbonation: number;
   abvTolerance?: number; //도수 허용 오차(defaultprofile에서 ±5%으로 설정해둠)
   categories?: string[]; //비워두면 전체에서 추천, 값이 있으면 해당 주종만 대상으로 추천
-  //sweetness | sourness | sparkling | body | abv | carbonation에 대한 가중치
+  //sweetness | sourness | freshness | body | abv | carbonation에 대한 가중치
   weights?: Partial<Record<keyof Omit<TasteProfile, "abvTolerance" | "categories" | "weights">, number>>;
 };
 
@@ -80,7 +80,7 @@ function rowToItem(r: AlcoholRow): AlcoholItem {
     name: String(r["제품명"]).trim(),
     sweetness: Number(r["단맛"]) || 0,
     sourness: Number(r["신맛"]) || 0,
-    sparkling: Number(r["청량감"]) || 0,
+    freshness: Number(r["청량감"]) || 0,
     body: Number(r["바디감"]) || 0,
     abv: Number(r["도수%"]) || 0,
     carbonation: Number(r["탄산"]) || 0,
@@ -117,7 +117,7 @@ function normalizeProfile(raw: any): TasteProfile {
   return {
     sweetness: Number(raw?.sweetness) ?? 0,
     sourness: Number(raw?.sourness) ?? 0,
-    sparkling: Number(raw?.sparkling) ?? 0,
+    freshness: Number(raw?.freshness) ?? 0,
     body: Number(raw?.body) ?? 0,
     abv: Number(raw?.abv) ?? 0,
     carbonation: Number(raw?.carbonation) ?? 0,
@@ -128,16 +128,16 @@ function normalizeProfile(raw: any): TasteProfile {
 }
 
 const DEFAULT_PROFILE: TasteProfile = {
-  sweetness: 3, sourness: 3, sparkling: 3, body: 3, abv: 6, carbonation: 1, abvTolerance: 5,
+  sweetness: 3, sourness: 3, freshness: 3, body: 3, abv: 6, carbonation: 1, abvTolerance: 5,
 };
 
 // 전통주 추천에 사용하는 스코어링
 function score(item: AlcoholItem, p: TasteProfile): number {
-  const W = { sweetness: 1, sourness: 1, sparkling: 1, body: 1, carbonation: 0, abv: 0.5, ...(p.weights || {}) };
+  const W = { sweetness: 1, sourness: 1, freshness: 1, body: 1, carbonation: 0, abv: 0.5, ...(p.weights || {}) };
   //각 축(단맛/신맛/청량감/바디감/탄산)의 차이가 0이면 5점(최고), 차이가 5면 0점(최저).
   const sSweet = W.sweetness * (5 - Math.abs(item.sweetness - p.sweetness));
   const sSour = W.sourness * (5 - Math.abs(item.sourness - p.sourness));
-  const sSpark = W.sparkling * (5 - Math.abs(item.sparkling - p.sparkling));
+  const sSpark = W.freshness * (5 - Math.abs(item.freshness - p.freshness));
   const sBody = W.body * (5 - Math.abs(item.body - p.body));
   const sCarb = W.carbonation * (5 - Math.abs(item.carbonation - p.carbonation));
   //도수의 경우, ±5% 오차 범위를 허용하고, 차이가 10% 이상이면 0점, 0~10% 이내면 0~5점으로 계산
@@ -182,7 +182,7 @@ async function toggleFav(id: string): Promise<boolean> {
   return !has;
 }
 
-// 초기 liked 확인
+// 초기 찜 확인
 async function isFav(id: string): Promise<boolean> {
   return (await getFavIds()).includes(id);
 }
@@ -226,6 +226,8 @@ function RecCard({
           color={liked ? "#F59E0B" : "#9CA3AF"}
         />
       </Pressable>
+
+      {/* 전통주 메타 정보 */}
       <Pressable onPress={onOpen} android_ripple={{ color: "#F3F4F6" }}>
         <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
         <Text style={styles.meta}>{item.category} · {item.abv}%</Text>

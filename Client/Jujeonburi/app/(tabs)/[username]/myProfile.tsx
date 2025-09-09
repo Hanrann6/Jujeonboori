@@ -6,7 +6,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-nati
 type Profile = {
     sweetness: number;   // 0~5
     sourness: number;    // 0~5
-    sparkling: number;   // 0~5
+    freshness: number;   // 0~5
     body: number;        // 0~5
     abv?: number;        // 도수(%). 예: 6 또는 16
     carbonation?: number;// 0(무탄산) | 1(탄산)
@@ -58,7 +58,7 @@ export default function MyProfile() {
         return {
             sweetness: clamp5(raw?.sweetness),
             sourness: clamp5(raw?.sourness),
-            sparkling: clamp5(raw?.sparkling),
+            freshness: clamp5(raw?.freshness),
             body: clamp5(raw?.body),
             abv: Number.isFinite(Number(raw?.abv)) ? Number(raw?.abv) : undefined,
             carbonation: Number.isFinite(Number(raw?.carbonation)) ? Number(raw?.carbonation) : undefined,
@@ -90,7 +90,7 @@ export default function MyProfile() {
     const rows: { key: keyof Profile; label: string }[] = [
         { key: "sweetness", label: "단맛" },
         { key: "sourness", label: "신맛" },
-        { key: "sparkling", label: "청량감" },
+        { key: "freshness", label: "청량감" },
         { key: "body", label: "바디감" },
     ];
 

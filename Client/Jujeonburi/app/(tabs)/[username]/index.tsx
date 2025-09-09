@@ -50,7 +50,7 @@ export default function MyPage() {
   );
 }
 
-/** 한 줄 항목 */
+// 마이페이지 목록 
 function ListItem({
   icon,
   label,

@@ -7,7 +7,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 type Profile = {
     sweetness: number;   
     sourness: number;    
-    sparkling: number;   
+    freshness: number;   
     body: number;        
     abv?: number;        // 도수 (선호도) 6(저도) 또는 16(고도)
     carbonation?: number; // 탄산 선호도 0(무탄산) 또는 1(탄산) 또는 undefined
@@ -47,20 +47,20 @@ export default function TestResult() {
             return {
                 sweetness: clamp5(p?.sweetness),
                 sourness: clamp5(p?.sourness),
-                sparkling: clamp5(p?.sparkling),
+                freshness: clamp5(p?.freshness),
                 body: clamp5(p?.body),
                 abv: toNumOrUndef(p?.abv),
                 carbonation: toNumOrUndef(p?.carbonation),
             };
         } catch {
-            return { sweetness: 0, sourness: 0, sparkling: 0, body: 0 };
+            return { sweetness: 0, sourness: 0, freshness: 0, body: 0 };
         }
     }, [profileParam]);
 
     const rows: { key: keyof Profile; label: string }[] = [
         { key: "sweetness", label: "단맛" },
         { key: "sourness", label: "신맛" },
-        { key: "sparkling", label: "청량감" },
+        { key: "freshness", label: "청량감" },
         { key: "body", label: "바디감" },];
 
     return (
