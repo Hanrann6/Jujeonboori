@@ -10,7 +10,7 @@ function BackBtn() {
             <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
     );
-  }
+}
 export default function HomeLayout() {
     return (
         <Stack>
@@ -24,6 +24,15 @@ export default function HomeLayout() {
                     headerShadowVisible: true,
                 }} />
             <Stack.Screen
+                name="searchResult"
+                options={{
+                    headerShown: true,
+                    title: "주전부리",
+                    headerTitleStyle: { fontFamily: "BagelFatOne",fontSize: 20,},
+                    headerTitleAlign: "center",
+                    headerShadowVisible: true,
+                }} />
+            <Stack.Screen
                 name="[id]"
                 options={{
                     headerShown: true,
@@ -32,9 +41,9 @@ export default function HomeLayout() {
                     headerTitleAlign: "center",
                     headerShadowVisible: true,
                     headerBackVisible: false,
-                    headerLeft: () => <BackBtn/>,
+                    headerLeft: () => <BackBtn />,
                 }} />
-                <Stack.Screen
+            <Stack.Screen
                 name="reviewList"
                 options={{
                     headerShown: true,
@@ -43,7 +52,7 @@ export default function HomeLayout() {
                     headerTitleAlign: "center",
                     headerShadowVisible: true,
                 }} />
-                <Stack.Screen
+            <Stack.Screen
                 name="review/[reviewId]"
                 options={{
                     headerShown: true,

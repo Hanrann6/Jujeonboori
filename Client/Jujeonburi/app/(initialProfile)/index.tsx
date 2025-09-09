@@ -9,7 +9,7 @@ import QUESTIONS from "./taste_questions.json"; // JSON이 같은 폴더에 있�
 type Effects = Partial<{
     sweetness: number;   // 단맛
     sourness: number;    // 신맛
-    sparkling: number;   // 청량
+    freshness: number;   // 청량
     body: number;        // 바디감
     abv: number;         // 도수
     carbonation: number; // 탄산
@@ -49,9 +49,9 @@ export default function TasteTest() {
         const profile: Required<Effects> = {
             sweetness: 3,
             sourness: 3,
-            sparkling: 3,
+            freshness: 3,
             body: 3,
-            abv: 6, // 기본 도수 6% (낮은 도수)
+            abv: 5, // 기본 도수 5% (낮은 도수)
             carbonation: 1
         };
 

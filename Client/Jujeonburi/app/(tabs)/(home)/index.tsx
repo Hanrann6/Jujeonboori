@@ -2,6 +2,10 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Asset } from "expo-asset";
+import * as FileSystem from "expo-file-system";
+import { router } from "expo-router";
+import Papa from "papaparse";
 import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
@@ -16,6 +20,7 @@ import {
     TextInput,
     View,
 } from "react-native";
+import csvAsset from "../../../assets/data/trad_alcohol.csv";
 import AlcoholRecommend from "../../components/AlcoholRecommend";
 import Weathercard from "../../components/Weathercard";
 
@@ -42,6 +47,28 @@ export default function HomeScreen() {
     const contentH = useRef(0);                             // 실제 컨텐츠 높이 저장
     const [backdropTop, setBackdropTop] = useState(0);
 
+    // 이름 검색 → 상세페이지 id(docId를 우선 쓰고, 없으면 이름 인코딩하도록) 매핑
+    const [nameIndex, setNameIndex] = useState<Map<string, string>>(new Map());
+
+    useEffect(() => {
+        (async () => {
+            const asset = Asset.fromModule(csvAsset);
+            await asset.downloadAsync();
+            const csv = await FileSystem.readAsStringAsync(asset.localUri!);
+            const parsed = Papa.parse<any>(csv, { header: true, dynamicTyping: true, skipEmptyLines: true });
+
+            const map = new Map<string, string>();
+            for (const row of parsed.data) {
+                const rawName = row?.["제품명"];
+                if (!rawName) continue;
+                const name = String(rawName).trim();
+                const id = row?.["docId"] != null ? String(row["docId"]) : encodeURIComponent(name);
+                map.set(name.toLowerCase(), id); // 소문자 키로 보관(대/소문자 무시)
+            }
+            setNameIndex(map);
+        })();
+    }, []);
+
     const toggle = () => {
         // 필터 적용 패널 높이 (열릴 때는 350, 닫힐 때는 0)
         const to = open ? 0 : 350;
@@ -56,13 +83,11 @@ export default function HomeScreen() {
     };
     // 필터 적용 패널에서 선택한 값들을 최종 반영하고 닫는 함수 
     const onApply = (f: Omit<Filters, "query">) => {
-        // 1) 검색창의 query(문자 입력값)와, 패널에서 받은 나머지 필터(f)를 합쳐 최종 객체 생성
+        // 검색창의 query(문자 입력값)와, 패널에서 받은 나머지 필터(f)를 합쳐 최종 객체 생성
         const next: Filters = { ...f, query: query.trim() };
-        // 2) 상태 업데이트 → 칩 표시, 리스트 필터링 등 렌더링에 사용 
-        setFilters(next);
-        // 3) 패널 닫기
+        
+        //패널 닫기 (부드럽게 닫히도록 애니메이션 적용) 
         setOpen(false);
-        // 4) 부드럽게 닫히도록 애니메이션 적용
         Animated.timing(animH, {
             toValue: 0,
             duration: 200,
@@ -70,7 +95,23 @@ export default function HomeScreen() {
             useNativeDriver: false,
         }).start();
         console.log("검색/필터 적용:", next);
+
+        router.push({
+            pathname: "/(tabs)/(home)/searchResult",
+            params: {
+              q: next.query || "",
+              min: next.minPrice != null ? String(next.minPrice) : "",
+              max: next.maxPrice != null ? String(next.maxPrice) : "",
+              // 배열은 JSON 문자열로 넘기면 안전
+              cats: JSON.stringify(next.categories || []),
+            },
+        });
     };
+    const goSearch = React.useCallback(() => {
+        const q = query.trim();
+        if (!q) return;
+        router.push({ pathname: "/(tabs)/(home)/searchResult", params: { q } });
+    }, [query]);
     const [nickname, setNickname] = useState<string>("");
 
     useEffect(() => {
@@ -91,7 +132,7 @@ export default function HomeScreen() {
                     {/* 검색창 */}
                     <View style={s.searchRow}>
                         <View style={s.searchBox}>
-                            <Ionicons name="search" size={18} color={MUTED} />
+                            <Ionicons name="search" size={20} color={MUTED} />
                             <TextInput
                                 value={query}
                                 onChangeText={setQuery}
@@ -99,8 +140,12 @@ export default function HomeScreen() {
                                 placeholderTextColor="#9CA3AF"
                                 style={s.searchInput}
                                 returnKeyType="search"
-                                onSubmitEditing={() => onApply({ ...filters })}
+                                onSubmitEditing={goSearch}
                             />
+                            <Ionicons name="close-circle-outline" 
+                            size={20} 
+                            color={MUTED} 
+                            onPress={() => setQuery("")} />
                         </View>
                         <Pressable style={s.filterBtn} onPress={toggle}>
                             <Text style={s.filterBtnText}>필터</Text>
@@ -218,7 +263,6 @@ function FilterContent({
 const s = StyleSheet.create({
     safe: { flex: 1, backgroundColor: "#fff" },
     container: { flex: 1, paddingBottom: 24 },
-
     header: {
         height: 48,
         paddingHorizontal: 12,
@@ -234,7 +278,6 @@ const s = StyleSheet.create({
         color: BLACK,
         ...(Platform.OS === "android" ? { includeFontPadding: false } : null),
     },
-
     searchRow: { flexDirection: "row", alignItems: "center", gap: 8, padding: 20, paddingBottom: 8 },
     searchBox: {
         flex: 1,
@@ -249,7 +292,6 @@ const s = StyleSheet.create({
         alignItems: "center",
     },
     searchInput: { flex: 1, height: "100%", fontSize: 14, color: BLACK },
-
     filterBtn: {
         height: 40,
         paddingHorizontal: 10,

@@ -70,7 +70,7 @@
                 "id": "A",
                 "text": "청량하고\n탄산이 있는 술",
                 "effects": {
-                    "sparkling": 1,
+                    "freshness": 1,
                     "carbonation": 0
                 }
             },
@@ -78,7 +78,7 @@
                 "id": "B",
                 "text": "부드럽고\n탄산이 적은(없는) 술",
                 "effects": {
-                    "sparkling": -1,
+                    "freshness": -1,
                     "carbonation": -1
                 }
             }
@@ -93,7 +93,7 @@
                 "text": "흑맥주, 레드 와인처럼\n묵직하고 진한 맛",
                 "effects": {
                     "body": 1,
-                    "sparkling": -1
+                    "freshness": -1
                 }
             },
             {
@@ -101,7 +101,7 @@
                 "text": "라거, 화이트와인처럼\n가볍고 산뜻한 맛",
                 "effects": {
                     "body": -1,
-                    "sparkling": 1
+                    "freshness": 1
                 }
             }
         ]
@@ -112,16 +112,16 @@
         "options": [
             {
                 "id": "A",
-                "text": "도수가 낮은 술\n(약 4~6도)",
+                "text": "도수가 낮은 술\n(5~10도)",
                 "effects": {
                     "abv": 0
                 }
             },
             {
                 "id": "B",
-                "text": "도수가 높은 술\n(16도 이상)",
+                "text": "도수가 높은 술\n(10도 이상)",
                 "effects": {
-                    "abv": 11
+                    "abv": 6
                 }
             }
         ]
