@@ -3,7 +3,8 @@ import multer from "multer";
 import path from "path";
 import { preprocessImage } from "../ocr/service/preprocessor.js";
 import { runOCR } from "../ocr/service/ocr.js";
-import { analyzeLiquorInfo } from "../ocr/openai/analyze.js";
+//import { analyzeLiquorInfo } from "../ocr/openai/analyze.js";
+import { analyzeLiquorInfo } from "../ocr/openai/analyze-gemini.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
@@ -26,13 +27,16 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
 
     await preprocessImage(originalPath, processedPath);
     const ocrText = await runOCR(processedPath);
-    // gpt 임시 주석 처리
-    // const gptResponse = await analyzeLiquorInfo(ocrText);
+    //gpt 임시 주석 처리
+    //const gptResponse = await analyzeLiquorInfo(ocrText);
+    const gptResponse = await analyzeLiquorInfo(ocrText);
 
-    // const parsed = JSON.parse(gptResponse);
-    // res.json(parsed);
+    // Gemini 응답 예: ```json\n{...}\n```
+    const cleaned = gptResponse.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(cleaned);
+    res.json(parsed);
 
-    // GPT 호출 생략하고 바로 텍스트 응답
+    //GPT 호출 생략하고 바로 텍스트 응답
     return res.json({ text: ocrText });
   } catch (err) {
     console.error(err);
