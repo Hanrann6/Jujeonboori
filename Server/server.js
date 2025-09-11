@@ -10,7 +10,8 @@ import userRoutes from "./routes/user.routes.js";
 import alcoholRoutes from "./routes/alcohol.routes.js";
 import festivalRoutes from "./routes/festival.routes.js";
 import { getWeatherData } from './weather-api/weatherService.js';
-import { recommendItemsBasedOnWeather } from './recommend/recombee/recombeeWeatherTest.js';
+import preferencesRouter from "./routes/preference.routes.js";
+//import { recommendItemsBasedOnWeather } from './recommend/recombee/recombeeWeatherTest.js';
 import { askGPT, loadCSVData } from "./chatbot/chat.js";
 
 const app = express();
@@ -53,6 +54,8 @@ app.use("/users", userRoutes);
 app.use("/alcohols", alcoholRoutes);
 // 축제 라우터
 app.use("/festivals", festivalRoutes);
+// 선호도 테스트 라우터
+app.use("/preference", preferencesRouter);
 
 app.get('/weather-info', async (req, res) => {
     const lat = req.query.lat;
