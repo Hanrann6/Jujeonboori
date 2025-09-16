@@ -1,0 +1,706 @@
+index,alcoholName,sweetness,sourness,freshness,body,degree,sparkling,alcoholType,keyword,volume,price,imageURL,docId
+0,1000억 막걸리 프리바이오,3,4,3,3,5,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 밀,750ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040729-1000%EC%96%B5%20%EB%A7%89%EA%B1%B8%EB%A6%AC%20%ED%94%84%EB%A6%AC%EB%B0%94%EC%9D%B4%EC%98%A4_main.png,6040729
+1,1000억 유산균막걸리,3,5,5,3,5,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 밀  저도수,750ml,3200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040728-1000%EC%96%B5%20%EC%9C%A0%EC%82%B0%EA%B7%A0%EB%A7%89%EA%B1%B8%EB%A6%AC_main.png,6040728
+2,1932 새싹땅콩 햅쌀막걸리,2,2,3,5,6,0,탁주,청량감 바디감     탁주 쌀 땅콩,900ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595217-1932%20%EC%83%88%EC%8B%B9%EB%95%85%EC%BD%A9%20%ED%96%85%EC%8C%80%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3595217
+3,1932 새싹땅콩 흑미막걸리,3,1,1,4,6,0,탁주,단맛   바디감     탁주 쌀 땅콩,900ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595216-1932%20%EC%83%88%EC%8B%B9%EB%95%85%EC%BD%A9%20%ED%9D%91%EB%AF%B8%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3595216
+4,33JU,3,,,1,18,0,증류주,향기 단맛        증류주 꿀 삼,200ml,23000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598716-33JU_main.jpg,6598716
+5,52C,3,,,2,17.5,0,증류주,향기 단맛        증류주 쌀,500ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598734-52C_main.png,6598734
+6,DMZ 240km,2,,,3,25,0,기타주류,바디감     기타주류 꿀 버섯,450ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595290-DMZ%20240km450ml_main.JPG,3595290
+7,G12 골디락스,2,2,2,3,12,0,탁주,바디감     탁주 쌀 찹쌀 밀  무감미료,500ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598732-G12%20%EA%B3%A8%EB%94%94%EB%9D%BD%EC%8A%A4_main.jpg,6598732
+8,The 찾을수록 시리즈,4,2,3,2,16,0,과실주,단맛  청량감      과실주 사과,360ml,9000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681200-The%20%EC%B0%BE%EC%9D%84%EC%88%98%EB%A1%9D%20%EC%8B%9C%EB%A6%AC%EC%A6%88_main.jpg,5681200
+9,가덕 순쌀 막걸리,3,3,3,3,6,1,탁주,단맛 신맛 청량감 바디감  담백  탄산 탁주 쌀,750ml,13500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804461-%EA%B0%80%EB%8D%95%20%EC%88%9C%EC%8C%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5804461
+10,가을빛 레드와인,2,3,3,2,14,0,과실주,신맛 청량감      과실주 포도,750ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804502-%EA%B0%80%EC%9D%84%EB%B9%9B%20%EB%A0%88%EB%93%9C%EC%99%80%EC%9D%B8_main.jpg,5804502
+11,가평잣생막걸리,2,2,3,3,6,0,탁주,청량감 바디감     탁주 쌀,750ml,1450,,legacy_11
+12,감그린 레귤러,3,3,3,2,12,0,과실주,단맛 신맛 청량감      과실주  이색전통주,750ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681174-%EA%B0%90%EA%B7%B8%EB%A6%B0%20%EB%A0%88%EA%B7%A4%EB%9F%AC_main.jpg,5681174
+13,감그린 스페셜,3,3,3,3,12,0,과실주,단맛 신맛 청량감 바디감     과실주  이색전통주,750ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681175-%EA%B0%90%EA%B7%B8%EB%A6%B0%20%EC%8A%A4%ED%8E%98%EC%85%9C_main.jpg,5681175
+14,감그린 아이스와인,4,2,2,4,10,0,과실주,단맛   바디감     과실주  이색전통주,375ml,89000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681179-%EA%B0%90%EA%B7%B8%EB%A6%B0%20%EC%95%84%EC%9D%B4%EC%8A%A4%EC%99%80%EC%9D%B8_main.jpg,5681179
+15,감 보드카,,,,3,32,0,증류주,바디감 목넘김    증류주,375ml,14000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804452-%EA%B0%90%20%EB%B3%B4%EB%93%9C%EC%B9%B4_main.jpg,5804452
+16,감사,2,2,,2,14,0,약주/청주,목넘김 담백   약주/청주 쌀  선물,375ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551564-%EA%B0%90%EC%82%AC_main.jpg,3551564
+17,감아락25,2,,,2,25,0,증류주,증류주 쌀  가을,500ml,26000,,legacy_17
+18,감악산 머루주,4,4,3,3,12,0,과실주,단맛 신맛 청량감 바디감     과실주 머루,360ml,28000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040721-%EA%B0%90%EC%95%85%EC%82%B0%20%EB%A8%B8%EB%A3%A8%EC%A3%BC_main.jpg,6040721
+19,감이슬,,,,2,23,0,증류주,증류주  과일류,375ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804451-%EA%B0%90%EC%9D%B4%EC%8A%AC_main.jpg,5804451
+20,감자술 13%,3,2,3,2,13,0,약주/청주,단맛  청량감      약주/청주 감자  선물,700ml,14000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804435-%EA%B0%90%EC%9E%90%EC%88%A0%2013_main.jpg,5804435
+21,감홍로 백자,3,,,4,40,0,증류주,향기 단맛   바디감     증류주 쌀 약재,700ml,75000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595219-%EA%B0%90%ED%99%8D%EB%A1%9C%20%EB%B0%B1%EC%9E%90700ml_main.jpg,3595219
+22,감홍로 청자,3,,,4,40,0,증류주,향기 단맛   바디감     증류주 쌀 약재,700ml,90000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595220-%EA%B0%90%ED%99%8D%EB%A1%9C%20%EC%B2%AD%EC%9E%90700ml_main.jpg,3595220
+23,강소주,,,,3,50,0,증류주,향기    바디감     증류주 쌀  소용량,"1,800ml",11000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681176-%EA%B0%95%EC%86%8C%EC%A3%BC_main.jpg,5681176
+24,강쇠,2,2,1,4,13,0,약주/청주,바디감     약주/청주 쌀 오가피,370ml,2500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595293-%EA%B0%95%EC%87%A0370ml_main.JPG,3595293
+25,걍즐겨,3,4,3,3,8,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 찹쌀  이색전통주,600ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040762-%EA%B1%8D%EC%A6%90%EA%B2%A8_main.jpg,6040762
+26,겨울소주 25,,,,4,25,0,증류주,향기    바디감 목넘김    증류주  겨울,360ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040725-%EA%B2%A8%EC%9A%B8%EC%86%8C%EC%A3%BC%2025_main.jpg,6040725
+27,경기전,2,3,4,2,5,0,기타주류,신맛 청량감      기타주류 보리  탄산,1000ml,27000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804493-%EA%B2%BD%EA%B8%B0%EC%A0%84_main.jpg,5804493
+28,계룡백일주 12년,3,,,4,40,0,기타주류,향기 단맛   바디감     기타주류 쌀 찹쌀 오미자 꽃 솔잎,600ml,150000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595224-%EA%B3%84%EB%A3%A1%EB%B0%B1%EC%9D%BC%EC%A3%BC%2012%EB%85%84600ml_main.jpg,3595224
+29,계룡백일주16,1,1,1,1,16,0,약주/청주,약주/청주 쌀 찹쌀 오미자 꽃 솔잎,700ml,18500,,legacy_29
+30,계룡백일주30,2,,,3,30,0,기타주류,바디감     기타주류 쌀 찹쌀 오미자 꽃 솔잎,400ml,20000,,legacy_30
+31,계룡백일주40,3,,,3,40,0,기타주류,향기 단맛   바디감     기타주류 쌀 찹쌀 오미자 꽃 솔잎,600ml,40000,,legacy_31
+32,계룡산 산삼주 금수강산 21%,,,,2,21,0,증류주,증류주 삼  삼(蔘)류,740ml,110000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681162-%EA%B3%84%EB%A3%A1%EC%82%B0%20%EC%82%B0%EC%82%BC%EC%A3%BC%20%EA%B8%88%EC%88%98%EA%B0%95%EC%82%B0%2021_main.jpg,5681162
+33,계룡산 산삼주 금수강산 40%,,,,3,40,0,증류주,향기    바디감 목넘김    증류주 삼  삼(蔘)류,740ml,150000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681170-%EA%B3%84%EB%A3%A1%EC%82%B0%20%EC%82%B0%EC%82%BC%EC%A3%BC%20%EA%B8%88%EC%88%98%EA%B0%95%EC%82%B0%2040_main.jpg,5681170
+34,고구마 아락,2,,,3,40,0,증류주,향기    바디감     증류주 보리 고구마,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595276-%EA%B3%A0%EA%B5%AC%EB%A7%88%20%EC%95%84%EB%9D%BD500ml_main.jpg,3595276
+35,고도리 레드와인 스위트,3,3,2,3,12,0,과실주,단맛 신맛  바디감     과실주 포도 머루,750ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681145-%EA%B3%A0%EB%8F%84%EB%A6%AC%20%EB%A0%88%EB%93%9C%EC%99%80%EC%9D%B8%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,5681145
+36,고도리 복숭아와인,4,3,3,2,6.5,0,과실주,단맛 신맛 청량감    탄닌감  과실주 복숭아  이색전통주,750ml,32000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681142-%EA%B3%A0%EB%8F%84%EB%A6%AC%20%EB%B3%B5%EC%88%AD%EC%95%84%EC%99%80%EC%9D%B8_main.jpg,5681142
+37,고도리 화이트와인 드라이,2,3,3,2,10.5,0,과실주,신맛 청량감      과실주 포도  저도수,750ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681146-%EA%B3%A0%EB%8F%84%EB%A6%AC%20%ED%99%94%EC%9D%B4%ED%8A%B8%EC%99%80%EC%9D%B8%20%EB%93%9C%EB%9D%BC%EC%9D%B4_main.jpg,5681146
+38,고도리 화이트와인 스위트,4,3,3,2,10.5,0,과실주,단맛 신맛 청량감      과실주 포도  저도수,750ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681143-%EA%B3%A0%EB%8F%84%EB%A6%AC%20%ED%99%94%EC%9D%B4%ED%8A%B8%EC%99%80%EC%9D%B8%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,5681143
+39,고소리술,2,0,3,3,40,0,증류주,청량감 바디감     증류주 쌀  선물,375ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551507-%EA%B3%A0%EC%86%8C%EB%A6%AC%EC%88%A0_main.jpg,3551507
+40,고운달 백자,,,,5,52,0,증류주,향기    바디감 목넘김    증류주 오미자  선물,200ml,"180,000",https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681160-%EA%B3%A0%EC%9A%B4%EB%8B%AC%20%EB%B0%B1%EC%9E%90_main.jpg,5681160
+41,고운달 오크,,,,5,52,0,증류주,향기    바디감 목넘김    증류주 오미자  선물,200ml,"180,000",https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681141-%EA%B3%A0%EC%9A%B4%EB%8B%AC%20%EC%98%A4%ED%81%AC_main.jpg,5681141
+42,고창선운산 땡큐복분자주,3,1,3,2,13,0,과실주,단맛  청량감      과실주 복분자  소용량,300ml,2500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681153-%EA%B3%A0%EC%B0%BD%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC300_main.jpg,5681153
+43,고창선운산 땡큐블루베리주,2,2,2,2,13,0,과실주,과실주 베리  소용량,300ml,2000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681165-%EA%B3%A0%EC%B0%BD%EC%84%A0%EC%9A%B4%EC%82%B0%20%EB%95%A1%ED%81%90%EB%B8%94%EB%A3%A8%EB%B2%A0%EB%A6%AC%EC%A3%BC_main.jpg,5681165
+44,고창선운산 복분자주 특1호,3,1,3,2,15,0,과실주,단맛  청량감      과실주 복분자,"1,800ml",27000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681152-%EA%B3%A0%EC%B0%BD%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC1800_main.jpg,5681152
+45,공주애 오디와인,3,2,3,1,15,0,과실주,단맛  청량감      과실주 오디,375ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681172-%EA%B3%B5%EC%A3%BC%EC%95%A0%20%EC%98%A4%EB%94%94%EC%99%80%EC%9D%B8_main.jpg,5681172
+46,구기홍주 14,3,1,2,3,14,0,약주/청주,단맛   바디감  담백   약주/청주 쌀 구기자  선물,360ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040726-%EA%B5%AC%EA%B8%B0%ED%99%8D%EC%A3%BC%2014_main.jpg,6040726
+47,구름을 벗삼아,3,3,3,3,6,1,탁주,단맛 신맛 청량감 바디감    탄산 탁주 쌀 찹쌀  무감미료,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551542-%EA%B5%AC%EB%A6%84%EC%9D%84%20%EB%B2%97%EC%82%BC%EC%95%84_main.jpg,3551542
+48,귀감,,,,3,25,0,증류주,향기    바디감     증류주 귤  과일류,350ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804515-%EA%B7%80%EA%B0%90_main.jpg,5804515
+49,그랑꼬또 레드와인,3,3,3,2,12,0,과실주,단맛 신맛 청량감      과실주 포도,750ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040772-%EA%B7%B8%EB%9E%91%EA%BC%AC%EB%98%90%20%EB%A0%88%EB%93%9C%EC%99%80%EC%9D%B8_main.jpg,6040772
+50,그랑꼬또 M56,2,3,1,3,12,0,과실주,신맛  바디감     과실주 포도  홈술,750ml,21000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595230-%EA%B7%B8%EB%9E%91%EA%BC%AC%EB%98%90%20M56_main.jpg,3595230
+51,그랑꼬또 M5610,4,3,3,2,10,0,과실주,단맛 신맛 청량감      과실주 포도,750ml,56000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040773-%EA%B7%B8%EB%9E%91%EA%BC%AC%EB%98%90%20M5610_main.jpg,6040773
+52,그랑꼬또 로제와인,2,3,1,3,12,0,과실주,신맛  바디감     과실주 포도  홈술,750ml,21000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595229-%EA%B7%B8%EB%9E%91%EA%BC%AC%EB%98%90%20%EB%A1%9C%EC%A0%9C%EC%99%80%EC%9D%B8_main.jpg,3595229
+53,그랑꼬또 청수,2,1,3,4,12,0,과실주,청량감 바디감     과실주 포도  파티,750ml,60000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595228-%EA%B7%B8%EB%9E%91%EA%BC%AC%EB%98%90%20%EC%B2%AD%EC%88%98750ml_main.jpg,3595228
+54,그랑꼬또 화이트와인,3,3,3,2,12,0,과실주,단맛 신맛 청량감      과실주 포도,750ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040782-%EA%B7%B8%EB%9E%91%EA%BC%AC%EB%98%90%20%ED%99%94%EC%9D%B4%ED%8A%B8%EC%99%80%EC%9D%B8_main.jpg,6040782
+55,그랑티그르CE2002,3,2,2,3,12,0,과실주,단맛   바디감     과실주 포도,750ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804467-%EA%B7%B8%EB%9E%91%ED%8B%B0%EA%B7%B8%EB%A5%B4CE2002_main.jpg,5804467
+56,그랑티그르M1988,3,3,2,3,12,0,과실주,단맛 신맛  바디감     과실주 포도 오미자,750ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804466-%EA%B7%B8%EB%9E%91%ED%8B%B0%EA%B7%B8%EB%A5%B4M1988_main.jpg,5804466
+57,그랑티그르 S1974,1,3,2,4,12,0,과실주,신맛  바디감     과실주 포도,750ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595309-%EA%B7%B8%EB%9E%91%ED%8B%B0%20%EA%B7%B8%EB%A5%B4%20S1974375ml_main.JPG,3595309
+58,금산인삼주,1,4,2,4,12.5,0,약주/청주,신맛  바디감     약주/청주 쌀 삼,375ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595233-%EA%B8%88%EC%82%B0%EC%9D%B8%EC%82%BC%EC%A3%BC375ml_main.jpg,3595233
+59,금산인삼주수삼단본23,1,,,3,23,0,증류주,향기    바디감     증류주 쌀 삼,720ml,32000,,legacy_59
+60,금산인삼주수삼단본43,1,,,4,43,0,증류주,향기    바디감     증류주 쌀 삼  삼(蔘)류,720ml,42000,,legacy_60
+61,금이산농원복숭아와인,3,2,2,3,12,0,과실주,단맛   바디감   탄닌감  과실주 복숭아,500ml,20000,,legacy_61
+62,금이산농원사과와인,3,2,2,3,12,0,과실주,단맛   바디감     과실주 사과,500ml,20000,,legacy_62
+63,금이산농원오가피와인,3,2,2,3,12,0,과실주,단맛   바디감     과실주 오가피  이색전통주,500ml,20000,,legacy_63
+64,금정산성 막걸리,1,3,2,3,8,0,탁주,신맛  바디감     탁주 밀  홈술,750ml,1900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595235-%EA%B8%88%EC%A0%95%EC%82%B0%EC%84%B1%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.jpg,3595235
+65,기다림 16,2,4,2,3,9,0,탁주,신맛  바디감     탁주 쌀 찹쌀  무감미료,750ml,11000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804487-%EA%B8%B0%EB%8B%A4%EB%A6%BC%2016_main.png,5804487
+66,기다림 25,2,4,2,2,8,0,탁주,신맛       탁주 쌀 찹쌀  무감미료,750ml,9900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804496-%EA%B8%B0%EB%8B%A4%EB%A6%BC%2025_main.jpg,5804496
+67,기다림 34,3,3,3,3,12,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 찹쌀  무감미료,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804495-%EA%B8%B0%EB%8B%A4%EB%A6%BC%2034_main.png,5804495
+68,기다림 맑은술,4,3,3,3,15,0,약주/청주,단맛 신맛 청량감 바디감     약주/청주 쌀 찹쌀  홈술,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804494-%EA%B8%B0%EB%8B%A4%EB%A6%BC%20%EB%A7%91%EC%9D%80%EC%88%A0_main.jpg,5804494
+69,김천과하주16,1,2,1,2,16,0,약주/청주,약주/청주 쌀 찹쌀,700ml,20000,,legacy_69
+70,김천과하주23,1,,,2,23,0,기타주류,기타주류 쌀  고문헌,700ml,22000,,legacy_70
+71,김포 막걸리,2,2,3,1,6,0,탁주,청량감      탁주 쌀,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681229-%EA%B9%80%ED%8F%AC%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681229
+72,김포별주,3,1,1,3,13,0,약주/청주,단맛   바디감     약주/청주 쌀,500ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681230-%EA%B9%80%ED%8F%AC%EB%B3%84%EC%A3%BC_main.jpg,5681230
+73,김포약주,1,2,1,2,11,0,약주/청주,약주/청주 밀  저도수,750ml,10000,,legacy_73
+74,김포예주,2,1,1,4,13,0,약주/청주,바디감     약주/청주 쌀,750ml,15000,,legacy_74
+75,김포특주,4,4,2,2,15,0,약주/청주,단맛 신맛    담백   약주/청주 쌀,375ml,3000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681215-%EA%B9%80%ED%8F%AC%ED%8A%B9%EC%A3%BC_main.jpg,5681215
+76,까메오 막걸리,3,1,2,4,6,0,탁주,단맛   바디감     탁주 쌀  혼술,550ml,5000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551561-%EA%B9%8C%EB%A9%94%EC%98%A4%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551561
+77,나루 생막걸리 11.5%,4,1,1,5,11.5,0,탁주,단맛   바디감     탁주 쌀  파티,500ml,11000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040765-%EB%82%98%EB%A3%A8%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC%20115_main.jpg,6040765
+78,나루 생막걸리 6%,3,3,2,2,6,0,탁주,단맛 신맛       탁주 쌀  파티,935ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040767-%EB%82%98%EB%A3%A8%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC%206_main.JPG,6040767
+79,남산애 레드와인,3,3,3,2,14,0,과실주,단맛 신맛 청량감      과실주 포도,750ml,45000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804503-%EB%82%A8%EC%82%B0%EC%95%A0%20%EB%A0%88%EB%93%9C%EC%99%80%EC%9D%B8_main.jpg,5804503
+80,남산애 포트와인,3,3,2,3,18.5,0,과실주,단맛 신맛  바디감     과실주 포도,750ml,55000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804512-%EB%82%A8%EC%82%B0%EC%95%A0%20%ED%8F%AC%ED%8A%B8%EC%99%80%EC%9D%B8_main.jpg,5804512
+81,내장산복분자주,1,3,,2,16,0,과실주,신맛   목넘김    과실주 복분자,360ml,6000,,legacy_81
+82,녹고의 눈물,2,,,3,16,0,기타주류,바디감     기타주류 오가피,500ml,23000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595238-%EB%85%B9%EA%B3%A0%EC%9D%98%EB%88%88%EB%AC%BC700ml_main.jpg,3595238
+83,녹천소곡화주,2,,,3,41,0,기타주류,향기    바디감     기타주류 쌀 찹쌀,500ml,22000,,legacy_83
+84,녹천한산소곡주살균,4,1,1,2,16,0,약주/청주,단맛        약주/청주 쌀 찹쌀,750ml,12000,,legacy_84
+85,녹천한산소곡주생,4,1,1,2,16,0,약주/청주,단맛        약주/청주 쌀 찹쌀,750ml,12000,,legacy_85
+86,녹파주,3,2,2,3,15,0,약주/청주,단맛   바디감  담백   약주/청주 쌀 찹쌀  선물,375ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681220-%EB%85%B9%ED%8C%8C%EC%A3%BC_main.jpg,5681220
+87,뉴트로,4,4,4,3,8,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 찹쌀,600ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040761-%EB%89%B4%ED%8A%B8%EB%A1%9C_main.jpg,6040761
+88,느린마을 막걸리,3,1,3,2,6,0,탁주,단맛  청량감      탁주 쌀  무감미료,750ml,2300,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551544-%EB%8A%90%EB%A6%B0%EB%A7%88%EC%9D%84%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551544
+89,능이주,1,3,1,2,13,0,약주/청주,신맛    담백   약주/청주 쌀  홈술,375ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681161-%EB%8A%A5%EC%9D%B4%EC%A3%BC_main.jpg,5681161
+90,니모메,2,1,1,2,11,0,약주/청주,담백   약주/청주 쌀 귤  파티,375ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681150-%EB%8B%88%EB%AA%A8%EB%A9%94_main.jpg,5681150
+91,다래와인 3004,2,2,1,2,8,0,과실주,과실주 다래  저도수,375ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595325-%EB%8B%A4%EB%9E%98%EC%99%80%EC%9D%B8%203004375ml_main.JPG,3595325
+92,다래와인 7004D,1,4,2,2,12,0,과실주,신맛       과실주 다래,750ml,28000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595327-%EB%8B%A4%EB%9E%98%EC%99%80%EC%9D%B8%207004D750ml_main.JPG,3595327
+93,다래와인 7004S,2,2,1,4,8,0,과실주,바디감     과실주 다래  저도수,750ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595326-%EB%8B%A4%EB%9E%98%EC%99%80%EC%9D%B8%207004S750ml_main.JPG,3595326
+94,다랭이팜생막걸리,1,4,4,4,6,0,탁주,신맛 청량감 바디감     탁주 쌀  무감미료,750ml,4000,,legacy_94
+95,다랭이팜 생 막걸리 (흑미),1,5,2,2,6,0,탁주,신맛       탁주,750ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551536-%EB%8B%A4%EB%9E%AD%EC%9D%B4%ED%8C%9C%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC%20%ED%9D%91%EB%AF%B8_main.jpg,3551536
+96,다랭이팜 유자 막걸리,1,5,2,4,6,0,탁주,신맛  바디감     탁주,750ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551535-%EB%8B%A4%EB%9E%AD%EC%9D%B4%ED%8C%9C%20%EC%9C%A0%EC%9E%90%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551535
+97,담솔,3,0,3,3,40,0,기타주류,단맛  청량감 바디감     기타주류 쌀,500ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551509-%EB%8B%B4%EC%86%94%2040_main.jpg,3551509
+98,담양 죽력고,,,,3,25,0,증류주,향기    바디감 목넘김    증류주 쌀 생강 계피  고문헌,350ml,13000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040748-%EB%8B%B4%EC%96%91%EC%A3%BD%EB%A0%A5%EA%B3%A0_main.jpg,6040748
+99,담은,3,1,1,4,6,0,탁주,단맛   바디감     탁주 쌀  선물,750ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595215-%EB%8B%B4%EC%9D%80_main.jpg,3595215
+100,당당하리,4,2,2,2,15,0,과실주,단맛        과실주 쌀 복분자 사과 밀 감초  베리류,375ml,15333,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598730-%EB%8B%B9%EB%8B%B9%ED%95%98%EB%A6%AC_main.png,6598730
+101,대관령 복분자주,1,2,1,4,16,0,과실주,바디감     과실주 복분자,400ml,13000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595319-%EB%8C%80%EA%B4%80%EB%A0%B9%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC400ml_main.JPG,3595319
+102,대대포생막걸리,2,1,3,2,6,0,탁주,청량감      탁주 꿀  선물,750ml,3500,,legacy_102
+103,대윤 가야곡 왕주,2,2,1,3,13,0,약주/청주,바디감     약주/청주 쌀  홈술,300ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595249-%EB%8C%80%EC%9C%A4%20%EA%B0%80%EC%95%BC%EA%B3%A1%20%EC%99%95%EC%A3%BC300ml_main.jpg,3595249
+104,대잎 생동동주,1,2,3,2,6,0,탁주,청량감      탁주 쌀,1700ml,2500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036281-%EB%8C%80%EC%9E%8E%20%EC%83%9D%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,6036281
+105,대작 생막걸리,4,3,3,3,6,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀,750ml,2000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040789-%EB%8C%80%EC%9E%91%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040789
+106,대통대잎술,1,1,,2,15,0,약주/청주,목넘김    약주/청주 쌀 구기자 솔잎  파티,700ml,16000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551528-%EB%8C%80%ED%86%B5%EB%8C%80%EC%9E%8E%EC%88%A0%20%EC%8B%AD%EC%98%A4%EC%95%BC_main.jpg,3551528
+107,도구 막걸리,2,2,3,3,6,0,탁주,청량감 바디감     탁주 쌀 밀,750ml,1666,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804505-%EB%8F%84%EA%B5%AC%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5804505
+108,도깨비술 11%,4,4,3,5,11,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀  파티,750ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040708-%EB%8F%84%EA%B9%A8%EB%B9%84%EC%88%A0%2011_main.jpg,6040708
+109,도깨비술 7%,3,3,4,3,7,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀  파티,750ml,8000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040710-%EB%8F%84%EA%B9%A8%EB%B9%84%EC%88%A0%207_main.jpg,6040710
+110,도깨비술 9%,3,3,3,4,9,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀  파티,750ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040709-%EB%8F%84%EA%B9%A8%EB%B9%84%EC%88%A0%209_main.jpg,6040709
+111,도로시 머루주,4,4,3,3,12,0,과실주,단맛 신맛 청량감 바디감     과실주 머루  선물,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040720-%EB%8F%84%EB%A1%9C%EC%8B%9C%20%EB%A8%B8%EB%A3%A8%EC%A3%BC_main.jpg,6040720
+112,도문대작 생막걸리,1,3,3,2,10,0,탁주,신맛 청량감      탁주 쌀,750ml,3000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681171-%EB%8F%84%EB%AC%B8%EB%8C%80%EC%9E%91%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681171
+113,독산 53,,,,3,53,0,증류주,바디감 목넘김    증류주 쌀  소용량,250ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040741-%EB%8F%85%EC%82%B0%2053_main.jpg,6040741
+114,동강더덕주,3,,,2,20,0,기타주류,향기 단맛        기타주류 구기자 감초,360ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595301-%EB%8F%99%EA%B0%95%EB%8D%94%EB%8D%95%EC%A3%BC360ml_main.jpg,3595301
+115,동몽,2,3,1,3,17,0,약주/청주,신맛  바디감  담백   약주/청주 쌀  명절,500ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551584-%EB%8F%99%EB%AA%BD_main.jpg,3551584
+116,동정춘,4,3,2,3,8,0,탁주,단맛 신맛  바디감     탁주 쌀  고문헌,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681221-%EB%8F%99%EC%A0%95%EC%B6%98_main.jpg,5681221
+117,동정춘막걸리산정호수,5,1,4,4,6,0,탁주,단맛  청량감 바디감     탁주 쌀  선물,720ml,20000,,legacy_117
+118,동학 1957,3,3,2,3,13,0,약주/청주,단맛 신맛  바디감  담백   약주/청주 쌀  선물,375ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040733-%EB%8F%99%ED%95%99+1957_main.png,6040733
+119,동해 동동주,2,1,3,2,6,0,탁주,청량감      탁주 쌀  무감미료,750ml,1666,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804504-%EB%8F%99%ED%95%B4%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,5804504
+120,두레앙 22,,,,4,22,0,증류주,바디감     증류주 포도  과일류,375ml,5000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040774-%EB%91%90%EB%A0%88%EC%95%99%2022_main.jpg,6040774
+121,두레앙 브랜디,3,,,3,35,0,증류주,향기 단맛   바디감     증류주 포도,750ml,70000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595262-%EB%91%90%EB%A0%88%EC%95%99%20%EB%B8%8C%EB%9E%9C%EB%94%94750ml_main.JPG,3595262
+122,두레앙 와인,2,2,1,4,12,0,과실주,바디감     과실주 포도  가성비,750ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595260-%EB%91%90%EB%A0%88%EC%95%99%20%EC%99%80%EC%9D%B8750ml_main.JPG,3595260
+123,두레앙 증류주,2,,,2,35,0,증류주,증류주 포도  과일류,750ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595261-%EB%91%90%EB%A0%88%EC%95%99%20%EC%A6%9D%EB%A5%98%EC%A3%BC750ml_main.JPG,3595261
+124,두리향,,,,4,43,0,증류주,향기    바디감 목넘김    증류주 쌀 찹쌀  고문헌,500ml,36000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804486-%EB%91%90%EB%A6%AC%ED%96%A5_main.jpg,5804486
+125,두유노,2,3,3,3,6,0,탁주,신맛 청량감 바디감     탁주 쌀 찹쌀 밀,600ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040760-%EB%91%90%EC%9C%A0%EB%85%B8_main.jpg,6040760
+126,라이스퐁당 13,3,2,1,3,13,0,약주/청주,단맛   바디감     약주/청주 쌀 찹쌀  홈술,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040757-%EB%9D%BC%EC%9D%B4%EC%8A%A4%ED%90%81%EB%8B%B9%2013_main.jpg,6040757
+127,라이스퐁당 17,3,3,1,4,17,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀 찹쌀,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040756-%EB%9D%BC%EC%9D%B4%EC%8A%A4%ED%90%81%EB%8B%B9%2017_main.jpg,6040756
+128,레돔 내추럴 스파클링 로제와인,3,3,4,2,7.5,0,과실주,단맛 신맛 청량감      과실주 포도  파티,750ml,38000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804437-%EB%A0%88%EB%8F%94%20%EB%82%B4%EC%B6%94%EB%9F%B4%20%EC%8A%A4%ED%8C%8C%ED%81%B4%EB%A7%81%20%EB%A1%9C%EC%A0%9C%EC%99%80%EC%9D%B8_main.jpg,5804437
+129,레돔 시드르,3,3,4,2,6,0,과실주,단맛 신맛 청량감      과실주 사과  파티,750ml,32000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804436-%EB%A0%88%EB%8F%94%20%EC%8B%9C%EB%93%9C%EB%A5%B4_main.jpg,5804436
+130,려25,1,,,1,25,0,증류주,향기         증류주 쌀 고구마  선물,375ml,30000,,legacy_130
+131,려고구마증류소주25,1,,,3,25,0,증류주,바디감     증류주 고구마,500ml,35000,,legacy_131
+132,려고구마증류소주40,2,,,3,40,0,증류주,바디감     증류주 고구마,500ml,35000,,legacy_132
+133,로얄 안동소주 18년,3,,,4,45,0,증류주,단맛   바디감     증류주 쌀,600ml,72000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595311-%EB%A1%9C%EC%96%84%20%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC%2018%EB%85%84600ml_main.jpg,3595311
+134,르깔롱,,,,4,16,0,기타주류,향기    바디감 목넘김    기타주류  과일류,500ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040749-%EB%A5%B4%EA%B9%94%EB%A1%B1_main.jpg,6040749
+135,마셔블랑,3,3,3,2,12,0,증류주,단맛 신맛 청량감      증류주 귤,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804516-%EB%A7%88%EC%85%94%EB%B8%94%EB%9E%91_main.jpg,5804516
+136,마주 소곡주,4,3,2,4,16,0,약주/청주,단맛 신맛  바디감  담백   약주/청주 쌀 찹쌀 밀  선물,500ml,17000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040755-%EB%A7%88%EC%A3%BC%20%EC%86%8C%EA%B3%A1%EC%A3%BC_main.jpg,6040755
+137,마주 소곡화주,,,,4,41,0,증류주,향기    바디감 목넘김    증류주 쌀 찹쌀 밀  선물,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040718-%EB%A7%88%EC%A3%BC%20%EC%86%8C%ED%99%94%EA%B3%A1%EC%A3%BC_main.jpg,6040718
+138,막시모40,,,,3,40,0,증류주,향기    바디감 목넘김    증류주 오미자  베리류,500ml,49000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804485-%EB%A7%89%EC%8B%9C%EB%AA%A840_main.jpg,5804485
+139,만강에 비친 달,2,3,3,3,10,0,탁주,신맛 청량감 바디감  담백   탁주 쌀  선물,500ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551533-%EB%A7%8C%EA%B0%95%EC%97%90%20%EB%B9%84%EC%B9%9C%20%EB%8B%AC_main.jpg,3551533
+140,맑은내일 Winery 단감명작,3,2,3,2,7,0,과실주,단맛  청량감    탄닌감  과실주  과일류,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598722-%EB%A7%91%EC%9D%80%EB%82%B4%EC%9D%BC%20Winery%20%EB%8B%A8%EA%B0%90%EB%AA%85%EC%9E%91_main.png,6598722
+141,맑은내일 발효막걸리,3,3,3,4,7,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀  탄산,750ml,"2,200",https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040740-%EB%A7%91%EC%9D%80%EB%82%B4%EC%9D%BC%20%EB%B0%9C%ED%9A%A8%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040740
+142,맑은내일 우포,3,2,2,2,12,0,약주/청주,단맛     담백   약주/청주 쌀  홈술,325ml,"5,000",https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040737-%EB%A7%91%EC%9D%80%EB%82%B4%EC%9D%BC%20%EC%9A%B0%ED%8F%AC_main.jpg,6040737
+143,맑은 문희주,3,1,1,4,13,0,약주/청주,단맛   바디감     약주/청주 쌀 찹쌀  파티,750ml,36000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551578-%EB%A7%91%EC%9D%80%20%EB%AC%B8%ED%9D%AC%EC%A3%BC_main.jpg,3551578
+144,맑은술 해밀,3,2,2,2,15,0,약주/청주,단맛        약주/청주 쌀,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804438-%EB%A7%91%EC%9D%80%EC%88%A0%20%ED%95%B4%EB%B0%80_main.jpg,5804438
+145,매실 막걸리,3,2,1,5,7,0,탁주,단맛   바디감     탁주 쌀,750ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595282-%EB%A7%A4%EC%8B%A4%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.JPG,3595282
+146,매실원주15,3,,,3,15,0,기타주류,단맛   바디감     기타주류 꿀,300ml,6000,,legacy_146
+147,매실향기 담은 술,3,3,3,3,14,0,약주/청주,단맛 신맛 청량감 바디감  담백   약주/청주 쌀,500ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804459-%EB%A7%A4%EC%8B%A4%ED%96%A5%EA%B8%B0%20%EB%8B%B4%EC%9D%80%20%EC%88%A0_main.jpg,5804459
+148,머루 이야기,3,1,1,4,12,0,과실주,단맛   바디감     과실주 머루  소용량,375ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595284-%EB%A8%B8%EB%A3%A8%20%EC%9D%B4%EC%95%BC%EA%B8%B0375ml_main.jpg,3595284
+149,머르드 서 드라이,2,4,3,4,13.5,0,과실주,신맛 청량감 바디감     과실주 머루,750ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040703-%EB%A8%B8%EB%A5%B4%EB%93%9C%20%EC%84%9C%20%EB%93%9C%EB%9D%BC%EC%9D%B4_main.jpg,6040703
+150,머르드 서 스위트,4,3,3,4,12,0,과실주,단맛 신맛 청량감 바디감     과실주 머루,750ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040722-%EB%A8%B8%EB%A5%B4%EB%93%9C%20%EC%84%9C%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,6040722
+151,메로니아,4,1,5,4,4,0,기타주류,단맛  청량감 바디감     기타주류 쌀  과일류,750ml,2000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551494-%EB%A9%94%EB%A1%9C%EB%8B%88%EC%95%84_main.jpg,3551494
+152,메밀로,,,,4,45,0,증류주,향기    바디감 목넘김    증류주 쌀 밀  선물,500ml,150000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804497-%EB%A9%94%EB%B0%80%EB%A1%9C_main.jpg,5804497
+153,면천두견주,3,1,1,3,18,0,약주/청주,단맛   바디감     약주/청주 쌀 찹쌀 꽃  선물,360ml,"30,000",,legacy_153
+154,명가원복분자술,3,1,,3,16,0,과실주,단맛   바디감     과실주 복분자,750ml,20000,,legacy_154
+155,명술,2,,,3,20,0,기타주류,바디감     기타주류 삼,375ml,30000,,legacy_155
+156,명인안동소주22,1,,,2,22,0,증류주,증류주 쌀,360ml,4500,,legacy_156
+157,명인 안동소주 양반탈,1,,,3,45,0,증류주,바디감     증류주 쌀  선물,800ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595265-%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC%20%EC%96%91%EB%B0%98%ED%83%88800ml_main.JPG,3595265
+158,명인 안동소주 호리병,1,,,3,45,0,증류주,바디감     증류주 쌀  선물,800ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595264-%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC%20%ED%98%B8%EB%A6%AC%EB%B3%91800ml_main.JPG,3595264
+159,명인 홍삼주,1,3,2,4,12.5,0,약주/청주,신맛  바디감     약주/청주 쌀 삼  선물,375ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595234-%EB%AA%85%EC%9D%B8%20%ED%99%8D%EC%82%BC%EC%A3%BC375ml_main.jpg,3595234
+160,명작 복분자,3,1,1,5,13,0,과실주,단맛   바디감     과실주 복분자,375ml,6500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595225-%EB%AA%85%EC%9E%91%EB%B3%B5%EB%B6%84%EC%9E%90375ml_main.jpg,3595225
+161,명품 진도홍주,3,,,3,38,0,증류주,향기 단맛   바디감     증류주 쌀 보리,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595244-%EB%AA%85%ED%92%88%20%EC%A7%84%EB%8F%84%ED%99%8D%EC%A3%BC375ml_main.jpg,3595244
+162,모월 로,,,,2,25,0,증류주,향기         증류주 쌀,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040787-%EB%AA%A8%EC%9B%94%20%EB%A1%9C_main.jpg,6040787
+163,모월 연,1,3,1,2,13,0,약주/청주,신맛       약주/청주 쌀  선물,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040785-%EB%AA%A8%EC%9B%94%20%EC%97%B0_main.jpg,6040785
+164,모월 인,,,,3,41,0,증류주,향기    바디감 목넘김    증류주 쌀  파티,500ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040788-%EB%AA%A8%EC%9B%94%20%EC%9D%B8_main.jpg,6040788
+165,모월 청,1,3,2,3,16,0,약주/청주,신맛  바디감     약주/청주 쌀,500ml,21000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040786-%EB%AA%A8%EC%9B%94%20%EC%B2%AD_main.jpg,6040786
+166,모을동주 소주,,,,4,43,0,증류주,향기    바디감 목넘김    증류주 쌀,350ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040764-%EB%AA%A8%EC%9D%84%EB%8F%99%EC%A3%BC%20%EC%86%8C%EC%A3%BC_main.jpg,6040764
+167,모을동주 약주,4,3,3,4,13,0,약주/청주,단맛 신맛 청량감 바디감     약주/청주 쌀,375ml,13000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040766-%EB%AA%A8%EC%9D%84%EB%8F%99%EC%A3%BC%20%EC%95%BD%EC%A3%BC_main.jpg,6040766
+168,무주 구천동 머루와인,2,2,1,3,12,0,과실주,바디감     과실주 머루,750ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595254-%EB%AC%B4%EC%A3%BC%20%EA%B5%AC%EC%B2%9C%EB%8F%99%20%EB%A8%B8%EB%A3%A8%EC%99%80%EC%9D%B8750ml_main.jpg,3595254
+169,무주 구천동 산머루주,2,2,1,3,16,0,과실주,바디감     과실주 머루  가성비,750ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595255-%EB%AC%B4%EC%A3%BC%20%EA%B5%AC%EC%B2%9C%EB%8F%99%20%EC%82%B0%EB%A8%B8%EB%A3%A8%EC%A3%BC750ml_main.jpg,3595255
+170,문경바람백자25,,,,3,25,0,증류주,향기    바디감 목넘김    증류주 사과  과일류,375ml,16000,,legacy_170
+171,문경바람백자40,,,,4,40,0,증류주,향기    바디감 목넘김    증류주 사과  과일류,375ml,"24,000",,legacy_171
+172,문경바람오크,,,,4,40,0,증류주,향기    바디감 목넘김    증류주 사과  과일류,375ml,28000,,legacy_172
+173,문경주조오미자생막걸리,2,3,2,4,6.5,1,탁주,신맛  바디감  담백  탄산 탁주 오미자,750ml,2500,,legacy_173
+174,문배술헤리티지23,1,,,1,23,0,증류주,증류주 쌀,375ml,5555,,legacy_174
+175,문배술헤리티지25,1,,,1,25,0,증류주,증류주 쌀  선물,375ml,6111,,legacy_175
+176,문배술헤리티지40,2,,,3,40,0,증류주,바디감     증류주 쌀  선물,200ml,12000,,legacy_176
+177,문희문경오미자수제전통주,3,1,3,3,12,0,탁주,단맛  청량감 바디감     탁주 쌀 찹쌀 오미자,500ml,15000,,legacy_177
+178,문희햇찹쌀수제전통주,3,1,2,3,13,0,탁주,단맛   바디감     탁주 쌀 찹쌀,500ml,15000,,legacy_178
+179,미르25,2,0,1,3,25,0,증류주,바디감     증류주 쌀  파티,375ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551585-%EB%AF%B8%EB%A5%B425_main.jpg,3551585
+180,미르40,1,0,0,2,40,0,증류주,증류주 쌀,375ml,23000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551485-%EB%AF%B8%EB%A5%B440_main.jpg,3551485
+181,미생 막걸리,2,3,3,3,6,0,탁주,신맛 청량감 바디감     탁주 쌀  탄산,750ml,1100,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681216-%EB%AF%B8%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681216
+182,미소 생막걸리,3,3,3,2,7,0,탁주,단맛 신맛 청량감      탁주 쌀,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681197-%EB%AF%B8%EC%86%8C%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681197
+183,미소 아이스,4,1,,3,12,0,과실주,단맛   바디감     과실주 포도,375ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551518-%EB%AF%B8%EC%86%8C%20%EC%95%84%EC%9D%B4%EC%8A%A4_main.jpg,3551518
+184,미인약주,4,1,1,2,15,0,약주/청주,단맛        약주/청주 쌀 찹쌀  선물,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681235-%EB%AF%B8%EC%9D%B8%EC%95%BD%EC%A3%BC_main.jpg,5681235
+185,미인탁주,3,1,1,3,10,0,탁주,단맛   바디감     탁주 쌀 찹쌀  무감미료,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681236-%EB%AF%B8%EC%9D%B8%ED%83%81%EC%A3%BC_main.jpg,5681236
+186,민속주안동소주,1,,,4,45,0,증류주,바디감     증류주 쌀,400ml,28000,,legacy_186
+187,바랑탁,4,2,1,4,15,0,탁주,단맛   바디감     탁주 쌀 찹쌀  소용량,375ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743376-%EB%B0%94%EB%9E%91%ED%83%81_main.png,6743376
+188,밤꽃향기,5,2,2,2,13.5,0,약주/청주,단맛        약주/청주 쌀 밤,375ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681177-%EB%B0%A4%EA%BD%83%ED%96%A5%EA%B8%B0_main.jpg,5681177
+189,방문주 약주,2,3,3,3,15,0,약주/청주,신맛 청량감 바디감     약주/청주 쌀 찹쌀  선물,500ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804427-%EB%B0%A9%EB%AC%B8%EC%A3%BC%20%EC%95%BD%EC%A3%BC_main.jpg,5804427
+190,방문주 탁주,2,3,3,4,15,0,탁주,신맛 청량감 바디감     탁주 쌀 찹쌀  선물,500ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804429-%EB%B0%A9%EB%AC%B8%EC%A3%BC%20%ED%83%81%EC%A3%BC_main.jpg,5804429
+191,배꽃담은 연 생막걸리,3,3,4,2,10,0,탁주,단맛 신맛 청량감      탁주 쌀,720ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804418-%EB%B0%B0%EA%BD%83%EB%8B%B4%EC%9D%80%20%EC%97%B0%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5804418
+192,배도가 로아 19 레드,2,,,2,19,0,증류주,향기         증류주 사과,350ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598726-%EB%B0%B0%EB%8F%84%EA%B0%80%20%EB%A1%9C%EC%95%84%2019%20%EB%A0%88%EB%93%9C_main.png,6598726
+193,배도가로아40옐로우,2,,,3,40,0,증류주,바디감     증류주 쌀  과일류,350ml,20000,,legacy_193
+194,백년향,3,3,2,3,10,0,탁주,단맛 신맛  바디감  담백   탁주 쌀  무감미료,500ml,11000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804501-%EB%B0%B1%EB%85%84%ED%96%A5_main.jpg,5804501
+195,백련 맑은술,2,2,1,4,12,0,약주/청주,바디감  담백   약주/청주  선물,375ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551566-%EB%B0%B1%EB%A0%A8%20%EB%A7%91%EC%9D%80%EC%88%A0_main.jpg,3551566
+196,백련 생막걸리 Misty,2,3,4,4,7,0,탁주,신맛 청량감 바디감  담백   탁주  선물,750ml,3000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551567-%EB%B0%B1%EB%A0%A8%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC%20Misty_main.jpg,3551567
+197,백련생막걸리Snow,2,2,2,4,6,0,탁주,바디감     탁주,750ml,1600,,legacy_197
+198,백운 복분자 와인,2,2,1,5,11,0,기타주류,바디감     기타주류 쌀 복분자  베리류,360ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595281-%EB%B0%B1%EC%9A%B4%20%EB%B3%B5%EB%B6%84%EC%9E%90%20%EC%99%80%EC%9D%B8300ml_main.JPG,3595281
+199,백운 복분자주,3,2,2,4,13,0,기타주류,단맛   바디감     기타주류 쌀 복분자  베리류,360ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595280-%EB%B0%B1%EC%9A%B4%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC360ml_main.JPG,3595280
+200,백이주,2,2,1,3,35,0,과실주,바디감     과실주 쌀 밀 감초  명절,800ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598728-%EB%B0%B1%EC%9D%B4%EC%A3%BC_main.png,6598728
+201,백자주,3,3,2,3,10,0,탁주,단맛 신맛  바디감     탁주 쌀 찹쌀,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681224-%EB%B0%B1%EC%9E%90%EC%A3%BC_main.jpg,5681224
+202,뱅꼬레 레드와인,3,4,2,2,12,0,과실주,단맛 신맛       과실주 포도,375ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681199-%EB%B1%85%EA%BC%AC%EB%A0%88%EB%A0%88%EB%93%9C375ml_main.jpg,5681199
+203,뱅꼬레 로제와인,4,3,3,2,11.5,0,과실주,단맛 신맛 청량감      과실주 포도  선물,375ml,23000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681194-%EB%B1%85%EA%BC%AC%EB%A0%88%EB%A1%9C%EC%A0%9C375ml_main.jpg,5681194
+204,뱅꼬레 아이스와인,5,2,2,4,12,0,과실주,단맛   바디감     과실주 포도,375ml,90000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681192-%EB%B1%85%EA%BC%AC%EB%A0%88%EC%95%84%EC%9D%B4%EC%8A%A4375ml_main.jpg,5681192
+205,뱅꼬레 화이트와인,4,3,3,2,11,0,과실주,단맛 신맛 청량감      과실주 포도  저도수,375ml,23000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681195-%EB%B1%85%EA%BC%AC%EB%A0%88%ED%99%94%EC%9D%B4%ED%8A%B8375ml_main.jpg,5681195
+206,베베마루 캠벨로제,3,1,1,3,12,0,과실주,단맛   바디감     과실주 포도,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595307-%EB%B2%A0%EB%B2%A0%EB%A7%88%EB%A3%A8%20%EC%BA%A0%EB%B2%A8%EB%A1%9C%EC%A0%9C375ml_main.JPG,3595307
+207,베베마루 캠벨로제 스위트,2,2,1,3,10,0,과실주,바디감     과실주 포도  저도수,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595308-%EB%B2%A0%EB%B2%A0%EB%A7%88%EB%A3%A8%20%EC%BA%A0%EB%B2%A8%EB%A1%9C%EC%A0%9C%20%EC%8A%A4%EC%9C%84%ED%8A%B8375ml_main.JPG,3595308
+208,별바랑,4,2,2,4,17.5,0,약주/청주,단맛   바디감  담백   약주/청주 쌀 찹쌀  파티,375ml,27000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040790-%EB%B3%84%EB%B0%94%EB%9E%91_main.jpg,6040790
+209,병영설성 동동주,2,2,3,2,6,0,탁주,청량감      탁주 쌀  무감미료,1700ml,2500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804472-%EB%B3%91%EC%98%81%EC%84%A4%EC%84%B1%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.png,5804472
+210,병영설성 생막걸리,3,2,2,2,6,0,탁주,단맛        탁주 쌀  무감미료,750ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804473-%EB%B3%91%EC%98%81%EC%84%A4%EC%84%B1%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.png,5804473
+211,병영설성사또,,,,3,40,0,증류주,향기    바디감 목넘김    증류주 쌀  베리류,700ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804481-%EB%B3%91%EC%98%81%EC%84%A4%EC%84%B1%EC%82%AC%EB%98%90_main.jpg,5804481
+212,병영소주,3,0,3,4,40,0,증류주,단맛  청량감 바디감     증류주 보리,700ml,59400,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551510-%EB%B3%91%EC%98%81%EC%86%8C%EC%A3%BC_main.jpg,3551510
+213,복분자 아락,2,,,3,40,0,증류주,향기    바디감     증류주 복분자,500ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595275-%EB%B3%B5%EB%B6%84%EC%9E%90%20%EC%95%84%EB%9D%BD500ml_main.jpg,3595275
+214,복분자음,2,2,1,3,12,0,과실주,바디감     과실주 복분자  홈술,375ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595277-%EB%B3%B5%EB%B6%84%EC%9E%90%EC%9D%8C375ml_main.jpg,3595277
+215,복순도가 손 막걸리,2,3,5,4,6.5,1,탁주,신맛 청량감 바디감    탄산 탁주  파티,935ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551540-%EB%B3%B5%EC%88%9C%EB%8F%84%EA%B0%80%20%EC%86%90%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551540
+216,볼빨간막걸리 10,1,5,4,4,10,0,탁주,신맛 청량감 바디감     탁주 쌀 찹쌀  홈술,500ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040758-%EB%B3%BC%EB%B9%A8%EA%B0%84%EB%A7%89%EA%B1%B8%EB%A6%AC%2010_main.jpg,6040758
+217,볼빨간막걸리 7,1,4,3,2,7,0,탁주,신맛 청량감      탁주 쌀 찹쌀  홈술,500ml,5000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040759-%EB%B3%BC%EB%B9%A8%EA%B0%84%EB%A7%89%EA%B1%B8%EB%A6%AC%207_main.jpg,6040759
+218,봉하쌀 생막걸리,1,2,3,2,6,0,탁주,청량감      탁주 쌀,750ml,2000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036283-%EB%B4%89%ED%95%98%EC%8C%80%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6036283
+219,부안 참뽕 막걸리,2,1,3,3,6,0,탁주,청량감 바디감     탁주 쌀 오디,950ml,2000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595257-%EB%B6%80%EC%95%88%20%EC%B0%B8%EB%BD%95%20%EB%A7%89%EA%B1%B8%EB%A6%AC950ml_main.jpg,3595257
+220,부안 참뽕 와인,3,2,1,4,13,0,과실주,단맛   바디감   탄닌감  과실주 오디  선물,750ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595258-%EB%B6%80%EC%95%88%20%EC%B0%B8%EB%BD%95%20%EC%99%80%EC%9D%B8750ml_main.jpg,3595258
+221,부자10,4,1,1,2,10,0,탁주,단맛     담백   탁주 쌀  무감미료,375ml,5000,,legacy_221
+222,불소곡주,2,,,4,43,0,기타주류,향기    바디감     기타주류 쌀 찹쌀 생강  고문헌,700ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595214-%EB%B6%88%EC%86%8C%EA%B3%A1%EC%A3%BC700ml_main.jpg,3595214
+223,붉은 원숭이,4,2,2,4,10.8,0,탁주,단맛   바디감  담백   탁주 쌀  이색전통주,375ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551495-%EB%B6%89%EC%9D%80%20%EC%9B%90%EC%88%AD%EC%9D%B4_main.jpg,3551495
+224,블루베리 이야기,3,1,1,3,12,0,과실주,단맛   바디감     과실주 머루 베리,375ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595285-%EB%B8%94%EB%A3%A8%EB%B2%A0%EB%A6%AC%20%EC%9D%B4%EC%95%BC%EA%B8%B0375ml_main.JPG,3595285
+225,산내울 복분자주,4,4,3,3,16,0,기타주류,단맛 신맛 청량감 바디감     기타주류 복분자  베리류,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040742-%EC%82%B0%EB%82%B4%EC%9A%B8%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC_main.jpg,6040742
+226,산내울 사과애주,4,4,3,2,16,0,기타주류,단맛 신맛 청량감      기타주류 사과  과일류,750ml,14000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040751-%EC%82%B0%EB%82%B4%EC%9A%B8%20%EC%82%AC%EA%B3%BC%EC%95%A0%EC%A3%BC_main.jpg,6040751
+227,산내울 오미자주,2,3,3,2,16,0,기타주류,신맛 청량감      기타주류 오미자  선물,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040743-%EC%82%B0%EB%82%B4%EC%9A%B8%20%EC%98%A4%EB%AF%B8%EC%9E%90%EC%A3%BC_main.jpg,6040743
+228,산막대덕주,3,1,1,2,13,0,약주/청주,단맛        약주/청주 쌀 밀,600ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595294-%EC%82%B0%EB%A7%89%EB%8C%80%EB%8D%95%EC%A3%BC600ml_main.JPG,3595294
+229,산막 생유 막걸리,1,3,3,4,6,0,탁주,신맛 청량감 바디감     탁주 쌀  탄산,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595296-%EC%82%B0%EB%A7%89%20%EC%83%9D%EC%9C%A0%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.JPG,3595296
+230,삼선,1,4,2,2,10,0,탁주,신맛       탁주 쌀  홈술,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804499-%EC%82%BC%EC%84%A0_main.jpg,5804499
+231,삼양춘 생약주,2,1,1,2,15,0,약주/청주,담백   약주/청주 쌀  선물,500ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681233-%EC%82%BC%EC%96%91%EC%B6%98%20%EC%83%9D%EC%95%BD%EC%A3%BC_main.jpg,5681233
+232,삼양춘 생탁주,2,1,1,4,12.5,0,탁주,바디감  담백   탁주 쌀  무감미료,500ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681234-%EC%82%BC%EC%96%91%EC%B6%98%20%EC%83%9D%ED%83%81%EC%A3%BC_main.jpg,5681234
+233,삼양춘 청주,3,4,2,3,15,0,약주/청주,단맛 신맛  바디감  담백   약주/청주 쌀  선물,500ml,16800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040730-%EC%82%BC%EC%96%91%EC%B6%98%20%EC%B2%AD%EC%A3%BC_main.jpg,6040730
+234,샤토미소 랑,4,3,2,2,12,0,과실주,단맛 신맛       과실주 포도  홈술,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804464-%EC%83%A4%ED%86%A0%EB%AF%B8%EC%86%8C%20%EB%9E%91_main.jpg,5804464
+235,샤토미소 레드 프리미엄 드라이,2,3,2,3,13,0,과실주,신맛  바디감     과실주 포도,750ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804463-%EC%83%A4%ED%86%A0%EB%AF%B8%EC%86%8C%20%EB%A0%88%EB%93%9C%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84%20%EB%93%9C%EB%9D%BC%EC%9D%B4_main.jpg,5804463
+236,샤토미소 스위트,3,1,,3,12,0,과실주,단맛   바디감 목넘김    과실주 포도,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551520-%EC%83%A4%ED%86%A0%EB%AF%B8%EC%86%8C%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,3551520
+237,샤토미소스위트로제,3,1,,2,12,0,과실주,단맛    목넘김  탄닌감  과실주 포도  파티,375ml,20000,,legacy_237
+238,샤토미소 영동,,,,4,40,0,증류주,향기    바디감     증류주 포도  과일류,200ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804462-%EC%83%A4%ED%86%A0%EB%AF%B8%EC%86%8C%20%EC%98%81%EB%8F%99_main.jpg,5804462
+239,샹스프랑보아즈,4,3,3,2,13,0,과실주,단맛 신맛 청량감      과실주 복분자  파티,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804421-%EC%83%B9%EC%8A%A4%ED%94%84%EB%9E%91%EB%B3%B4%EC%95%84%EC%A6%88_main.jpg,5804421
+240,서울의 밤,,,,2,25,0,기타주류,향기         기타주류 꿀  홈술,375ml,7500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681154-%EC%84%9C%EC%9A%B8%EC%9D%98%20%EB%B0%A4_main.jpg,5681154
+241,서주 16%,3,2,3,3,16,0,약주/청주,단맛  청량감 바디감     약주/청주 감자  선물,400ml,22500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804434-%EC%84%9C%EC%A3%BC%2016_main.jpg,5804434
+242,석로주,1,1,1,4,13,0,약주/청주,바디감     약주/청주 쌀 버섯  선물,720ml,34000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681223-%EC%84%9D%EB%A1%9C%EC%A3%BC_main.jpg,5681223
+243,석탄주 약주,1,3,2,3,15,0,약주/청주,신맛  바디감     약주/청주 쌀 찹쌀  명절,500ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804431-%EC%84%9D%ED%83%84%EC%A3%BC%20%EC%95%BD%EC%A3%BC_main.jpg,5804431
+244,석탄주 탁주,2,3,3,4,15,0,탁주,신맛 청량감 바디감     탁주 쌀 찹쌀  고문헌,500ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804417-%EC%84%9D%ED%83%84%EC%A3%BC%20%ED%83%81%EC%A3%BC_main.jpg,5804417
+245,선운산 복분자와인,4,4,3,2,13,0,과실주,단맛 신맛 청량감      과실주 복분자  소용량,300ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804423-%EC%84%A0%EC%9A%B4%EC%82%B0%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%99%80%EC%9D%B8_main.jpg,5804423
+246,선운산 복분자주,4,4,3,2,16,0,과실주,단맛 신맛 청량감      과실주 복분자  홈술,375ml,6250,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804424-%EC%84%A0%EC%9A%B4%EC%82%B0%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC_main.jpg,5804424
+247,선운산 복분자주 프리미엄,4,3,3,2,19,0,과실주,단맛 신맛 청량감      과실주 복분자  진한맛,700ml,40000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804422-%EC%84%A0%EC%9A%B4%EC%82%B0%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84_main.jpg,5804422
+248,선운산의 아침 복분자막걸리,2,2,1,4,6,0,탁주,바디감     탁주 쌀 복분자,750ml,2333,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595227-%EC%84%A0%EC%9A%B4%EC%82%B0%EC%9D%98%20%EC%95%84%EC%B9%A8%20%EB%B3%B5%EB%B6%84%EC%9E%90%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.jpg,3595227
+249,선호 생막걸리,2,3,3,3,6,1,탁주,신맛 청량감 바디감  담백  탄산 탁주 쌀,750ml,1700,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681217-%EC%84%A0%ED%98%B8%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681217
+250,설궁,2,,,2,30,0,기타주류,기타주류 꿀 삼 버섯  겨울,700ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595288-%EC%84%A4%EA%B6%81700ml_main.JPG,3595288
+251,설레온,2,,,3,40,0,증류주,바디감     증류주 쌀,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595247-%EC%84%A4%EB%A0%88%EC%98%A8375ml_main.jpg,3595247
+252,설련주,2,4,2,3,16,0,약주/청주,신맛  바디감     약주/청주 쌀 찹쌀  선물,750ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040753-%EC%84%A4%EB%A0%A8%EC%A3%BC_main.jpg,6040753
+253,설성 만월 막걸리,2,3,2,3,8,0,탁주,신맛  바디감     탁주 쌀,750ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551541-%EC%84%A4%EC%84%B1%20%EB%A7%8C%EC%9B%94%20%EB%A7%89%EA%B1%B8%EB%A6%AC%EC%9C%A0%EA%B8%B0%EB%86%8D%EC%8C%80%20100_main.jpg,3551541
+254,설하담,3,1,4,2,8,1,탁주,단맛  청량감     탄산 탁주 쌀  홈술,475ml,3900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804514-%EC%84%A4%ED%95%98%EB%8B%B4_main.jpg,5804514
+255,성포 생막걸리,3,3,3,3,6,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀,750ml,1100,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040771-%EC%84%B1%ED%8F%AC%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040771
+256,세우리,,,,4,45,0,증류주,향기    바디감 목넘김    증류주 쌀 구기자 삼,700ml,250000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681144-%EC%84%B8%EC%9A%B0%EB%A6%AC_main.jpg,5681144
+257,세종대왕어주 약주,3,1,1,3,15,0,약주/청주,단맛   바디감  담백   약주/청주 쌀  선물,500ml,25900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036279-%EC%84%B8%EC%A2%85%EB%8C%80%EC%99%95%EC%96%B4%EC%A3%BC%20%EC%95%BD%EC%A3%BC_main.jpg,6036279
+258,세종대왕어주 탁주,3,3,1,2,13,0,탁주,단맛 신맛    담백   탁주 쌀  고문헌,500ml,16900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036278-%EC%84%B8%EC%A2%85%EB%8C%80%EC%99%95%EC%96%B4%EC%A3%BC%20%ED%83%81%EC%A3%BC_main.jpg,6036278
+259,세종 쌀 막걸리,3,1,3,3,6,0,탁주,단맛  청량감 바디감     탁주,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551504-%EC%84%B8%EC%A2%85%20%EC%8C%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551504
+260,세종 알밤주,4,1,3,4,6,0,기타주류,단맛  청량감 바디감  담백   기타주류 밤,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551562-%EC%84%B8%EC%A2%85%20%EC%95%8C%EB%B0%A4%EC%A3%BC_main.jpg,3551562
+261,세종 오가닉,1,3,,1,13,0,약주/청주,신맛   목넘김    약주/청주  선물,375ml,9000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551563-%EC%84%B8%EC%A2%85%20%EC%98%A4%EA%B0%80%EB%8B%89_main.jpg,3551563
+262,세종청주생막걸리,2,1,3,3,6,0,탁주,청량감 바디감     탁주 쌀,750ml,1500,,legacy_262
+263,소나무와 학,4,,,4,43,0,증류주,향기 단맛   바디감     증류주 쌀 솔잎,750ml,39000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595304-%EC%86%8C%EB%82%98%EB%AC%B4%EC%99%80%20%ED%95%99750ml_main.jpg,3595304
+264,소백산 검은콩 막걸리,3,1,1,3,6,0,탁주,단맛   바디감     탁주,750ml,1800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551581-%EC%86%8C%EB%B0%B1%EC%82%B0%20%EA%B2%80%EC%9D%80%EC%BD%A9%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551581
+265,소백산 생 막걸리,2,3,2,4,6,0,탁주,신맛  바디감     탁주 쌀  파티,750ml,1980,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551543-%EC%86%8C%EB%B0%B1%EC%82%B0%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551543
+266,소백산 생 만찬주,2,2,2,2,6,0,탁주,탁주 쌀,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551580-%EC%86%8C%EB%B0%B1%EC%82%B0%20%EC%83%9D%20%EB%A7%8C%EC%B0%AC%EC%A3%BC_main.jpg,3551580
+267,소백산오곡진상주,1,4,3,3,7,0,탁주,신맛 청량감 바디감     탁주 쌀 보리 밀,750ml,1500,,legacy_267
+268,소백산 청 동동주,2,1,2,2,10,0,약주/청주,약주/청주 쌀,"1,700ml",3000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551582-%EC%86%8C%EB%B0%B1%EC%82%B0%20%EC%B2%AD%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,3551582
+269,소양강 생 막걸리,1,3,2,3,6,0,탁주,신맛  바디감     탁주,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551539-%EC%86%8C%EC%96%91%EA%B0%95%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551539
+270,솔송주,2,1,,3,13,0,약주/청주,바디감 목넘김 담백   약주/청주  선물,375ml,7000,,legacy_270
+271,송명섭 막걸리,1,3,3,3,6,0,탁주,신맛 청량감 바디감     탁주 쌀  선물,900ml,3000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681213-%EC%86%A1%EB%AA%85%EC%84%AD%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681213
+272,송이주,1,4,1,2,13,0,약주/청주,신맛       약주/청주 쌀  홈술,375ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681164-%EC%86%A1%EC%9D%B4%EC%A3%BC_main.jpg,5681164
+273,송화백일주,,,3,3,38,0,기타주류,청량감 바디감 목넘김    기타주류 쌀 찹쌀 오미자 구기자 꿀 솔잎 산수유,500ml,45000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804479-%EC%86%A1%ED%99%94%EB%B0%B1%EC%9D%BC%EC%A3%BC_main.jpg,5804479
+274,순향주,2,2,2,2,15,0,약주/청주,약주/청주 쌀  파티,375ml,18666,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804454-%EC%88%9C%ED%96%A5%EC%A3%BC_main.jpg,5804454
+275,술공방9,3,2,1,3,9,1,탁주,단맛   바디감  담백  탄산 탁주 쌀 밀,500ml,5000,,legacy_275
+276,술그리다 생탁주,2,1,1,1,10,0,탁주,담백   탁주 쌀,500ml,9000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681232-%EC%88%A0%EA%B7%B8%EB%A6%AC%EB%8B%A4%20%EC%83%9D%ED%83%81%EC%A3%BC_main.jpg,5681232
+277,술샘 이화주,4,1,0,1,8,0,탁주,단맛        탁주 쌀  고문헌,100ml,6500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551491-%EC%88%A0%EC%83%98%20%EC%9D%B4%ED%99%94%EC%A3%BC_main.jpg,3551491
+278,술아 국화주,4,3,2,4,15,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀 찹쌀 꽃  홈술,375ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681209-%EC%88%A0%EC%95%84%20%EA%B5%AD%ED%99%94%EC%A3%BC_main.jpg,5681209
+279,술아 막걸리,3,4,3,4,8,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 찹쌀,450ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681203-%EC%88%A0%EC%95%84%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681203
+280,술아 매화주,5,3,2,4,15,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀 찹쌀 꽃  홈술,375ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681207-%EC%88%A0%EC%95%84%20%EB%A7%A4%ED%99%94%EC%A3%BC_main.jpg,5681207
+281,술아 순곡주,5,3,2,5,20,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀 찹쌀  홈술,375ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681204-%EC%88%A0%EC%95%84%20%EC%88%9C%EA%B3%A1%EC%A3%BC_main.jpg,5681204
+282,술아 연화주,5,3,2,4,15,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀 찹쌀 꽃  홈술,375ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681210-%EC%88%A0%EC%95%84%20%EC%97%B0%ED%99%94%EC%A3%BC_main.jpg,5681210
+283,술예쁘다 생탁주,1,3,1,2,13,0,탁주,신맛       탁주 쌀  무감미료,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681231-%EC%88%A0%EC%98%88%EC%81%98%EB%8B%A4%20%EC%83%9D%ED%83%81%EC%A3%BC_main.jpg,5681231
+284,술취한 원숭이,4,2,2,2,10.8,0,탁주,단맛     담백   탁주 쌀  이색전통주,375ml,7000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551548-%EC%88%A0%EC%B7%A8%ED%95%9C%20%EC%9B%90%EC%88%AD%EC%9D%B4_main.jpg,3551548
+285,술헤는밤,2,4,2,3,8,0,탁주,신맛  바디감     탁주 쌀,750ml,5900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804453-%EC%88%A0%ED%97%A4%EB%8A%94%EB%B0%A4_main.jpg,5804453
+286,스타베리 오디와인,3,4,3,3,12,0,과실주,단맛 신맛 청량감 바디감     과실주 포도,500ml,28000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681193-%EC%8A%A4%ED%83%80%EB%B2%A0%EB%A6%AC%EC%98%A4%EB%94%94500ml_main.jpg,5681193
+287,시나브로 드 글로리아,3,3,2,2,12,0,과실주,단맛 신맛       과실주 포도  홈술,750ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804468-%EC%8B%9C%EB%82%98%EB%B8%8C%EB%A1%9C%20%EB%93%9C%20%EA%B8%80%EB%A1%9C%EB%A6%AC%EC%95%84_main.jpg,5804468
+288,시나브로 레드 드라이,2,3,3,3,12,0,과실주,신맛 청량감 바디감     과실주 포도,750ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804471-%EC%8B%9C%EB%82%98%EB%B8%8C%EB%A1%9C%20%EB%A0%88%EB%93%9C%20%EB%93%9C%EB%9D%BC%EC%9D%B4_main.jpg,5804471
+289,시나브로 레드 스위트,3,3,3,2,12,0,과실주,단맛 신맛 청량감      과실주 포도  홈술,750ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804470-%EC%8B%9C%EB%82%98%EB%B8%8C%EB%A1%9C%20%EB%A0%88%EB%93%9C%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,5804470
+290,시나브로 로제와인,3,3,3,3,10,0,과실주,단맛 신맛 청량감 바디감     과실주 포도  파티,500ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040779-%EC%8B%9C%EB%82%98%EB%B8%8C%EB%A1%9C%20%EB%A1%9C%EC%A0%9C%EC%99%80%EC%9D%B8_main.jpg,6040779
+291,시나브로에뚜왈로제스파클링와인,2,3,4,2,5,1,과실주,신맛 청량감    탄닌감 탄산 과실주 포도  파티,750ml,30000,,legacy_291
+292,시나브로에뚜왈스파클링,3,3,4,2,5,1,과실주,단맛 신맛 청량감     탄산 과실주 포도  과일류,750ml,30000,,legacy_292
+293,시나브로 화이트와인,4,4,4,3,11,0,과실주,단맛 신맛 청량감 바디감     과실주 포도  선물,500ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040781-%EC%8B%9C%EB%82%98%EB%B8%8C%EB%A1%9C%20%ED%99%94%EC%9D%B4%ED%8A%B8%EC%99%80%EC%9D%B8_main.jpg,6040781
+294,시인의 마을 우리쌀 막걸리,2,3,3,4,10,0,탁주,신맛 청량감 바디감     탁주 쌀,700ml,7900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681182-%EC%8B%9C%EC%9D%B8%EC%9D%98%20%EB%A7%88%EC%9D%84%20%EC%9A%B0%EB%A6%AC%EC%8C%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681182
+295,신례명주,,,4,4,50,0,증류주,청량감 바디감     증류주 귤  과일류,750ml,99000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804507-%EC%8B%A0%EB%A1%80%EB%AA%85%EC%A3%BC_main.jpg,5804507
+296,신선주,3,3,2,4,16,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀 구기자 삼 솔잎  명절,750ml,19000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595306-%EC%8B%A0%EC%84%A0%EC%A3%BC750ml_main.jpg,3595306
+297,신선주 백주,2,3,1,3,10,0,탁주,신맛  바디감 목넘김    탁주 쌀 찹쌀 약재  무감미료,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598717-%EC%8B%A0%EC%84%A0%EC%A3%BC%20%EB%B0%B1%EC%A3%BC_main.jpg,6598717
+298,신선주 약주,3,3,3,3,16,0,약주/청주,단맛 신맛 청량감 바디감     약주/청주 쌀 찹쌀 약재,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598735-%EC%8B%A0%EC%84%A0%EC%A3%BC%20%EC%95%BD%EC%A3%BC_main.jpg,6598735
+299,신선주 증류주,,4,,3,42,0,증류주,향기  신맛  바디감     증류주 쌀 찹쌀 약재,375ml,60000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598733-%EC%8B%A0%EC%84%A0%EC%A3%BC%20%EC%A6%9D%EB%A5%98%EC%A3%BC_main.jpg,6598733
+300,심플리 애플,4,,,1,12,0,기타주류,향기 단맛        기타주류 쌀 사과 꿀,350ml,9000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598724-%EC%8B%AC%ED%94%8C%EB%A6%AC%20%EC%95%A0%ED%94%8C_main.jpg,6598724
+301,아이싱,3,1,1,3,4,0,탁주,단맛   바디감     탁주 쌀  탄산,300ml,1300,,legacy_301
+302,아이원 막걸리,3,3,3,2,6,0,탁주,단맛 신맛 청량감      탁주 쌀 밀,750ml,1000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681190-%EC%95%84%EC%9D%B4%EC%9B%90%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681190
+303,아황주,1,3,1,3,17,0,약주/청주,신맛  바디감     약주/청주 쌀 찹쌀  고문헌,500ml,23000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681237-%EC%95%84%ED%99%A9%EC%A3%BC_main.jpg,5681237
+304,안동소주느낌19.8,,,,2,19.8,0,증류주,증류주  저도수,360ml,4000,,legacy_304
+305,안동소주느낌30,,,,3,30,0,증류주,향기    바디감 목넘김    증류주,360ml,6500,,legacy_305
+306,안동소주일품17,3,,,2,17,0,증류주,단맛        증류주 쌀,350ml,4000,,legacy_306
+307,안동소주일품21,3,,,2,21,0,증류주,단맛        증류주 쌀,350ml,4500,,legacy_307
+308,안동소주일품골드,3,,,3,40,0,증류주,단맛   바디감     증류주 쌀,500ml,18000,,legacy_308
+309,안동소주필Feel,,,,3,40,0,증류주,향기    바디감 목넘김    증류주,500ml,25000,,legacy_309
+310,안성맞춤생막걸리,3,2,3,2,6,0,탁주,단맛  청량감      탁주 쌀,"1,000ml",2000,,legacy_310
+311,안양 동동주,3,3,3,3,6,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 찹쌀,800ml,1100,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040744-%EC%95%88%EC%96%91%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,6040744
+312,애석,4,1,3,3,15,0,약주/청주,단맛  청량감 바디감     약주/청주 쌀  명절,500ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804498-%EC%95%A0%EC%84%9D_main.jpg,5804498
+313,애피소드 상그리아,4,4,4,2,3.5,1,과실주,단맛 신맛 청량감    탄닌감 탄산 과실주 포도  저도수,500ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681189-%EC%95%A0%ED%94%BC%EC%86%8C%EB%93%9C%20%EC%83%81%EA%B7%B8%EB%A6%AC%EC%95%84_main.jpg,5681189
+314,애피소드 애플,4,4,4,2,3.5,1,과실주,단맛 신맛 청량감     탄산 과실주 사과  저도수,500ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681188-%EC%95%A0%ED%94%BC%EC%86%8C%EB%93%9C%20%EC%95%A0%ED%94%8C_main.jpg,5681188
+315,애피소드 호프,4,4,4,2,3.5,0,기타주류,단맛 신맛 청량감      기타주류 쌀 사과 보리  과일류,500ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681201-%EC%95%A0%ED%94%BC%EC%86%8C%EB%93%9C%20%ED%98%B8%ED%94%84_main.jpg,5681201
+316,야관문막걸리,1,3,2,1,6,0,탁주,신맛       탁주 쌀,750ml,1500,,legacy_316
+317,양촌 생 동동주,2,3,2,2,10,0,탁주,신맛       탁주  무감미료,750ml,2400,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551557-%EC%96%91%EC%B4%8C%20%EC%83%9D%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,3551557
+318,양촌 생 막걸리,2,2,3,2,6,0,탁주,청량감      탁주,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551558-%EC%96%91%EC%B4%8C%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551558
+319,어우야,,,,2,16,0,기타주류,목넘김    기타주류  홈술,365ml,9900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804448-%EC%96%B4%EC%9A%B0%EC%95%BC_main.jpg,5804448
+320,여강,,,,3,25,0,증류주,향기    바디감 목넘김    증류주 쌀,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804500-%EC%97%AC%EA%B0%95_main.jpg,5804500
+321,여포의꿈레드드라이,2,2,,2,12,0,과실주,탄닌감  과실주 포도  선물,750ml,20000,,legacy_321
+322,여포의꿈레드스위트,4,1,,3,12,1,과실주,단맛   바디감   탄닌감 탄산 과실주 포도  선물,750ml,20000,,legacy_322
+323,여포의 꿈 (화이트),1,2,,2,12,0,과실주,과실주 포도  선물,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551522-%EC%97%AC%ED%8F%AC%EC%9D%98%20%EA%BF%88%ED%99%94%EC%9D%B4%ED%8A%B8_main.jpg,3551522
+324,연천 아주,2,4,3,3,8,0,탁주,신맛 청량감 바디감     탁주 쌀,750ml,6000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040707-%EC%97%B0%EC%B2%9C%20%EC%95%84%EC%A3%BC_main.jpg,6040707
+325,연천 연주,2,4,2,3,12,0,약주/청주,신맛  바디감     약주/청주 쌀  저도수,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040736-%EC%97%B0%EC%B2%9C%20%EC%97%B0%EC%A3%BC_main.jpg,6040736
+326,연천 우주,,,,3,22,0,증류주,향기    바디감     증류주 쌀,360ml,8500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040734-%EC%97%B0%EC%B2%9C%20%EC%9A%B0%EC%A3%BC_main.jpg,6040734
+327,영일만친구 막걸리,2,2,3,2,6,0,탁주,청량감      탁주 쌀,750ml,1666,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804506-%EC%98%81%EC%9D%BC%EB%A7%8C%EC%B9%9C%EA%B5%AC%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5804506
+328,예담은 한산소곡주,4,1,1,3,16,0,약주/청주,단맛   바디감     약주/청주 쌀 찹쌀  명절,750ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595317-%EC%98%88%EB%8B%B4%EC%9D%80%20%ED%95%9C%EC%82%B0%EC%86%8C%EA%B3%A1%EC%A3%BC750ml_main.JPG,3595317
+329,예담은 한산소곡화주,3,,,3,41,0,증류주,단맛   바디감     증류주 쌀 찹쌀  명절,500ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595316-%EC%98%88%EB%8B%B4%EC%9D%80%20%ED%95%9C%EC%82%B0%EC%86%8C%EA%B3%A1%ED%99%94%EC%A3%BC500ml_main.JPG,3595316
+330,예밀와인 레드 드라이,1,1,2,3,13,0,과실주,바디감     과실주 포도,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804465-%EC%98%88%EB%B0%80%EC%99%80%EC%9D%B8%20%EB%93%9C%EB%9D%BC%EC%9D%B4_main.png,5804465
+331,예밀와인 로제,1,1,2,3,12,0,과실주,바디감     과실주 포도,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804474-%EC%98%88%EB%B0%80%EC%99%80%EC%9D%B8%20%EB%A1%9C%EC%A0%9C_main.jpg,5804474
+332,예밀와인 레드 스위트,4,1,2,3,12,0,과실주,단맛   바디감     과실주 포도,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804475-%EC%98%88%EB%B0%80%EC%99%80%EC%9D%B8%20%EB%A0%88%EB%93%9C%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,5804475
+333,예주,1,3,1,3,15,0,과실주,신맛  바디감     과실주 복분자,750ml,29000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595305-%EC%98%88%EC%A3%BC750ml_main.jpg,3595305
+334,예천주복 만월24,,,,2,24,0,증류주,향기         증류주 복분자  베리류,350ml,12800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804455-%EC%98%88%EC%B2%9C%EC%A3%BC%EB%B3%B5%20%EB%A7%8C%EC%9B%9424_main.jpg,5804455
+335,예천주복 만월40,,,,4,40,0,증류주,향기    바디감 목넘김    증류주 복분자  베리류,350ml,19200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804482-%EC%98%88%EC%B2%9C%EC%A3%BC%EB%B3%B5%20%EB%A7%8C%EC%9B%9440_main.jpg,5804482
+336,예천주 사월24,,,,2,24,0,증류주,향기         증류주 오미자  베리류,375ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804484-%EC%98%88%EC%B2%9C%EC%A3%BC%20%EC%82%AC%EC%9B%9424_main.jpg,5804484
+337,예천주 사월365,,,,2,36.5,0,증류주,향기     목넘김    증류주 오미자  베리류,375ml,29000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804483-%EC%98%88%EC%B2%9C%EC%A3%BC%20%EC%82%AC%EC%9B%94365_main.jpg,5804483
+338,예화,2,1,1,3,13,0,약주/청주,바디감     약주/청주 쌀,750ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595248-%EC%98%88%ED%99%94750ml_main.jpg,3595248
+339,옛날 막걸리 古,2,2,1,4,7.8,0,탁주,바디감     탁주 쌀  무감미료,750ml,2700,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3583672-%EC%98%9B%EB%82%A0%20%EB%A7%89%EA%B1%B8%EB%A6%AC%20_main.jpg,3583672
+340,오디랑,3,1,,1,13,0,과실주,단맛    목넘김    과실주 오디  소용량,330ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3583670-%EC%98%A4%EB%94%94%EB%9E%91_main.jpg,3583670
+341,오매백주,5,1,1,1,12,0,탁주,단맛     담백   탁주 쌀  무감미료,500ml,5000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040723-%EC%98%A4%EB%A7%A4%EB%B0%B1%EC%A3%BC_main.jpg,6040723
+342,오메기 맑은술,1,5,1,3,16,0,약주/청주,신맛  바디감     약주/청주 쌀  선물,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681196-%EC%98%A4%EB%A9%94%EA%B8%B0%20%EB%A7%91%EC%9D%80%EC%88%A0_main.jpg,5681196
+343,오메기술,2,2,1,3,13,0,약주/청주,바디감  담백   약주/청주 쌀 감초  홈술,375ml,13000,,legacy_343
+344,오매락퍽,3,,,4,40,0,기타주류,향기 단맛   바디감     기타주류  이색전통주,500ml,52000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595274-%EC%98%A4%EB%A7%A4%EB%9D%BD%ED%8D%BD500ml_main.JPG,3595274
+345,오목대,2,3,4,3,5,0,기타주류,신맛 청량감 바디감     기타주류 보리  탄산,1000ml,9000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804492-%EC%98%A4%EB%AA%A9%EB%8C%80_main.jpg,5804492
+346,오미로제 프리미어와인,3,4,4,4,12,0,과실주,단맛 신맛 청량감 바디감   탄닌감  과실주 오미자  선물,750ml,39000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681157-%EC%98%A4%EB%AF%B8%EB%A1%9C%EC%A0%9C%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%96%B4%EC%99%80%EC%9D%B8_main.jpg,5681157
+347,오미시앙 스페셜,1,3,,2,12,0,과실주,신맛       과실주 오미자,500ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551583-%EC%98%A4%EB%AF%B8%EC%8B%9C%EC%95%99%20%EC%8A%A4%ED%8E%98%EC%85%9C_main.jpg,3551583
+348,오산막걸리,2,4,2,3,6,0,탁주,신맛  바디감  담백   탁주 쌀  무감미료,500ml,3000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040724-%EC%98%A4%EC%82%B0%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040724
+349,오희 스파클링 막걸리,1,3,3,2,8.5,1,탁주,신맛 청량감   담백  탄산 탁주 오미자,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681202-%EC%98%A4%ED%9D%AC%20%EC%8A%A4%ED%8C%8C%ED%81%B4%EB%A7%81%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681202
+350,왕율주,,,,3,25,0,증류주,향기    바디감 목넘김    증류주 쌀 밤,330ml,8000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681178-%EC%99%95%EC%9C%A8%EC%A3%BC_main.jpg,5681178
+351,왕피천을 품은 미소생막걸리,3,3,3,2,7,0,탁주,단맛 신맛 청량감      탁주 쌀,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681198-%EC%99%95%ED%94%BC%EC%B2%9C%EC%9D%84%20%ED%92%88%EC%9D%80%20%EB%AF%B8%EC%86%8C%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681198
+352,우곡생주,4,2,2,5,10,0,탁주,단맛   바디감     탁주 쌀  무감미료,750ml,6500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036276-%EC%9A%B0%EA%B3%A1%EC%83%9D%EC%A3%BC_main.jpg,6036276
+353,우도 땅콩 전통주,4,1,3,3,6,0,기타주류,단맛  청량감 바디감  담백   기타주류 땅콩  저도수,750ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551586-%EC%9A%B0%EB%8F%84%20%EB%95%85%EC%BD%A9%20%EC%A0%84%ED%86%B5%EC%A3%BC_main.jpg,3551586
+354,우렁이쌀 손 막걸리,4,1,3,2,7.5,0,탁주,단맛  청량감      탁주 쌀,750ml,2600,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551538-%EC%96%91%EC%B4%8C%20%EC%9A%B0%EB%A0%81%EC%9D%B4%EC%8C%80%20%EC%86%90%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551538
+355,운암1945,3,3,,3,12,0,약주/청주,단맛 신맛  바디감  담백   약주/청주 쌀,750ml,28000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598720-%EC%9A%B4%EC%95%941945_main.jpeg,6598720
+356,원매,,,,3,15,0,기타주류,향기    바디감     기타주류 꿀  홈술,750ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681155-%EC%9B%90%EB%A7%A4750ml_main.jpg,5681155
+357,원매 프리미엄,2,,,4,20,0,기타주류,향기    바디감     기타주류 꿀,700ml,45000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595251-%EC%9B%90%EB%A7%A4%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84700ml_main.jpg,3595251
+358,원조 소곡화주,,,,2,41,0,증류주,향기     목넘김    증류주 쌀 찹쌀  소용량,300ml,14000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804430-%EC%9B%90%EC%A1%B0%EC%86%8C%EA%B3%A1%ED%99%94%EC%A3%BC300ml_main.jpg,5804430
+359,원조 한산소곡주,3,1,4,2,16,0,약주/청주,단맛  청량감      약주/청주 쌀 찹쌀,750ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804432-%EC%9B%90%EC%A1%B0%20%ED%95%9C%EC%82%B0%EC%86%8C%EA%B3%A1%EC%A3%BC750ml_main.jpg,5804432
+360,월매 쌀막걸리,2,2,3,1,6,0,탁주,청량감      탁주  소용량,350ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681149-%EC%9B%94%EB%A7%A4%20%EC%8C%80%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681149
+361,유기농 이도14,3,3,3,2,14,0,약주/청주,단맛 신맛 청량감      약주/청주 쌀 밀  선물,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036277-%EC%9C%A0%EA%B8%B0%EB%86%8D%20%EC%9D%B4%EB%8F%8414_main.jpg,6036277
+362,유기농이도42,2,0,0,3,42,0,증류주,바디감     증류주 쌀  선물,750ml,42000,,legacy_362
+363,유자 동동주,2,3,3,3,6,0,탁주,신맛 청량감 바디감     탁주 쌀,750ml,1100,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040770-%EC%9C%A0%EC%9E%90%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,6040770
+364,유자 생 막걸리,2,3,3,5,5,0,탁주,신맛 청량감 바디감     탁주 쌀,750ml,1800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595278-%EC%9C%A0%EC%9E%90%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.jpg,3595278
+365,율무 동동주,2,4,3,4,14,0,탁주,신맛 청량감 바디감     탁주 쌀  드라이,750ml,14000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040738-%EC%9C%A8%EB%AC%B4%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,6040738
+366,은자골 곶감 생 탁배기,1,1,3,5,6,0,탁주,청량감 바디감     탁주,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551573-%EC%9D%80%EC%9E%90%EA%B3%A8%20%EA%B3%B6%EA%B0%90%20%EC%83%9D%20%ED%83%81%EB%B0%B0%EA%B8%B0_main.jpg,3551573
+367,은자골 생 탁배기,1,3,3,3,5,0,탁주,신맛 청량감 바디감     탁주,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551572-%EC%9D%80%EC%9E%90%EA%B3%A8%20%EC%83%9D%20%ED%83%81%EB%B0%B0%EA%B8%B0_main.jpg,3551572
+368,이강주19,2,0,2,4,19,0,기타주류,바디감     기타주류 쌀 꿀 생강 계피,375ml,4500,,legacy_368
+369,이강주25,2,0,2,2,25,0,기타주류,기타주류 쌀 꿀 생강 계피,750ml,28000,,legacy_369
+370,이도 32,2,,,2,32,0,증류주,목넘김    증류주,750ml,37000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598718-%EC%9D%B4%EB%8F%84%2032_main.png,6598718
+371,이동 생 쌀 막걸리,1,3,3,4,6,0,탁주,신맛 청량감 바디감     탁주  탄산,750ml,1300,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551568-%EC%9D%B4%EB%8F%99%20%EC%83%9D%20%EC%8C%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551568
+372,이동 쌀 막걸리,3,1,1,3,6,0,탁주,단맛   바디감     탁주,"1,200ml",1600,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551569-%EC%9D%B4%EB%8F%99%20%EC%8C%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551569
+373,이상헌 약주,3,3,3,3,18,0,약주/청주,단맛 신맛 청량감 바디감     약주/청주 쌀  진한맛,500ml,45000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804456-%EC%9D%B4%EC%83%81%ED%97%8C%20%EC%95%BD%EC%A3%BC_main.jpg,5804456
+374,이상헌 탁주,2,3,3,3,19,0,탁주,신맛 청량감 바디감     탁주 쌀,500ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804457-%EC%9D%B4%EC%83%81%ED%97%8C%20%ED%83%81%EC%A3%BC_main.jpg,5804457
+375,이화백주,3,3,4,3,6,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀  파티,940ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681180-%EC%9D%B4%ED%99%94%EB%B0%B1%EC%A3%BC_main.jpg,5681180
+376,인천 생 소성주,1,2,1,2,6,0,탁주,탁주 쌀  탄산,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551553-%EC%9D%B8%EC%B2%9C%20%EC%83%9D%20%EC%86%8C%EC%84%B1%EC%A3%BC_main.png,3551553
+377,입장탁주,2,2,2,2,6,0,탁주,탁주 쌀,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595312-%EC%9E%85%EC%9E%A5%ED%83%81%EC%A3%BC750ml_main.jpg,3595312
+378,자두와인 레드,2,3,2,2,12,0,과실주,신맛       과실주  이색전통주,750ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595314-%EC%9E%90%EB%91%90%EC%99%80%EC%9D%B8%20%EB%A0%88%EB%93%9C750ml_main.JPG,3595314
+379,자두와인 화이트,2,3,2,4,12,0,과실주,신맛  바디감     과실주,750ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595315-%EC%9E%90%EB%91%90%EC%99%80%EC%9D%B8%20%ED%99%94%EC%9D%B4%ED%8A%B8750ml_main.JPG,3595315
+380,자연담은 복분자막걸리,2,1,1,5,6,0,탁주,바디감     탁주 쌀 복분자,360ml,2800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595226-%EC%9E%90%EC%97%B0%EB%8B%B4%EC%9D%80%20%EB%B3%B5%EB%B6%84%EC%9E%90%EB%A7%89%EA%B1%B8%EB%A6%AC360ml_main.jpg,3595226
+381,자연송이주,1,,,1,18,0,기타주류,기타주류 버섯,720ml,16000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595289-%EC%9E%90%EC%97%B0%EC%86%A1%EC%9D%B4%EC%A3%BC700ml_main.JPG,3595289
+382,자희향 국화주,1,2,1,4,15,0,약주/청주,바디감     약주/청주 쌀 찹쌀  무감미료,500ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551577-%EC%9E%90%ED%9D%AC%ED%96%A5%20%EA%B5%AD%ED%99%94%EC%A3%BC_main.jpg,3551577
+383,자희향나비생탁주,2,1,2,2,8,0,탁주,탁주 쌀 찹쌀,500ml,8000,,legacy_383
+384,자희향탁주,2,2,1,3,12,0,탁주,바디감     탁주 쌀 찹쌀  선물,500ml,16000,,legacy_384
+385,장수 생 막걸리,2,3,3,3,6,0,탁주,신맛 청량감 바디감     탁주  탄산,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595287-%EC%9E%A5%EC%88%98%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.jpg,3595287
+386,장수 오미자주,3,4,4,3,16.5,0,과실주,단맛 신맛 청량감 바디감   탄닌감  과실주 오미자  베리류,360ml,5400,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040704-%EC%9E%A5%EC%88%98%20%EC%98%A4%EB%AF%B8%EC%9E%90%EC%A3%BC_main.jpg,6040704
+387,장홍삼 장수 막걸리,1,4,3,5,6,0,탁주,신맛 청량감 바디감     탁주 삼,750ml,2000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595286-%EC%9E%A5%ED%99%8D%EC%82%BC%20%EC%9E%A5%EC%88%98%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.jpg,3595286
+388,정고집 나주배 약주 15%,4,2,3,2,15,0,약주/청주,단맛  청량감   담백   약주/청주 쌀  과일류,500ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804488-%EC%A0%95%EA%B3%A0%EC%A7%91%20%EB%82%98%EC%A3%BC%EB%B0%B0%20%EC%95%BD%EC%A3%BC%2015_main.jpg,5804488
+389,정고집 나주배 약주 9%,4,2,3,3,9,0,약주/청주,단맛  청량감 바디감     약주/청주 쌀  과일류,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804489-%EC%A0%95%EA%B3%A0%EC%A7%91%20%EB%82%98%EC%A3%BC%EB%B0%B0%20%EC%95%BD%EC%A3%BC%209_main.jpg,5804489
+390,정고집 나주쌀 생막걸리,3,3,3,3,6,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804490-%EC%A0%95%EA%B3%A0%EC%A7%91%20%EB%82%98%EC%A3%BC%EC%8C%80%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5804490
+391,정고집 옛날 생동동주,3,3,4,3,6,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀,750ml,1800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804491-%EC%A0%95%EA%B3%A0%EC%A7%91%20%EC%98%9B%EB%82%A0%20%EC%83%9D%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,5804491
+392,제주 고소리술,,,,3,40,0,증류주,향기    바디감     증류주,400ml,45000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681147-%EC%A0%9C%EC%A3%BC%20%EA%B3%A0%EC%86%8C%EB%A6%AC%EC%88%A0_main.jpg,5681147
+393,젤코바스페셜,2,4,2,3,11.5,0,과실주,신맛  바디감     과실주 포도 머루  베리류,375ml,17000,,legacy_393
+394,젤코바 캠벨와인,3,4,2,3,13.5,0,과실주,단맛 신맛  바디감     과실주 포도  베리류,750ml,62500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040792-%EC%A0%A4%EC%BD%94%EB%B0%94%20%EC%BA%A0%EB%B2%A8%EC%99%80%EC%9D%B8_main.jpg,6040792
+395,젤코바 프리미엄와인,1,4,2,4,12,0,과실주,신맛  바디감     과실주 포도 머루  베리류,500ml,33000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040783-%EC%A0%A4%EC%BD%94%EB%B0%94%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84%EC%99%80%EC%9D%B8_main.jpg,6040783
+396,조선주조사,3,3,2,3,14,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀  홈술,300ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040735-%EC%A1%B0%EC%84%A0%EC%A3%BC%EC%A1%B0%EC%82%AC_main.jpg,6040735
+397,조은술세종바나나주,3,1,3,4,4,0,기타주류,단맛  청량감 바디감  담백   기타주류 쌀  과일류,750ml,1700,,legacy_397
+398,주몽 복분자주,3,1,1,3,16,0,기타주류,단맛   바디감     기타주류 쌀 복분자  베리류,375ml,5000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595291-%EC%A3%BC%EB%AA%BD%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC375ml_main.JPG,3595291
+399,주산지 막걸리,2,1,2,2,6,0,탁주,탁주 쌀 밀,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040713-%EC%A3%BC%EC%82%B0%EC%A7%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040713
+400,주시락톡쏘는복분자막걸리,5,1,3,5,6,0,탁주,단맛  청량감 바디감     탁주 쌀 복분자,750ml,1800,,legacy_400
+401,죽력고,,,,3,32,0,증류주,향기    바디감     증류주 쌀  선물,700ml,60000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681214-%EC%A3%BD%EB%A0%A5%EA%B3%A0_main.png,5681214
+402,죽향 생막걸리,1,2,4,1,6,0,탁주,청량감      탁주 쌀,750ml,2000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036282-%EC%A3%BD%ED%96%A5%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6036282
+403,줄포 생 막걸리,2,2,3,4,6,0,탁주,청량감 바디감     탁주 쌀,750ml,1200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595256-%EC%A4%84%ED%8F%AC%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.jpg,3595256
+404,지란지교 무화과 탁주,4,4,1,4,12,0,탁주,단맛 신맛  바디감  담백   탁주 쌀 찹쌀 밀  과일류,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598731-%EC%A7%80%EB%9E%80%EC%A7%80%EA%B5%90%20%EB%AC%B4%ED%99%94%EA%B3%BC%20%ED%83%81%EC%A3%BC_main.jpg,6598731
+405,지란지교 약주,4,4,,4,17,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀 찹쌀 밀  무감미료,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598727-%EC%A7%80%EB%9E%80%EC%A7%80%EA%B5%90%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84%20%EC%95%BD%EC%A3%BC_main.jpg,6598727
+406,지란지교 탁주,4,4,1,4,13,0,탁주,단맛 신맛  바디감  담백   탁주 쌀 찹쌀,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598729-%EC%A7%80%EB%9E%80%EC%A7%80%EA%B5%90%20%ED%83%81%EC%A3%BC_main.png,6598729
+407,지리산정담생막걸리,1,3,2,1,6,0,탁주,신맛       탁주 쌀,750ml,1500,,legacy_407
+408,지리산 허브잎 술,1,2,2,1,6,0,탁주,탁주 쌀,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595331-%EC%A7%80%EB%A6%AC%EC%82%B0%20%ED%97%88%EB%B8%8C%EC%9E%8E%20%EC%88%A0750ml_main.JPG,3595331
+409,지장수 생막걸리,3,2,3,3,6,0,탁주,단맛  청량감 바디감     탁주 쌀,750ml,1300,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551556-%EC%A7%80%EC%9E%A5%EC%88%98%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551556
+410,지장수 호박 막걸리,2,1,1,2,6,0,탁주,탁주 쌀,550ml,5000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551546-%EC%A7%80%EC%9E%A5%EC%88%98%20%ED%98%B8%EB%B0%95%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551546
+411,지장수 호박 생 막걸리,3,1,2,2,6,0,탁주,단맛        탁주 쌀,750ml,1400,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551547-%EC%A7%80%EC%9E%A5%EC%88%98%20%ED%98%B8%EB%B0%95%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551547
+412,지평생쌀막걸리,4,1,4,2,5,0,탁주,단맛  청량감      탁주 쌀  가성비,1.7L,2700,,legacy_412
+413,지평 생 옛막걸리,4,1,2,2,5,0,탁주,단맛        탁주 밀  가성비,1.7L,2500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551537-%EC%A7%80%ED%8F%89%20%EC%83%9D%20%EC%98%9B%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551537
+414,진도홍주 루비콘,3,,,3,40,0,기타주류,향기 단맛   바디감     기타주류 쌀,375ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595243-%EC%A7%84%EB%8F%84%ED%99%8D%EC%A3%BC%20%EB%A3%A8%EB%B9%84%EC%BD%98375ml_main.jpg,3595243
+415,진맥소주 22%,,,,2,22,0,증류주,향기         증류주 밀  홈술,375ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040719-%EC%A7%84%EB%A7%A5%EC%86%8C%EC%A3%BC%2022_main.jpg,6040719
+416,진맥소주 40%,,,,2,40,0,증류주,향기     목넘김    증류주 밀  홈술,200ml,22000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040717-%EC%A7%84%EB%A7%A5%EC%86%8C%EC%A3%BC%2040_main.jpg,6040717
+417,진맥소주 53%,,,,3,53,0,증류주,향기    바디감 목넘김    증류주 밀,200ml,39000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040715-%EC%A7%84%EB%A7%A5%EC%86%8C%EC%A3%BC%2053_main.jpg,6040715
+418,진심홍삼인삼주19,1,0,0,3,19,0,증류주,바디감     증류주 쌀 삼  삼(蔘)류,375ml,7000,,legacy_418
+419,진심홍삼인삼주38,1,0,0,2,38,0,증류주,증류주 쌀 삼,750ml,70000,,legacy_419
+420,진심홍삼주19,3,1,1,2,19,0,증류주,단맛        증류주 쌀 삼,375ml,3000,,legacy_420
+421,진쾌남,,,,3,25,0,기타주류,향기    바디감 목넘김    기타주류 쌀 오미자 구기자 밤 산수유 오가피,330ml,8500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681173-%EC%A7%84%EC%BE%8C%EB%82%A8_main.jpg,5681173
+422,찰막걸리,2,2,3,2,5.5,0,탁주,청량감      탁주 쌀 찹쌀 밀,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595218-%EC%B0%B0%EB%A7%89%EA%B1%B8%EB%A6%AC%20750ml_main.jpg,3595218
+423,창원 생탁주,3,3,3,3,6,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀,750ml,1000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040739-%EC%B0%BD%EC%9B%90%20%EC%83%9D%ED%83%81%EC%A3%BC_main.jpg,6040739
+424,천년담주,2,1,1,4,15,0,약주/청주,바디감     약주/청주 꿀,500ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036280-%EC%B2%9C%EB%85%84%EB%8B%B4%EC%A3%BC_main.jpg,6036280
+425,천년전주 생 막걸리,1,1,2,3,6,0,탁주,바디감     탁주 쌀,750ml,1300,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551502-%EC%B2%9C%EB%85%84%EC%A0%84%EC%A3%BC%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551502
+426,천년주,,,,2,25,0,증류주,목넘김    증류주 쌀,375ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804443-%EC%B2%9C%EB%85%84%EC%A3%BC_main.jpg,5804443
+427,천등산 차례주,3,2,2,3,11,0,약주/청주,단맛   바디감     약주/청주 쌀,700ml,5900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040732-%EC%B2%9C%EB%93%B1%EC%82%B0%20%EC%B0%A8%EB%A1%80%EC%A3%BC_main.jpg,6040732
+428,천마몽,3,,,3,38,0,기타주류,단맛   바디감     기타주류 쌀,375ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595253-%EC%B2%9C%EB%A7%88%EB%AA%BD375ml_main.jpg,3595253
+429,천마이야기,2,2,2,5,6,0,탁주,바디감     탁주 오미자,750ml,1500,,legacy_429
+430,천매,2,,,4,30,0,기타주류,향기    바디감     기타주류 꿀,600ml,130000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595252-%EC%B2%9C%EB%A7%A4600ml_main.jpg,3595252
+431,천비향오양주약주,2,2,1,3,16,0,약주/청주,바디감     약주/청주 쌀  파티,500ml,40000,,legacy_431
+432,천비향 오양주 탁주,2,2,1,3,14,0,탁주,바디감     탁주 쌀  선물,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681239-%EC%B2%9C%EB%B9%84%ED%96%A5%20%EC%98%A4%EC%96%91%EC%A3%BC%20%ED%83%81%EC%A3%BC_main.jpg,5681239
+433,천비향 화주,,,,2,40,0,증류주,향기     목넘김    증류주 쌀  선물,375ml,50000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681226-%EC%B2%9C%EB%B9%84%ED%96%A5%20%ED%99%94%EC%A3%BC_main.jpg,5681226
+434,천안 연미주,2,3,4,2,13,0,약주/청주,신맛 청량감      약주/청주 삼 약재,360ml,5000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595313-%EC%B2%9C%EC%95%88%20%EC%97%B0%EB%AF%B8%EC%A3%BC360ml_main.JPG,3595313
+435,천지주가햅쌀생막걸리,3,2,2,5,6,0,탁주,단맛   바디감     탁주 쌀,750ml,1400,,legacy_435
+436,청남대블루베리생막걸리,3,2,3,2,6,1,탁주,단맛  청량감   담백  탄산 탁주 쌀 베리,750ml,3000,,legacy_436
+437,청명주,4,4,2,4,17,0,약주/청주,단맛 신맛  바디감  담백   약주/청주 쌀 찹쌀  선물,500ml,23000,,legacy_437
+438,청산녹수 꿀막걸리,1,2,3,4,8,0,탁주,청량감 바디감     탁주 쌀 사과 꿀,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681185-%EC%B2%AD%EC%82%B0%EB%85%B9%EC%88%98%20%EA%BF%80%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681185
+439,청산녹수 사미인주,2,2,4,3,8,0,탁주,청량감 바디감     탁주 쌀 꿀  무감미료,750ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681184-%EC%B2%AD%EC%82%B0%EB%85%B9%EC%88%98%20%EC%82%AC%EB%AF%B8%EC%9D%B8%EC%A3%BC_main.jpg,5681184
+440,청산녹수 생탁주,1,3,3,3,6,0,탁주,신맛 청량감 바디감     탁주 쌀 사과,750ml,1000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681186-%EC%B2%AD%EC%82%B0%EB%85%B9%EC%88%98%20%EC%83%9D%ED%83%81%EC%A3%BC_main.jpg,5681186
+441,청세주,3,1,1,4,18,0,약주/청주,단맛   바디감     약주/청주 쌀,375ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551579-%EC%B2%AD%EC%84%B8%EC%A3%BC_main.jpg,3551579
+442,청송 얼음골 동동주,2,3,4,2,6,0,탁주,신맛 청량감      탁주 쌀 사과 밀,"1,200ml",1800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040711-%EC%B2%AD%EC%86%A1%20%EC%96%BC%EC%9D%8C%EA%B3%A8%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,6040711
+443,청송 주왕 사과막걸리,2,3,4,2,6,0,탁주,신맛 청량감      탁주 쌀 사과 밀,750ml,1500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040712-%EC%B2%AD%EC%86%A1%20%EC%A3%BC%EC%99%95%20%EC%82%AC%EA%B3%BC%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040712
+444,청양 둔송 구기주,3,1,1,2,16,0,약주/청주,단맛        약주/청주 쌀 구기자 감초  선물,700ml,11500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595263-%EC%B2%AD%EC%96%91%20%EB%91%94%EC%86%A1%20%EA%B5%AC%EA%B8%B0%EC%A3%BC700ml_main.JPG,3595263
+445,청진주,2,2,1,1,16,0,약주/청주,약주/청주 쌀 찹쌀  선물,375ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681238-%EC%B2%AD%EC%A7%84%EC%A3%BC_main.jpg,5681238
+446,청춘,2,2,1,3,15,0,약주/청주,바디감     약주/청주 쌀,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595295-%EC%B2%AD%EC%B6%98750ml_main.JPG,3595295
+447,초선의 꿈 (로제),1,3,,2,12,0,과실주,신맛   목넘김  탄닌감  과실주 포도  기념일,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551521-%EC%B4%88%EC%84%A0%EC%9D%98%20%EA%BF%88%20%EB%A1%9C%EC%A0%9C_main.jpg,3551521
+448,추사40,,,,3,40,0,증류주,향기    바디감     증류주 사과  과일류,500ml,60000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681205-%EC%B6%94%EC%82%AC40_main.jpg,5681205
+449,추사 로제,2,3,2,1,12,0,과실주,신맛       과실주 사과,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681206-%EC%B6%94%EC%82%AC%20%EB%A1%9C%EC%A0%9C_main.jpg,5681206
+450,추사백25,3,,,2,25,0,증류주,향기 단맛        증류주  과일류,350ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598725-%EC%B6%94%EC%82%AC%EB%B0%B125_main.jpg,6598725
+451,추사블루,3,1,2,3,12,0,과실주,단맛   바디감     과실주 베리  이색전통주,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595303-%EC%B6%94%EC%82%AC%EB%B8%94%EB%A3%A8375ml_main.JPG,3595303
+452,추사 애플와인,3,1,2,3,12,0,과실주,단맛   바디감     과실주 사과  선물,375ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595302-%EC%B6%94%EC%82%AC%20%EC%95%A0%ED%94%8C%EC%99%80%EC%9D%B8375ml_main.jpg,3595302
+453,추성주,2,0,3,2,25,0,증류주,청량감      증류주 쌀 오미자 구기자  선물,700ml,80000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551511-%EC%B6%94%EC%84%B1%EC%A3%BC_main.jpg,3551511
+454,추시와인,3,2,2,3,12.5,0,기타주류,단맛   바디감     기타주류,750ml,16000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804433-%EC%B6%94%EC%8B%9C%EC%99%80%EC%9D%B8_main.jpg,5804433
+455,충주 백주,,,,3,35,0,증류주,향기    바디감     증류주 쌀,375ml,7800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040731-%EC%B6%A9%EC%A3%BC%20%EB%B0%B1%EC%A3%BC_main.jpg,6040731
+456,컨츄리 산머루 와인 (드라이),1,3,,3,14,0,과실주,신맛  바디감 목넘김    과실주 머루,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551517-%EC%BB%A8%EC%B8%84%EB%A6%AC%20%EC%82%B0%EB%A8%B8%EB%A3%A8%20%EC%99%80%EC%9D%B8%20%EB%93%9C%EB%9D%BC%EC%9D%B4_main.jpg,3551517
+457,컨츄리 산머루 와인 (스위트),2,3,,2,12,0,과실주,신맛       과실주 머루,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551516-%EC%BB%A8%EC%B8%84%EB%A6%AC%20%EC%82%B0%EB%A8%B8%EB%A3%A8%20%EC%99%80%EC%9D%B8%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,3551516
+458,컨츄리와인캠벨얼리스위트,3,1,,3,12,0,과실주,단맛   바디감 목넘김    과실주 포도,750ml,15000,,legacy_458
+459,"코이버펑크, 머스캣 베일리 에이",3,3,3,4,12,0,과실주,단맛 신맛 청량감 바디감     과실주 포도  베리류,750ml,65000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598723-%EC%BD%94%EC%9D%B4%EB%B2%84%ED%8E%91%ED%81%AC%20%EB%A8%B8%EC%8A%A4%EC%BA%A3%20%EB%B2%A0%EC%9D%BC%EB%A6%AC%20%EC%97%90%EC%9D%B4_main.jpg,6598723
+460,코이버펑크샤르도네세미용블랜드,2,4,4,3,11,0,과실주,신맛 청량감 바디감     과실주 포도  베리류,750ml,65000,,legacy_460
+461,"코이버펑크, 카베르네 소비뇽",1,2,2,3,12,0,과실주,바디감     과실주  베리류,750ml,65000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598719-%EC%BD%94%EC%9D%B4%EB%B2%84%ED%8E%91%ED%81%AC%20%EC%B9%B4%EB%B2%A0%EB%A5%B4%EB%84%A4%20%EC%86%8C%EB%B9%84%EB%87%BD_main.png,6598719
+462,쿨샷7.5,3,1,2,2,7.5,0,과실주,단맛        과실주 복분자  저도수,300ml,3000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681151-%EC%BF%A8%EC%83%B775_main.jpg,5681151
+463,크라테 레드와인 드라이,2,2,3,3,11.5,0,과실주,청량감 바디감     과실주 머루,750ml,48000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804426-%ED%81%AC%EB%9D%BC%ED%85%8C%20%EB%A0%88%EB%93%9C%EC%99%80%EC%9D%B8%20%EB%93%9C%EB%9D%BC%EC%9D%B4_main.jpg,5804426
+464,크라테 레드와인 스위트,4,2,3,1,11.5,0,과실주,단맛  청량감      과실주 머루,750ml,48000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804428-%ED%81%AC%EB%9D%BC%ED%85%8C%20%EB%A0%88%EB%93%9C%EC%99%80%EC%9D%B8%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,5804428
+465,크라테 로제와인,4,1,3,3,11.5,0,과실주,단맛  청량감 바디감   탄닌감  과실주 머루,375ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804425-%ED%81%AC%EB%9D%BC%ED%85%8C%20%EB%A1%9C%EC%A0%9C%EC%99%80%EC%9D%B8_main.jpg,5804425
+466,타미앙스,1,1,2,4,40,0,증류주,바디감     증류주 쌀 오미자 구기자  선물,500ml,50000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551506-%ED%83%80%EB%AF%B8%EC%95%99%EC%8A%A4_main.jpg,3551506
+467,톡 쏘는 알밤동동,4,1,3,3,6,0,기타주류,단맛  청량감 바디감     기타주류 쌀 밤,350ml,1300,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551490-%ED%86%A1%20%EC%8F%98%EB%8A%94%20%EC%95%8C%EB%B0%A4%EB%8F%99%EB%8F%99_main.jpg,3551490
+468,톡 한잔 골드,3,,,4,43,0,기타주류,향기 단맛   바디감     기타주류 쌀 보리,500ml,49000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595246-%ED%86%A1%20%ED%95%9C%EC%9E%94%20%EA%B3%A8%EB%93%9C500ml_main.JPG,3595246
+469,톡 한잔 소주,2,,,3,30,0,증류주,바디감     증류주 쌀 보리,500ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595245-%ED%86%A1%20%ED%95%9C%EC%9E%94%20%EC%86%8C%EC%A3%BC500ml_main.JPG,3595245
+470,티나Tina,,,,5,16,0,기타주류,향기    바디감 목넘김    기타주류  이색전통주,750ml,54000,,legacy_470
+471,펀치 쌀 바나나,3,1,2,4,4,1,기타주류,단맛   바디감    탄산 기타주류 쌀,750ml,2000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595259-%ED%8E%80%EC%B9%98%20%EC%8C%80%20%EB%B0%94%EB%82%98%EB%82%98750ml_main.jpg,3595259
+472,편백숲 산소막걸리,3,3,3,3,5.2,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 사과  저도수,750ml,1900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040763-%ED%8E%B8%EB%B0%B1%EC%88%B2%20%EC%82%B0%EC%86%8C%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040763
+473,편백숲 산소막걸리 딸기스파클링,3,2,5,3,6.8,1,탁주,단맛  청량감 바디감    탄산 탁주 쌀 찹쌀  이색전통주,940ml,41000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040705-%ED%8E%B8%EB%B0%B1%EC%88%B2%20%EC%82%B0%EC%86%8C%EB%A7%89%EA%B1%B8%EB%A6%AC%20%EB%94%B8%EA%B8%B0%EC%8A%A4%ED%8C%8C%ED%81%B4%EB%A7%81_main.jpg,6040705
+474,편백숲 산소막걸리 순수령,3,1,1,4,5.8,0,탁주,단맛   바디감     탁주 쌀 찹쌀  홈술,750ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040706-%ED%8E%B8%EB%B0%B1%EC%88%B2%20%EC%82%B0%EC%86%8C%EB%A7%89%EA%B1%B8%EB%A6%AC%20%EC%88%9C%EC%88%98%EB%A0%B9_main.jpg,6040706
+475,평창 머루주,1,3,1,4,16,0,과실주,신맛  바디감     과실주 머루,360ml,6500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595318-%ED%8F%89%EC%B0%BD%EB%A8%B8%EB%A3%A8%EC%A3%BC360ml_main.JPG,3595318
+476,평창 오디주,1,3,1,3,16,0,과실주,신맛  바디감     과실주 오디,360ml,6500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595320-%ED%8F%89%EC%B0%BD%20%EC%98%A4%EB%94%94%EC%A3%BC360ml_main.JPG,3595320
+477,포엠 레드 드라이와인,2,3,2,4,12,0,과실주,신맛  바디감     과실주 포도 머루,750ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040777-%ED%8F%AC%EC%97%A0%20%EB%A0%88%EB%93%9C%20%EB%93%9C%EB%9D%BC%EC%9D%B4%EC%99%80%EC%9D%B8_main.jpg,6040777
+478,포엠 레드 스위트와인,4,3,3,3,12,0,과실주,단맛 신맛 청량감 바디감     과실주 포도,750ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040778-%ED%8F%AC%EC%97%A0%20%EB%A0%88%EB%93%9C%20%EC%8A%A4%EC%9C%84%ED%8A%B8%EC%99%80%EC%9D%B8_main.jpg,6040778
+479,포엠로제와인,4,3,3,3,12,0,과실주,단맛 신맛 청량감 바디감     과실주 포도,750ml,35000,,legacy_479
+480,포엠 화이트와인,4,4,4,3,12,0,과실주,단맛 신맛 청량감 바디감     과실주 포도  과일류,750ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040775-%ED%8F%AC%EC%97%A0%20%ED%99%94%EC%9D%B4%ED%8A%B8%EC%99%80%EC%9D%B8_main.jpg,6040775
+481,풍남문,2,3,4,2,5,0,기타주류,신맛 청량감      기타주류 보리,1000ml,9000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804513-%ED%92%8D%EB%82%A8%EB%AC%B8_main.jpg,5804513
+482,풍정사계 동(冬),2,,,3,25,0,증류주,향기    바디감     증류주  선물,375ml,25000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595324-%ED%92%8D%EC%A0%95%EC%82%AC%EA%B3%84%20%EB%8F%99375ml_main.jpg,3595324
+483,풍정사계 추(秋),1,2,1,4,12,0,탁주,바디감     탁주  선물,500ml,15000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595323-%ED%92%8D%EC%A0%95%EC%82%AC%EA%B3%84%20%EC%B6%94500ml_main.JPG,3595323
+484,풍정사계 춘(春),2,1,1,3,15,0,약주/청주,바디감     약주/청주  선물,500ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595321-%ED%92%8D%EC%A0%95%EC%82%AC%EA%B3%84%20%EC%B6%98500ml_main.JPG,3595321
+485,풍정사계 하(夏),4,1,1,3,18,0,약주/청주,단맛   바디감     약주/청주,500ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595322-%ED%92%8D%EC%A0%95%EC%82%AC%EA%B3%84%20%ED%95%98500ml_main.JPG,3595322
+486,하향주,3,3,1,4,17,0,약주/청주,단맛 신맛  바디감     약주/청주 쌀 찹쌀,750ml,45000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804450-%ED%95%98%ED%96%A5%EC%A3%BC_main.jpg,5804450
+487,하향주 증류주,,,,4,45,0,증류주,향기    바디감 목넘김    증류주 쌀 찹쌀,700ml,70000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804449-%ED%95%98%ED%96%A5%EC%A3%BC%20%EC%A6%9D%EB%A5%98%EC%A3%BC_main.jpg,5804449
+488,한비 동충하초술,,,,4,35,0,기타주류,향기    바디감     기타주류 쌀 오가피,375ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681168-%ED%95%9C%EB%B9%84%20%EB%8F%99%EC%B6%A9%ED%95%98%EC%B4%88%EC%88%A0_main.jpg,5681168
+489,한비 무병장수술,,,,4,35,0,기타주류,향기    바디감     기타주류 쌀 오미자 복분자 구기자 삼 산수유 오가피  삼(蔘)류,375ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681169-%ED%95%9C%EB%B9%84%20%EB%AC%B4%EB%B3%91%EC%9E%A5%EC%88%98%EC%88%A0_main.jpg,5681169
+490,한비 쌀소주,,,,2,40,0,증류주,목넘김    증류주 쌀,375ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681166-%ED%95%9C%EB%B9%84%20%EC%8C%80%EC%86%8C%EC%A3%BC_main.jpg,5681166
+491,한비 오가피술,,,,3,35,0,기타주류,바디감     기타주류 쌀 오가피,375ml,30000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681167-%ED%95%9C%EB%B9%84%20%EC%98%A4%EA%B0%80%ED%94%BC%EC%88%A0_main.jpg,5681167
+492,한산소곡주,3,1,,4,18,0,약주/청주,단맛   바디감 목넘김    약주/청주 쌀 찹쌀 생강  선물,360ml,6500,,legacy_492
+493,한스오차드 사과와인,4,3,2,2,11,0,과실주,단맛 신맛       과실주 사과  홈술,750ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681187-%ED%95%9C%EC%8A%A4%EC%98%A4%EC%B0%A8%EB%93%9C%20%EC%82%AC%EA%B3%BC%EC%99%80%EC%9D%B8_main.jpg,5681187
+494,한시울,,,,4,40,0,증류주,향기    바디감 목넘김    증류주 쌀,500ml,18000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804458-%ED%95%9C%EC%8B%9C%EC%9A%B8_main.jpg,5804458
+495,한주,,,,3,35,0,증류주,향기    바디감 목넘김    증류주 쌀 밀,360ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681219-%ED%95%9C%EC%A3%BC_main.png,5681219
+496,해미읍성 딸기와인,3,2,1,3,12,0,과실주,단맛   바디감     과실주,500ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804442-%ED%95%B4%EB%AF%B8%EC%9D%8D%EC%84%B1%20%EB%94%B8%EA%B8%B0%EC%99%80%EC%9D%B8_main.jpg,5804442
+497,해미읍성 매실와인,5,1,2,4,12,0,과실주,단맛   바디감     과실주,500ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804441-%ED%95%B4%EB%AF%B8%EC%9D%8D%EC%84%B1%20%EB%A7%A4%EC%8B%A4%EC%99%80%EC%9D%B8_main.jpg,5804441
+498,해미읍성 모과와인,3,2,2,3,12,0,과실주,단맛   바디감     과실주,500ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804439-%ED%95%B4%EB%AF%B8%EC%9D%8D%EC%84%B1%20%EB%AA%A8%EA%B3%BC%EC%99%80%EC%9D%B8_main.jpg,5804439
+499,해미읍성 살구와인,3,2,2,3,12,0,과실주,단맛   바디감     과실주,500ml,20000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804440-%ED%95%B4%EB%AF%B8%EC%9D%8D%EC%84%B1%20%EC%82%B4%EA%B5%AC%EC%99%80%EC%9D%B8_main.jpg,5804440
+500,해방주 18.8%,,,,2,18.8,0,증류주,증류주 쌀  저도수,375ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804480-%ED%95%B4%EB%B0%A9%EC%A3%BC%20188_main.jpg,5804480
+501,해방주 38%,,,,3,38,0,증류주,향기    바디감 목넘김    증류주 쌀,800ml,45000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804444-%ED%95%B4%EB%B0%A9%EC%A3%BC%2038_main.jpg,5804444
+502,해창12도생막걸리,1,1,2,2,12,0,탁주,탁주 쌀 찹쌀,900ml,10000,,legacy_502
+503,해창9도생막걸리,1,1,2,2,9,0,탁주,탁주 쌀 찹쌀  홈술,900ml,6000,,legacy_503
+504,해창찹쌀생막걸리,1,1,3,2,6,0,탁주,청량감      탁주 쌀 찹쌀,900ml,3000,,legacy_504
+505,해파랑,3,1,1,3,13,0,약주/청주,단맛   바디감     약주/청주 쌀,375ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804445-%ED%95%B4%ED%8C%8C%EB%9E%91_main.jpg,5804445
+506,햇찹쌀이 하늘수,3,3,3,3,6,0,탁주,단맛 신맛 청량감 바디감     탁주 쌀 찹쌀,500ml,1100,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040754-%ED%96%87%EC%B0%B9%EC%8C%80%EC%9D%B4%20%ED%95%98%EB%8A%98%EC%88%98_main.jpg,6040754
+507,행운 막걸리,3,1,1,4,6,0,탁주,단맛   바디감     탁주 쌀,750ml,1100,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040769-%ED%96%89%EC%9A%B4%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040769
+508,행운주,2,2,2,2,12,0,약주/청주,약주/청주 밀,750ml,9000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040768-%ED%96%89%EC%9A%B4%EC%A3%BC_main.jpg,6040768
+509,향수 우리밀 막걸리,2,3,3,5,9,0,탁주,신맛 청량감 바디감     탁주 밀,700ml,7900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681183-%ED%96%A5%EC%88%98%20%EC%9A%B0%EB%A6%AC%EB%B0%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681183
+510,허니문와인,4,2,2,2,10,0,기타주류,단맛        기타주류 꿀  파티,375ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804419-%ED%97%88%EB%8B%88%EB%AC%B8%EC%99%80%EC%9D%B8_main.png,5804419
+511,허니비와인,3,1,1,4,8,0,기타주류,단맛   바디감     기타주류 꿀  파티,500ml,35000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595297-%ED%97%88%EB%8B%88%EB%B9%84%20%EC%99%80%EC%9D%B8500ml_main.png,3595297
+512,호담,2,,,2,20,0,기타주류,기타주류 삼  삼(蔘)류,300ml,18000,,legacy_512
+513,호담 산양산삼 막걸리,1,3,3,1,6,0,탁주,신맛 청량감      탁주 쌀 삼,750ml,1800,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681148-%ED%98%B8%EB%8B%B4%20%EC%82%B0%EC%96%91%EC%82%B0%EC%82%BC%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681148
+514,호담 산양산삼주,1,1,1,3,13,0,약주/청주,바디감     약주/청주 삼,375ml,4000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595328-%ED%98%B8%EB%8B%B4%20%EC%82%B0%EC%96%91%EC%82%B0%EC%82%BC%EC%A3%BC375ml_main.jpg,3595328
+515,호땅,3,1,2,4,6,0,기타주류,단맛   바디감     기타주류 쌀 땅콩,750ml,2700,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036285-%ED%98%B8%EB%95%85_main.jpg,6036285
+516,호랑이 생 막걸리,4,1,2,2,6,0,탁주,단맛        탁주 쌀,750ml,2200,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551497-%ED%98%B8%EB%9E%91%EC%9D%B4%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551497
+517,호모루덴스,1,2,2,4,12,0,탁주,바디감     탁주 쌀  드라이,500ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681222-%ED%98%B8%EB%AA%A8%EB%A3%A8%EB%8D%B4%EC%8A%A4_main.jpg,5681222
+518,혼디주,4,3,3,2,12,0,과실주,단맛 신맛 청량감      과실주 귤  선물,330ml,8000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804508-%ED%98%BC%EB%94%94%EC%A3%BC_main.jpg,5804508
+519,홍로,,,,2,45,0,증류주,향기         증류주 쌀 찹쌀,500ml,50000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040752-%ED%99%8D%EB%A1%9C_main.jpg,6040752
+520,홍삼명주,1,3,,1,14,0,기타주류,신맛   목넘김 담백   기타주류 삼  삼(蔘)류,375ml,12000,,legacy_520
+521,홍천강 탁주,2,3,2,4,11,0,탁주,신맛  바디감     탁주 쌀,500ml,10000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551549-%ED%99%8D%EC%B2%9C%EA%B0%95%20%ED%83%81%EC%A3%BC_main.jpg,3551549
+522,화주,,,,1,25,0,증류주,목넘김    증류주 쌀 삼  삼(蔘)류,375ml,13000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681163-%ED%99%94%EC%A3%BC_main.jpg,5681163
+523,황금보리소주17,,,,2,17,0,증류주,증류주 보리,375ml,5000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804478-%ED%99%A9%EA%B8%88%EB%B3%B4%EB%A6%AC%EC%86%8C%EC%A3%BC17_main.jpg,5804478
+524,황금보리소주25,,,,2,25,0,증류주,향기         증류주 보리,375ml,8500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804477-%ED%99%A9%EA%B8%88%EB%B3%B4%EB%A6%AC%EC%86%8C%EC%A3%BC25_main.jpg,5804477
+525,황금보리소주40,,,,3,40,0,증류주,향기    바디감 목넘김    증류주 보리,375ml,15700,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804476-%ED%99%A9%EA%B8%88%EB%B3%B4%EB%A6%AC%EC%86%8C%EC%A3%BC40_main.jpg,5804476
+526,황진이,3,2,1,3,12,0,약주/청주,단맛   바디감     약주/청주 쌀 오미자 산수유,375ml,3500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595292-%ED%99%A9%EC%A7%84%EC%9D%B4375ml_main.jpg,3595292
+527,황칠주,,,,2,16,0,기타주류,목넘김    기타주류,365ml,9900,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804446-%ED%99%A9%EC%B9%A0%EC%A3%BC_main.jpg,5804446
+528,회곡 생 동동주,3,2,3,3,7,0,탁주,단맛  청량감 바디감     탁주 쌀,"1,200ml",1300,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551559-%ED%9A%8C%EA%B3%A1%20%EC%83%9D%20%EB%8F%99%EB%8F%99%EC%A3%BC_main.jpg,3551559
+529,회곡 생 막걸리,2,2,2,4,6,0,탁주,바디감     탁주 쌀,750ml,1300,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551560-%ED%9A%8C%EA%B3%A1%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551560
+530,흑돈주,,,,2,16,0,기타주류,목넘김    기타주류,365ml,12000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804447-%ED%9D%91%EB%8F%88%EC%A3%BC_main.jpg,5804447
+531,희양산막걸리 15%,3,4,1,5,15,0,탁주,단맛 신맛  바디감     탁주 쌀  무감미료,500ml,9500,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040714-%ED%9D%AC%EC%96%91%EC%82%B0%EB%A7%89%EA%B1%B8%EB%A6%AC%2015_main.jpg,6040714
+532,희양산막걸리 9%,2,3,2,3,9,0,탁주,신맛  바디감  담백   탁주 쌀  무감미료,750ml,8000,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040716-%ED%9D%AC%EC%96%91%EC%82%B0%EB%A7%89%EA%B1%B8%EB%A6%AC%209_main.jpg,6040716
+533,가평 잣 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551492-%EA%B0%80%ED%8F%89%20%EC%9E%A3%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551492
+534,가평소주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743424-%EA%B0%80%ED%8F%89%EC%86%8C%EC%A3%BC_main.png,6743424
+535,감아락 25도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595273-%EA%B0%90%EC%95%84%EB%9D%BD%2025%EB%8F%84500ml_main.jpg,3595273
+536,감홍로,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743365-%EA%B0%90%ED%99%8D%EB%A1%9C_main.jpg,6743365
+537,강경순명인 제주 오메기술,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743403-%EC%84%B1%EC%9D%8D%EB%AF%BC%EC%86%8D%EB%A7%88%EC%9D%84%20%EC%98%A4%EB%A9%94%EA%B8%B0%EC%88%A0_main.png,6743403
+538,겨울소주 45,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743362-%EA%B2%A8%EC%9A%B8%EC%86%8C%EC%A3%BC%2045_main.png,6743362
+539,경산대추약주 추,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743368-%EA%B2%BD%EC%82%B0%EB%8C%80%EC%B6%94%EC%95%BD%EC%A3%BC%20%EC%B6%94_main.jpg,6743368
+540,계룡백일주 16도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595221-%EA%B3%84%EB%A3%A1%EB%B0%B1%EC%9D%BC%EC%A3%BC%2016%EB%8F%84700ml2_main.jpg,3595221
+541,계룡백일주 30도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595222-%EA%B3%84%EB%A3%A1%EB%B0%B1%EC%9D%BC%EC%A3%BC%2030%EB%8F%84400ml2_main.jpg,3595222
+542,계룡백일주 40도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595223-%EA%B3%84%EB%A3%A1%EB%B0%B1%EC%9D%BC%EC%A3%BC%2040%EB%8F%84_main.jpg,3595223
+543,고소리술 40,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551508-%EA%B3%A0%EC%86%8C%EB%A6%AC%EC%88%A0%2040_main.jpg,3551508
+544,고흥유자주12,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743392-%EA%B3%A0%ED%9D%A5%EC%9C%A0%EC%9E%90%EC%A3%BC12_main.jpg,6743392
+545,구기홍주 360,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743361-%EA%B5%AC%EA%B8%B0%ED%99%8D%EC%A3%BC%20360_main.jpg,6743361
+546,궁중술 왕주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743367-%EA%B6%81%EC%A4%91%EC%88%A0%20%EC%99%95%EC%A3%BC_main.png,6743367
+547,금산인삼주 수삼단본 720ml 23도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595232-%EC%88%98%EC%82%BC%EB%8B%A8%EB%B3%B8%2023%EB%8F%84720ml_main.jpg,3595232
+548,금산인삼주 수삼단본 720ml 43도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595231-%EC%88%98%EC%82%BC%EB%8B%A8%EB%B3%B8%2043%EB%8F%84720ml_main.jpg,3595231
+549,김천 과하주 16도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595237-%EA%B9%80%EC%B2%9C%EA%B3%BC%ED%95%98%EC%A3%BC%2016%EB%8F%84700ml_main.jpg,3595237
+550,김천 과하주 23도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595236-%EA%B9%80%EC%B2%9C%20%EA%B3%BC%ED%95%98%EC%A3%BC%2023%EB%8F%84700ml_main.jpg,3595236
+551,김포약주 PET,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681227-%EA%B9%80%ED%8F%AC%EC%95%BD%EC%A3%BC%20PET_main.jpg,5681227
+552,김포약주 유리병,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681228-%EA%B9%80%ED%8F%AC%EC%95%BD%EC%A3%BC%20%EC%9C%A0%EB%A6%AC%EB%B3%91_main.jpg,5681228
+553,김포예주 프리미엄,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681225-%EA%B9%80%ED%8F%AC%EC%98%88%EC%A3%BC%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84_main.jpg,5681225
+554,끌로너와 스위트,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743420-%EB%81%8C%EB%A1%9C%EB%84%88%EC%99%80%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,6743420
+555,나루 생막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743412-%EB%82%98%EB%A3%A8%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6743412
+556,남도가양주 찰진,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743385-%EC%B0%B0%EC%A7%84_main.png,6743385
+557,내장산 복분자주 지통1호,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551527-%EB%82%B4%EC%9E%A5%EC%82%B0%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC%20%EC%A7%80%ED%86%B51%ED%98%B8_main.jpg,3551527
+558,너디호프 사워,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743384-%EB%84%88%EB%94%94%ED%98%B8%ED%94%84%20%EC%82%AC%EC%9B%8C_main.png,6743384
+559,녹천 소곡화주 480ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595241-%EC%86%8C%EA%B3%A1%ED%99%94%EC%A3%BC480ml_main.JPG,3595241
+560,녹천 소곡화주 500ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595242-%EC%86%8C%EA%B3%A1%ED%99%94%EC%A3%BC500ml_main.JPG,3595242
+561,느낌 19.8,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040747-%EB%8A%90%EB%82%8C%20198_main.jpg,6040747
+562,느낌 30,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040746-%EB%8A%90%EB%82%8C%2030_main.jpg,6040746
+563,다랭이팜 생 막걸리 (7분도현미),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551550-%EB%8B%A4%EB%9E%AD%EC%9D%B4%ED%8C%9C%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC%207%EB%B6%84%EB%8F%84%ED%98%84%EB%AF%B8_main.jpg,3551550
+564,달1614SWEET,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743372-%EB%8B%AC1614SWEET_main.png,6743372
+565,담향 대대포 블루,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6036284-%EB%8B%B4%ED%96%A5%20%EB%8C%80%EB%8C%80%ED%8F%AC%20%EB%B8%94%EB%A3%A8_main.jpg,6036284
+566,독수리 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743419-%EB%8F%85%EC%88%98%EB%A6%AC%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6743419
+567,동구래,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743408-%EB%8F%99%EA%B5%AC%EB%9E%98_main.png,6743408
+568,두두물물 약주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743360-%EB%91%90%EB%91%90%EB%AC%BC%EB%AC%BC%20%EC%95%BD%EC%A3%BC_main.png,6743360
+569,두레앙일반증류주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743417-%EB%91%90%EB%A0%88%EC%95%99%EC%9D%BC%EB%B0%98%EC%A6%9D%EB%A5%98%EC%A3%BC_main.png,6743417
+570,딸링,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743375-%EB%94%B8%EB%A7%81_main.png,6743375
+571,라봉,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743359-%EB%9D%BC%EB%B4%89_main.png,6743359
+572,려(驪)고구마증류소주 25도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3583674-%EB%A0%A4%EA%B3%A0%EA%B5%AC%EB%A7%88%EC%A6%9D%EB%A5%98%EC%86%8C%EC%A3%BC%2025%EB%8F%84_main.jpg,3583674
+573,려(驪)고구마증류소주 40도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3583675-%EB%A0%A4%EA%B3%A0%EA%B5%AC%EB%A7%88%EC%A6%9D%EB%A5%98%EC%86%8C%EC%A3%BC%2040%EB%8F%84_main.jpg,3583675
+574,려(驪)증류소주 25도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3583673-%EB%A0%A4%EC%A6%9D%EB%A5%98%EC%86%8C%EC%A3%BC%2025%EB%8F%84_main.jpg,3583673
+575,매료막걸리ver.1,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743422-%EB%A7%A4%EB%A3%8C%20%EB%A7%89%EA%B1%B8%EB%A6%AC%20ver1_main.png,6743422
+576,매실와인 에델 스위트,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743391-%EB%A7%A4%EC%8B%A4%EC%99%80%EC%9D%B8%20%EC%97%90%EB%8D%B8%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.png,6743391
+577,매실원주 15도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595250-%EB%A7%A4%EC%8B%A4%EC%9B%90%EC%A3%BC%2015%EB%8F%84300ml_main.jpg,3595250
+578,면천두견주 360,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681212-%EB%A9%B4%EC%B2%9C%EB%91%90%EA%B2%AC%EC%A3%BC%20360ml_main.jpg,5681212
+579,면천두견주 700,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681211-%EB%A9%B4%EC%B2%9C%EB%91%90%EA%B2%AC%EC%A3%BC%20700ml_main.jpg,5681211
+580,면천두견주 900,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681208-%EB%A9%B4%EC%B2%9C%EB%91%90%EA%B2%AC%EC%A3%BC%20900ml_main.jpg,5681208
+581,명술 375ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595329-%EB%AA%85%EC%88%A0375ml_main.jpg,3595329
+582,명인 안동소주 22도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595266-%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC%2022%EB%8F%84360ml_main.jpg,3595266
+583,모든날에,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743394-%EB%AA%A8%EB%93%A0%EB%82%A0%EC%97%90_main.png,6743394
+584,문경바람 백자 25도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681156-%EB%AC%B8%EA%B2%BD%EB%B0%94%EB%9E%8C%20%EB%B0%B1%EC%9E%90%2025%EB%8F%84_main.jpg,5681156
+585,문경바람 백자 40도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681159-%EB%AC%B8%EA%B2%BD%EB%B0%94%EB%9E%8C%20%EB%B0%B1%EC%9E%90%2040%EB%8F%84_main.jpg,5681159
+586,문경바람 오크 40도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681158-%EB%AC%B8%EA%B2%BD%EB%B0%94%EB%9E%8C%20%EC%98%A4%ED%81%AC%2040%EB%8F%84_main.jpg,5681158
+587,문배술 용상,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743369-%EB%AC%B8%EB%B0%B0%EC%88%A0%20%EC%9A%A9%EC%83%81_main.jpg,6743369
+588,문배술 헤리티지 23도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595267-%EB%AC%B8%EB%B0%B0%EC%88%A0%20%ED%97%A4%EB%A6%AC%ED%8B%B0%EC%A7%80%2023%EB%8F%84375ml_main.JPG,3595267
+589,문배술 헤리티지 25도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595268-%EB%AC%B8%EB%B0%B0%EC%88%A0%ED%97%A4%EB%A6%AC%ED%8B%B0%EC%A7%8025375ml_main.jpg,3595268
+590,문배술 헤리티지 40도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595269-%EB%AC%B8%EB%B0%B0%EC%88%A0%20%ED%97%A4%EB%A6%AC%ED%8B%B0%EC%A7%80%2040%EB%8F%84200ml_main.jpg,3595269
+591,문희 (오미자),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551532-%EB%AC%B8%ED%9D%AC%20%EB%AC%B8%EA%B2%BD%EC%98%A4%EB%AF%B8%EC%9E%90%20%EC%88%98%EC%A0%9C%20%EC%A0%84%ED%86%B5%EC%A3%BC_main.jpg,3551532
+592,문희 (햇찹쌀수제전통주) 500ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551554-%EB%AC%B8%ED%9D%AC%20%ED%96%87%EC%B0%B9%EC%8C%80%20%EC%88%98%EC%A0%9C%20%EC%A0%84%ED%86%B5%EC%A3%BC_main.jpg,3551554
+593,문희 (햇찹쌀수제전통주) 700ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551555-%EB%AC%B8%ED%9D%AC%20%ED%96%87%EC%B0%B9%EC%8C%80%20%EC%88%98%EC%A0%9C%20%EC%A0%84%ED%86%B5%EC%A3%BC_main.jpg,3551555
+594,"미라실 울프, 가을의 전설 오텀센스 다래",,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743381-%EB%AF%B8%EB%9D%BC%EC%8B%A4%20%EC%9A%B8%ED%94%84%20%EA%B0%80%EC%9D%84%EC%9D%98%20%EC%A0%84%EC%84%A4%20%EC%98%A4%ED%85%80%EC%84%BC%EC%8A%A4%20%EB%8B%A4%EB%9E%98_main.png,6743381
+595,민속주 안동소주 400ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595272-%EB%AF%BC%EC%86%8D%EC%A3%BC%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC400ml_main.jpg,3595272
+596,민속주 안동소주 600ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595271-%EB%AF%BC%EC%86%8D%EC%A3%BC%20%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC600ml_main.jpg,3595271
+597,민속주 안동소주 800ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595270-%EB%AF%BC%EC%86%8D%EC%A3%BC%20%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC800ml_main.jpg,3595270
+598,바나나 주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551505-%EB%B0%94%EB%82%98%EB%82%98%20%EC%A3%BC_main.jpg,3551505
+599,바람의노래,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743397-%EB%B0%94%EB%9E%8C%EC%9D%98%EB%85%B8%EB%9E%98_main.png,6743397
+600,배금도가,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743379-%EB%B0%B0%EA%B8%88%EB%8F%84%EA%B0%80_main.png,6743379
+601,배도가 로아 40도 옐로우,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595279-%EB%B0%B0%EB%8F%84%EA%B0%80%20%EB%A1%9C%EC%95%84%2040%EB%8F%84%20%EC%98%90%EB%A1%9C%EC%9A%B0350ml_main.jpg,3595279
+602,백련 생막걸리 snow (스노우),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551565-%EB%B0%B1%EB%A0%A8%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC%20snow_main.jpg,3551565
+603,백운주가 대나무술,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743378-%EB%B0%B1%EC%9A%B4%EC%A3%BC%EA%B0%80%20%EB%8C%80%EB%82%98%EB%AC%B4%EC%88%A0_main.jpg,6743378
+604,복분자주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551525-%EB%AA%85%EA%B0%80%EC%9B%90%20%EB%B3%B5%EB%B6%84%EC%9E%90%EC%88%A0_main.jpg,3551525
+605,복분자주 360,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551526-%EB%B3%B5%EB%B6%84%EC%9E%90%EC%A3%BC%20360_main.jpg,3551526
+606,복숭아와인,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804511-%EB%B3%B5%EC%88%AD%EC%95%84%EC%99%80%EC%9D%B8_main.jpg,5804511
+607,부자 10도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551496-%EB%B6%80%EC%9E%90%2010%EB%8F%84_main.jpg,3551496
+608,비긴나인틴,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743410-%EB%B9%84%EA%B8%B4%EB%82%98%EC%9D%B8%ED%8B%B4_main.png,6743410
+609,사과와인,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804509-%EC%82%AC%EA%B3%BC%EC%99%80%EC%9D%B8_main.jpg,5804509
+610,산정호수 동정춘막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804420-%EC%82%B0%EC%A0%95%ED%98%B8%EC%88%98%20%EB%8F%99%EC%A0%95%EC%B6%98%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5804420
+611,새냉이길 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743418-%EC%83%88%EB%83%89%EC%9D%B4%EA%B8%B8%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.png,6743418
+612,생 청주 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551503-%EC%83%9D%20%EC%B2%AD%EC%A3%BC%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551503
+613,샤토미소 로제 스위트,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551519-%EC%83%A4%ED%86%A0%EB%AF%B8%EC%86%8C%20%EC%8A%A4%EC%9C%84%ED%8A%B8%20%EB%A1%9C%EC%A0%9C_main.jpg,3551519
+614,서촌막걸리15,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743389-%EC%84%9C%EC%B4%8C%EB%A7%89%EA%B1%B8%EB%A6%AC%2015_main.png,6743389
+615,소주다움27,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743380-%EC%86%8C%EC%A3%BC%EB%8B%A4%EC%9B%8027_main.png,6743380
+616,솔송주 (골드),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551531-%EC%86%94%EC%86%A1%EC%A3%BC_main.jpg,3551531
+617,술공방 9.0 생막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040727-%EC%88%A0%EA%B3%B5%EB%B0%A9%2090%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,6040727
+618,숲향벼꽃 술도깨비,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743364-%EC%88%B2%ED%96%A5%EB%B2%BC%EA%BD%83%20%EC%88%A0%EB%8F%84%EA%B9%A8%EB%B9%84_main.png,6743364
+619,시나브로 에뚜왈 로제 스파클링,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040780-%EC%8B%9C%EB%82%98%EB%B8%8C%EB%A1%9C%20%EC%97%90%EB%9A%9C%EC%99%88%20%EB%A1%9C%EC%A0%9C%20%EC%8A%A4%ED%8C%8C%ED%81%B4%EB%A7%81_main.jpg,6040780
+620,시나브로 에뚜왈 스파클링와인,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804469-%EC%8B%9C%EB%82%98%EB%B8%8C%EB%A1%9C%20%EC%97%90%EB%9A%9C%EC%99%88%20%EC%8A%A4%ED%8C%8C%ED%81%B4%EB%A7%81%EC%99%80%EC%9D%B8_main.jpg,5804469
+621,시인의바위,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743404-%EC%A7%84%EB%A7%A5%EC%86%8C%EC%A3%BC+%EC%8B%9C%EC%9D%B8%EC%9D%98%EB%B0%94%EC%9C%84_main.png,6743404
+622,시향가 프리미엄,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743395-%EC%8B%9C%ED%96%A5%EA%B0%80%20%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84_main.png,6743395
+623,쌀은원래달다 12,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743398-%EC%8C%80%EC%9D%80%EC%9B%90%EB%9E%98%EB%8B%AC%EB%8B%A412_main.png,6743398
+624,쌀은원래달다 9°,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743399-%EC%8C%80%EC%9D%80%EC%9B%90%EB%9E%98%EB%8B%AC%EB%8B%A49_main.png,6743399
+625,아이싱 자몽,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3583671-%EC%95%84%EC%9D%B4%EC%8B%B1%20%EC%9E%90%EB%AA%BDiCing%20Grapefruit_main.jpg,3583671
+626,아치23,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743401-%EC%95%84%EC%B9%98%2023_main.png,6743401
+627,안동소주 일품 17도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595300-%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC%20%EC%9D%BC%ED%92%88%2017%EB%8F%84350ml_main.jpg,3595300
+628,안동소주 일품 21도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595299-%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC%20%EC%9D%BC%ED%92%88%2021%EB%8F%84350ml_main.jpg,3595299
+629,안동소주 일품 40도 골드,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595298-%EC%95%88%EB%8F%99%EC%86%8C%EC%A3%BC%20%EC%9D%BC%ED%92%88%2040%EB%8F%84%20%EA%B3%A8%EB%93%9C500ml_main.jpg,3595298
+630,안성마춤 생막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681218-%EC%95%88%EC%84%B1%EB%A7%88%EC%B6%A4%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5681218
+631,야관문 쌀 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595333-%EC%95%BC%EA%B4%80%EB%AC%B8%20%EC%8C%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.jpg,3595333
+632,양조학당 녘,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743421-%EC%96%91%EC%A1%B0%ED%95%99%EB%8B%B9%20%EB%85%98_main.png,6743421
+633,얼떨결에,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743382-%EC%96%BC%EB%96%A8%EA%B2%B0%EC%97%90_main.png,6743382
+634,여포의 꿈 레드 (Dry),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551523-%EC%97%AC%ED%8F%AC%EC%9D%98%20%EA%BF%88%20%EB%A0%88%EB%93%9C%20%EB%93%9C%EB%9D%BC%EC%9D%B4_main.jpg,3551523
+635,여포의 꿈 레드(SWEET),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551524-%EC%97%AC%ED%8F%AC%EC%9D%98%20%EA%BF%88%EB%A0%88%EB%93%9C%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,3551524
+636,연천우주38,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743390-%EC%97%B0%EC%B2%9C%EC%9A%B0%EC%A3%BC38_main.jpg,6743390
+637,영천와인조흔RED,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743427-%EC%98%81%EC%B2%9C%EC%99%80%EC%9D%B8%EC%A1%B0%ED%9D%94RED_main.jpg,6743427
+638,오가피와인,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804510-%EC%98%A4%EA%B0%80%ED%94%BC%EC%99%80%EC%9D%B8_main.jpg,5804510
+639,오곡 진상주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551534-%EC%98%A4%EA%B3%A1%20%EC%A7%84%EC%83%81%EC%A3%BC_main.jpg,3551534
+640,오미자 생막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551545-%EC%98%A4%EB%AF%B8%EC%9E%90%20%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551545
+641,오크블루(43%),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743409-%EC%98%A4%ED%81%AC%EB%B8%94%EB%A3%A8_main.jpg,6743409
+642,옥로주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743400-%EC%98%A5%EB%A1%9C%EC%A3%BC%20%ED%98%84%EB%AC%B4%EC%82%AC%EA%B0%81_main.jpg,6743400
+643,우도땅콩생전통주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743363-%EC%9A%B0%EB%8F%84%EB%95%85%EC%BD%A9%EC%83%9D%EC%A0%84%ED%86%B5%EC%A3%BC_main.png,6743363
+644,위레드,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743377-%EC%9C%84%EB%A0%88%EB%93%9CWe%20Red_main.png,6743377
+645,유톡자톡,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743393-%EC%9C%A0%ED%86%A1%EC%9E%90%ED%86%A1_main.png,6743393
+646,이강주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551512-%EC%9D%B4%EA%B0%95%EC%A3%BC_main.jpg,3551512
+647,이강주 2호,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551513-%EC%9D%B4%EA%B0%95%EC%A3%BC%202%ED%98%B8_main.jpg,3551513
+648,이강주 특7호,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551514-%EC%9D%B4%EA%B0%95%EC%A3%BC%20%ED%8A%B97%ED%98%B8_main.jpg,3551514
+649,이도 42,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551486-%EC%9D%B4%EB%8F%84%2042_main.jpg,3551486
+650,이도22,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743428-%EC%9D%B4%EB%8F%84%2022_main.png,6743428
+651,일월삼주-일주142,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743388-%EC%9D%BC%EC%9B%94%EC%82%BC%EC%A3%BC%EC%9D%BC%EC%A3%BC142_main.png,6743388
+652,일지춘10,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743423-%EC%9D%BC%EC%A7%80%EC%B6%98%2010_main.png,6743423
+653,자희향 나비,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551576-%EC%9E%90%ED%9D%AC%ED%96%A5%20%EB%82%98%EB%B9%84_main.jpg,3551576
+654,제주낭만,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743430-%EC%A0%9C%EC%A3%BC%EB%82%AD%EB%A7%8C_main.png,6743430
+655,제주메밀맑은술,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743431-%EC%A0%9C%EC%A3%BC%EB%A9%94%EB%B0%80%20%EB%A7%91%EC%9D%80%EC%88%A0_main.png,6743431
+656,제주샘주 오메기술,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551574-%EC%A0%9C%EC%A3%BC%EC%83%98%EC%A3%BC%20%EC%98%A4%EB%A9%94%EA%B8%B0%EC%88%A0_main.jpg,3551574
+657,젤코바 스페셜와인,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040784-%EC%A0%A4%EC%BD%94%EB%B0%94%20%EC%8A%A4%ED%8E%98%EC%85%9C%EC%99%80%EC%9D%B8_main.jpg,6040784
+658,주향소주 25,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743383-%EC%A3%BC%ED%96%A5%EC%86%8C%EC%A3%BC%2025_main.png,6743383
+659,증류식소주 마한24,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743386-%EC%A6%9D%EB%A5%98%EC%8B%9D%EC%86%8C%EC%A3%BC%20%EB%A7%88%ED%95%9C24_main.png,6743386
+660,지리산 정담 생쌀 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595332-%EC%A7%80%EB%A6%AC%EC%82%B0%EC%A0%95%EB%8B%B4%EC%83%9D%EC%8C%80%20%EB%A7%89%EA%B1%B8%EB%A6%AC750ml_main.jpg,3595332
+661,지평 생 쌀막걸리 (1.7L),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551551-%EC%A7%80%ED%8F%89%20%EC%83%9D%20%EC%8C%80%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551551
+662,지평 생 쌀막걸리 (700ml),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551552-%EC%A7%80%ED%8F%89%20%EC%83%9D%20%EC%8C%80%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551552
+663,진맥소주오크,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743405-%EC%A7%84%EB%A7%A5%EC%86%8C%EC%A3%BC%EC%98%A4%ED%81%AC_main.png,6743405
+664,진맥애플,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743366-%EC%A7%84%EB%A7%A5%EC%95%A0%ED%94%8C_main.jpg,6743366
+665,진심 홍삼주 19도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595310-%EC%A7%84%EC%8B%AC%20%ED%99%8D%EC%82%BC%EC%A3%BC%2019%EB%8F%84_main.jpg,3595310
+666,참주가생막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743374-%EC%B0%B8%EC%A3%BC%EA%B0%80%EC%83%9D%EB%A7%89%EA%B1%B8%EB%A6%AC_main.png,6743374
+667,천마 이야기 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595283-%EC%B2%9C%EB%A7%88%20%EC%9D%B4%EC%95%BC%EA%B8%B0750ml_main.jpg,3595283
+668,천비향 약주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743396-%EC%B2%9C%EB%B9%84%ED%96%A5%EC%95%BD%EC%A3%BC_main.png,6743396
+669,천지주가 생 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551501-%EC%B2%9C%EC%A7%80%EC%A3%BC%EA%B0%80%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551501
+670,청남대 블루베리 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5804460-%EC%B2%AD%EB%82%A8%EB%8C%80%20%EB%B8%94%EB%A3%A8%EB%B2%A0%EB%A6%AC%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,5804460
+671,청명주 500,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681191-%EC%B2%AD%EB%AA%85%EC%A3%BC%20500_main.jpg,5681191
+672,청명주 750,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/5681181-%EC%B2%AD%EB%AA%85%EC%A3%BC%20750_main.jpg,5681181
+673,컨츄리캠벨 (스위트),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551515-%EC%BB%A8%EC%B8%84%EB%A6%AC%EC%BA%A0%EB%B2%A8%20%EC%8A%A4%EC%9C%84%ED%8A%B8_main.jpg,3551515
+674,코아베스트 보쉐,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743415-%EC%BD%94%EC%95%84%EB%B2%A0%EC%8A%A4%ED%8A%B8%20%EB%B3%B4%EC%89%90_main.png,6743415
+675,코아베스트 아카시아미드,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743406-%EC%BD%94%EC%95%84%EB%B2%A0%EC%8A%A4%ED%8A%B8%20%EC%95%84%EC%B9%B4%EC%8B%9C%EC%95%84%EB%AF%B8%EB%93%9C_main.png,6743406
+676,"코이버펑크, 샤르도네 세미용 블렌드",,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6598721-%EC%BD%94%EC%9D%B4%EB%B2%84%ED%8E%91%ED%81%AC%20%EC%83%A4%EB%A5%B4%EB%8F%84%EB%84%A4%20%EC%84%B8%EB%AF%B8%EC%9A%A9%20%EB%B8%94%EB%A0%8C%EB%93%9C_main.jpg,6598721
+677,탁100내추럴,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743414-%ED%83%81100%20%EB%82%B4%EC%B6%94%EB%9F%B4_main.png,6743414
+678,태안법주16,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743413-%ED%83%9C%EC%95%88%EB%B2%95%EC%A3%BC16_main.png,6743413
+679,톡 쏘는 복분자 막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551493-%ED%86%A1%20%EC%8F%98%EB%8A%94%20%EB%B3%B5%EB%B6%84%EC%9E%90%20%EB%A7%89%EA%B1%B8%EB%A6%AC_main.jpg,3551493
+680,팔팔막걸리,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743426-%ED%8C%94%ED%8C%94%EB%A7%89%EA%B1%B8%EB%A6%AC_main.png,6743426
+681,포엠 로제,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040776-%ED%8F%AC%EC%97%A0%20%EB%A1%9C%EC%A0%9C_main.jpg,6040776
+682,폭스앤홉스,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743371-%ED%8F%AD%EC%8A%A4%EC%95%A4%ED%99%89%EC%8A%A4_main.jpg,6743371
+683,폭스진,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743370-%ED%8F%AD%EC%8A%A4%EC%A7%84FOX%20GIN_main.png,6743370
+684,필 FEEL,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6040745-%ED%95%84%20FEEL_main.jpg,6040745
+685,한산소곡주 360ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551529-%ED%95%9C%EC%82%B0%EC%86%8C%EA%B3%A1%EC%A3%BC_main.jpg,3551529
+686,한산소곡주 700ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551530-%ED%95%9C%EC%82%B0%EC%86%8C%EA%B3%A1%EC%A3%BC_main.jpg,3551530
+687,한산소곡주(살균주),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595240-%ED%95%9C%EC%82%B0%EC%86%8C%EA%B3%A1%EC%A3%BC%EC%82%B4%EA%B7%A0%EC%A3%BC_main.jpg,3595240
+688,한산소곡주(생주),,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595239-%ED%95%9C%EC%82%B0%EC%86%8C%EA%B3%A1%EC%A3%BC%EC%83%9D%EC%A3%BC_main.jpg,3595239
+689,한영석 백수환동주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743416-%ED%95%9C%EC%98%81%EC%84%9D%20%EB%B0%B1%EC%88%98%ED%99%98%EB%8F%99%EC%A3%BC%2015_main.png,6743416
+690,해 1614,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743373-%ED%95%B4%201614_main.jpg,6743373
+691,해남 찹쌀 생 막걸리 9도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743387-%ED%95%B4%EB%82%A8%20%EC%B0%B9%EC%8C%80%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC%209%EB%8F%84_main.png,6743387
+692,해창 생 막걸리 12도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551498-%ED%95%B4%EC%B0%BD%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC%2012%EB%8F%84_main.jpg,3551498
+693,해창 생막걸리 6도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551500-%ED%95%B4%EC%B0%BD%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC%206%EB%8F%84_main.jpg,3551500
+694,해창 생막걸리 9도,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551499-%ED%95%B4%EC%B0%BD%20%EC%83%9D%20%EB%A7%89%EA%B1%B8%EB%A6%AC%209%EB%8F%84_main.jpg,3551499
+695,호담 300ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3595330-%ED%98%B8%EB%8B%B4300ml_main.jpg,3595330
+696,홍매반개주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743402-%ED%99%8D%EB%A7%A4%EB%B0%98%EA%B0%9C%EC%A3%BC_main.png,6743402
+697,홍삼 인삼주,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551487-%ED%99%8D%EC%82%BC%20%EC%9D%B8%EC%82%BC%EC%A3%BC_main.jpg,3551487
+698,홍삼 진심 인삼주 1set,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551488-%ED%99%8D%EC%82%BC%EC%A7%84%EC%8B%AC%20%EC%9D%B8%EC%82%BC%EC%A3%BC%201set_main.jpg,3551488
+699,홍삼 진심 인삼주 2set,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551489-%ED%99%8D%EC%82%BC%EC%A7%84%EC%8B%AC%20%EC%9D%B8%EC%82%BC%EC%A3%BC%202set_main.jpg,3551489
+700,홍삼명주 375ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551570-%ED%99%8D%EC%82%BC%EB%AA%85%EC%A3%BC%20375ml_main.jpg,3551570
+701,홍삼명주 500ml,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551571-%ED%99%8D%EC%82%BC%EB%AA%85%EC%A3%BC%20500ml_main.jpg,3551571
+702,황금과비파와인,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743425-%ED%99%A9%EA%B8%88%EA%B3%BC%EB%B9%84%ED%8C%8C%EC%99%80%EC%9D%B8_main.png,6743425
+703,1950 씨유엣더탑 감귤와인,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743429-1950%20%EC%94%A8%EC%9C%A0%EC%97%A3%EB%8D%94%ED%83%91%20%EA%B0%90%EA%B7%A4%EC%99%80%EC%9D%B8_main.png,6743429
+704,264 청포도와인 광야,,,,,,,,,,,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/6743407-264%20%EC%B2%AD%ED%8F%AC%EB%8F%84%EC%99%80%EC%9D%B8%20%EA%B4%91%EC%95%BC_main.jpg,6743407
