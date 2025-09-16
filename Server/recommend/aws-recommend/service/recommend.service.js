@@ -1,5 +1,5 @@
 import { GetRecommendationsCommand } from "@aws-sdk/client-personalize-runtime";
-import { personalizeClient } from "../../config/personalize.js";
+import { personalizeClient } from "../../../config/personalize.js";
 
 export const getRecommendations = async (userId = "1", numResults = 6) => {
   const command = new GetRecommendationsCommand({

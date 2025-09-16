@@ -8,6 +8,8 @@ import ocrRoutes from "./routes/ocr.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import alcoholRoutes from "./routes/alcohol.routes.js";
+import priceRecommendRoutes from "./routes/price-recommend.routes.js"
+import { loadAlcoholData } from "./recommend/price-recommend/service/price-recommend.service.js"
 import festivalRoutes from "./routes/festival.routes.js";
 import { getWeatherData } from './weather-api/weatherService.js';
 import preferencesRouter from "./routes/preference.routes.js";
@@ -20,18 +22,26 @@ const PORT = process.env.SERVER_PORT;
 app.use(cors());
 app.use(express.json());
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`백엔드 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
-  console.log(
-    `날씨 기반 추천 테스트 URL: http://localhost:${PORT}/recommend/weather?lat=37.5665&lon=126.9780`
-  );
-  console.log(`Chatbot URL: http://localhost:${PORT}/chat`);
-  console.log(
-    `OAuth 테스트 URL: http://localhost:${PORT}/oauth/google?code_challenge=test123&code_challenge_method=S256`
-  );
-  console.log(`User 프로필 API: http://localhost:${PORT}/users/me`);
-  console.log(`축제 연결 테스트: http://localhost:${PORT}/festivals`);
-});
+// CSV 로드 후 서버 시작
+loadAlcoholData()
+  .then(() => {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`백엔드 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
+      console.log(
+        `날씨 기반 추천 테스트 URL: http://localhost:${PORT}/recommend/weather?lat=37.5665&lon=126.9780`
+      );
+      console.log(`Chatbot URL: http://localhost:${PORT}/chat`);
+      console.log(
+        `OAuth 테스트 URL: http://localhost:${PORT}/oauth/google?code_challenge=test123&code_challenge_method=S256`
+      );
+      console.log(`User 프로필 API: http://localhost:${PORT}/users/me`);
+      console.log(`축제 연결 테스트: http://localhost:${PORT}/festivals`);
+      console.log(`가격 기반 추천 API: http://localhost:${PORT}/recommend/price/?price=30000`);
+    });
+  })
+  .catch((err) => {
+    console.error("CSV 로딩 실패:", err);
+  });
 
 // 몽고DB 연결
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -39,7 +49,9 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .catch((err) => console.error("MongoDB 연결 실패", err));
 
 // 추천 라우터
-app.use("/recommend", recommendRoutes);
+app.use("/recommendations", recommendRoutes);
+//가격별 추천 라우터
+app.use("/recommend/price", priceRecommendRoutes);
 // 북마크 라우터
 app.use("/bookmark", bookmarkRoutes);
 // 챗봇 라우터
