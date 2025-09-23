@@ -14,6 +14,7 @@ import { loadAlcoholData } from "./recommend/price-recommend/service/price-recom
 import festivalRoutes from "./routes/festival.routes.js";
 import { getWeatherData } from './weather-api/weatherService.js';
 import preferencesRouter from "./routes/preference.routes.js";
+import chatbotRouter from "./routes/chatbot.routes.js"
 //import { recommendItemsBasedOnWeather } from './recommend/recombee/recombeeWeatherTest.js';
 import { askGPT, loadCSVData } from "./chatbot/chat.js";
 
@@ -58,7 +59,7 @@ app.use("/recommend/weather", weatherRecommendRouter);
 // 북마크 라우터
 app.use("/bookmark", bookmarkRoutes);
 // 챗봇 라우터
-//app.use("/chatbot", chatbotRouter);
+app.use("/chatbot", chatbotRouter);
 // ocr 라우터
 app.use("/api", ocrRoutes);
 // OAuth 라우터
