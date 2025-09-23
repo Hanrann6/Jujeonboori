@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import alcoholRoutes from "./routes/alcohol.routes.js";
 import priceRecommendRoutes from "./routes/price-recommend.routes.js"
+import weatherRecommendRouter from "./routes/weather-recommend.routes.js";
 import { loadAlcoholData } from "./recommend/price-recommend/service/price-recommend.service.js"
 import festivalRoutes from "./routes/festival.routes.js";
 import { getWeatherData } from './weather-api/weatherService.js';
@@ -52,6 +53,8 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 app.use("/recommendations", recommendRoutes);
 //가격별 추천 라우터
 app.use("/recommend/price", priceRecommendRoutes);
+//날씨별 추천 라우터
+app.use("/recommend/weather", weatherRecommendRouter);
 // 북마크 라우터
 app.use("/bookmark", bookmarkRoutes);
 // 챗봇 라우터

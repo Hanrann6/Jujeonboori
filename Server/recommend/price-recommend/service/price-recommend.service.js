@@ -47,3 +47,7 @@ export function getAlcoholsUnderPrice(limitPrice = 30000, count = 6) {
     image: a.imageURL,
   }));
 }
+
+export function getAlcoholsData() {
+  return alcohols;
+}
