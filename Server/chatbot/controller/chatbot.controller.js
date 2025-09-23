@@ -1,4 +1,4 @@
-import { recommendSool } from "../services/chatbot.service.js";
+import { recommendSool } from "../service/chatbot.service.js";
 
 export async function recommendController(req, res) {
   const { question } = req.body;

@@ -1,5 +1,5 @@
 import express from "express";
-import { recommendController } from "../controllers/chatbot.controller.js";
+import { recommendController } from "../chatbot/controller/chatbot.controller.js";
 
 const router = express.Router();
 router.post("/recommend", recommendController);

@@ -1,15 +1,60 @@
-import { openai } from "../config/openai.js";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { qdrant, COLLECTION_NAME } from "./qdrant.service.js";
+import { pipeline } from "@xenova/transformers";
 import dotenv from "dotenv";
 dotenv.config();
 
-const embedding = new OpenAIEmbeddings({
-  openAIApiKey: process.env.OPENAI_API_KEY,
+// 로컬 임베더 초기화 (MiniLM, 384차원)
+let embedder;
+async function getEmbedder() {
+  if (!embedder) {
+    embedder = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+  }
+  return embedder;
+}
+
+async function embedQuery(text) {
+  const extractor = await getEmbedder();
+  const output = await extractor(text, { pooling: "mean", normalize: true });
+  return Array.from(output.data);
+}
+
+// Gemini Chat 모델
+const chatModel = new ChatGoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY,
+  model: "gemini-2.0-flash",
+  temperature: 0.7,
 });
 
+function cleanJsonResponse(raw) {
+  if (!raw) return null;
+
+  // Gemini 응답이 배열이면 text 꺼내기
+  let text = Array.isArray(raw) ? raw[0]?.text : raw;
+
+  if (typeof text !== "string") {
+    console.error("응답이 문자열이 아님:", text);
+    return null;
+  }
+
+  // 코드블럭 제거
+  text = text
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.error("JSON 파싱 실패:", err, "원본:", text);
+    return null;
+  }
+}
+
+
 export async function recommendSool(userQuestion) {
-  const questionVec = await embedding.embedQuery(userQuestion);
+  // 로컬 임베딩
+  const questionVec = await embedQuery(userQuestion);
   const result = await qdrant.search(COLLECTION_NAME, {
     vector: questionVec,
     limit: 5,
@@ -18,7 +63,7 @@ export async function recommendSool(userQuestion) {
   const soolList = result.map((r) => r.payload);
 
   const context = soolList
-    .map((d) => `- ${d["제품명"]} (${d["도수%"]}%): ${d["keyword"]}`)
+    .map((d) => `- ${d.alcoholName} (${d.degree}%): ${d.keyword}`)
     .join("\n");
 
   const prompt = `
@@ -63,10 +108,7 @@ ${context}
 ${userQuestion}
 `.trim();
 
-  const res = await openai.chat.completions.create({
-    model: "gpt-4",
-    messages: [{ role: "user", content: prompt }],
-  });
+  const res = await chatModel.invoke([{ role: "user", content: prompt }]);
 
-  return res.choices[0].message.content;
+  return cleanJsonResponse(res.content);
 }
