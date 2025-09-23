@@ -1,6 +1,7 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { qdrant, COLLECTION_NAME } from "./qdrant.service.js";
 import { pipeline } from "@xenova/transformers";
+import ChatLog from "../model/chatbot.model.js"
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -52,7 +53,7 @@ function cleanJsonResponse(raw) {
 }
 
 
-export async function recommendSool(userQuestion) {
+export async function recommendSool(userId, userQuestion) {
   // 로컬 임베딩
   const questionVec = await embedQuery(userQuestion);
   const result = await qdrant.search(COLLECTION_NAME, {
@@ -108,7 +109,25 @@ ${context}
 ${userQuestion}
 `.trim();
 
+  // Gemini 호출
   const res = await chatModel.invoke([{ role: "user", content: prompt }]);
+  const answer = cleanJsonResponse(res.content);
 
-  return cleanJsonResponse(res.content);
+  // 대화 기록 저장
+  try {
+    await ChatLog.create({
+      userId,
+      question: userQuestion,
+      answer, // JSON 그대로 저장
+    });
+  } catch (err) {
+    console.error("대화 저장 실패:", err);
+  }
+
+  return answer;
+
+}
+
+export async function getChatLogs(userId) {
+  return await ChatLog.find({ userId }).sort({ createdAt: -1 });
 }
