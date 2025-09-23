@@ -58,7 +58,10 @@ export async function getWeatherData(lat, lon) {
         ny: ny
     }).toString();
 
-    const apiUrl = `${API_BASE_URL}?serviceKey=${SERVICE_KEY}&${queryParams}`;
+    //const apiUrl = `${API_BASE_URL}?serviceKey=${SERVICE_KEY}&${queryParams}`;
+    const apiUrl = `${API_BASE_URL}?serviceKey=${decodeURIComponent(
+      SERVICE_KEY
+    )}&${queryParams}`;
     console.log(`기상청 API 호출: ${apiUrl}`);
 
     try {
