@@ -61,7 +61,7 @@ app.use("/bookmark", bookmarkRoutes);
 // 챗봇 라우터
 app.use("/chatbot", chatbotRouter);
 // ocr 라우터
-app.use("/api", ocrRoutes);
+app.use("/ocr", ocrRoutes);
 // OAuth 라우터
 app.use("/oauth", authRoutes);
 // 프로필 라우터
