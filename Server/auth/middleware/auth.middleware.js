@@ -43,7 +43,6 @@ const verifyAccessToken = (req, res, next) => {
             userId: decoded.userId,
             provider: decoded.provider,
             email: decoded.email,
-            name: decoded.name
         };
 
         next();
@@ -62,7 +61,7 @@ const verifyAccessToken = (req, res, next) => {
                 timestamp: new Date().toISOString(),
                 status: 401,
                 error: "Unauthorized",
-                message: "토큰이 만료돠었습니다.",
+                message: "토큰이 만료되었습니다.",
                 path: req.path
             });
         } else {

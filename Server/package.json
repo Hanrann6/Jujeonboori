@@ -29,6 +29,8 @@
     "@langchain/core": "^0.3.67",
     "@langchain/openai": "^0.6.4",
     "@qdrant/js-client-rest": "^1.15.0",
+    "@react-native-kakao/core": "^2.4.0",
+    "@react-native-kakao/user": "^2.4.0",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.9.0",
     "cheerio": "^1.1.2",
