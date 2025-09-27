@@ -11,16 +11,15 @@ const OAUTH_CONFIG = {
         userInfoUrl: 'https://www.googleapis.com/oauth2/v2/userinfo'
     },
     kakao: {
-        clientId: process.env.KAKAO_CLIENT_ID,
-        clientSecret: process.env.KAKAO_CLIENT_SECRET,
-        redirectUri: process.env.KAKAO_REDIRECT_URI,
-        scope: 'profile_nickname profile_image account_email',
-        authUrl: 'https://kauth.kakao.com/oauth/authorize',
         userInfoUrl: 'https://kapi.kakao.com/v2/user/me'
     }
 };
 
 const generateOAuthUrl = async (provider, codeChallenge, codeChallengeMethod) => {
+    if (provider !== 'google') {
+        throw new Error(`${provider}는 OAuth URL 생성을 지원하지 않습니다.`);
+    }
+
     const config = OAUTH_CONFIG[provider];
     const params = new URLSearchParams({
         client_id: config.clientId,
@@ -37,13 +36,14 @@ const generateOAuthUrl = async (provider, codeChallenge, codeChallengeMethod) =>
 };
 
 const exchangeCodeForToken = async (provider, authorizationCode, codeVerifier, redirectUri) => {
+    if (provider !== 'google') {
+        throw new Error(`${provider}는 토큰 교환을 지원하지 않습니다.`);
+    }
+
     const config = OAUTH_CONFIG[provider];
 
     try {
-        const tokenEndpoints = {
-            google: 'https://oauth2.googleapis.com/token',
-            kakao: 'https://kauth.kakao.com/oauth/token'
-        };
+        const tokenEndpoints = 'https://oauth2.googleapis.com/token';
 
         const tokenRequestData = {
             grant_type: 'authorization_code',
@@ -54,7 +54,7 @@ const exchangeCodeForToken = async (provider, authorizationCode, codeVerifier, r
             code_verifier: codeVerifier
         };
 
-        const response = await fetch(tokenEndpoints[provider], {
+        const response = await fetch(tokenEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -122,20 +122,15 @@ const getUserInfo = async (provider, accessToken) => {
                 providerId: userInfo.id,
                 provider: 'google',
                 email: userInfo.email,
-                name: userInfo.name,
-                profileImage: userInfo.picture,
                 isEmailVerified: userInfo.verified_email || false
             };
         } else if (provider === 'kakao') {
             const kakaoAccount = userInfo.kakao_account || {};
-            const profile = kakaoAccount.profile || {};
 
             standardUserInfo = {
                 providerId: userInfo.id.toString(),
                 provider: 'kakao',
                 email: kakaoAccount.email,
-                name: profile.nickname,
-                profileImage: profile.profile_image_url,
                 isEmailVerified: kakaoAccount.is_email_verified || false
             };
         }
@@ -274,7 +269,6 @@ const reissueTokens = async (refreshToken) => {
             providerId: decoded.userId,
             provider: decoded.provider,
             email: decoded.email || '',
-            name: decoded.name || ''
         });
 
         return newTokens;
