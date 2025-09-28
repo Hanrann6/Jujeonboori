@@ -43,7 +43,7 @@ const exchangeCodeForToken = async (provider, authorizationCode, codeVerifier, r
     const config = OAUTH_CONFIG[provider];
 
     try {
-        const tokenEndpoints = 'https://oauth2.googleapis.com/token';
+        const tokenEndpoint = 'https://oauth2.googleapis.com/token';
 
         const tokenRequestData = {
             grant_type: 'authorization_code',
@@ -207,7 +207,6 @@ const generateAppTokens = async (userInfo) => {
             userId: userInfo.providerId,
             provider: userInfo.provider,
             email: userInfo.email,
-            name: userInfo.name,
             type: 'access'
         };
 

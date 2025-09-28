@@ -15,7 +15,7 @@ const upload = multer({ dest: "uploads/" });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-router.post("/analyze", upload.single("image"), async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
   try {
     const originalPath = req.file.path;
     const processedPath = path.join(

@@ -3,9 +3,17 @@ import { sendViewDetailEvent } from '../../personalize/service/personalize.servi
 
 const getAlcoholList = async (req, res) => {
     try {
-        const { page, size } = req.query;
+        const { page, size, search, category, keyword, price_min, price_max } = req.query;
 
-        const alcoholList = await alcoholService.getAlcoholList(page, size);
+        // 필터 객체
+        const filters = {};
+        if (search) filters.search = search;
+        if (category) filters.category = category;
+        if (keyword) filters.keyword = keyword;
+        if (price_min !== undefined) filters.price_min = parseInt(price_min);
+        if (price_max !== undefined) filters.price_max = parseInt(price_max);
+
+        const alcoholList = await alcoholService.getAlcoholList(page, size, filters);
 
         res.status(200).json(alcoholList);
 
