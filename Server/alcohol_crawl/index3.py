@@ -32,6 +32,13 @@ def sort_csv_by_alcohol_name(input_file, output_file=None):
         # 가나다순 정렬
         df_sorted = df.sort_values(by="alcoholName", key=lambda x: x.str.lower())
 
+        # index 컬럼이 있으면 0부터 다시 부여
+        if "index" in df_sorted.columns:
+            df_sorted["index"] = range(len(df_sorted))
+
+        # 인덱스 리셋 (pandas 내부 인덱스도 0부터 다시)
+        df_sorted.reset_index(drop=True, inplace=True)
+
         # 출력 파일명 설정
         if output_file is None:
             output_file = input_file.replace(".csv", "_sorted.csv")
@@ -61,7 +68,9 @@ def sort_csv_by_alcohol_name(input_file, output_file=None):
 # 사용 예제
 if __name__ == "__main__":
     # 파일 경로 설정
-    input_csv = "integrated_traditional_liquor.csv"  # 여기에 실제 CSV 파일 경로 입력
+    input_csv = (
+        "integrated_traditional_liquor_sorted.csv"  # 여기에 실제 CSV 파일 경로 입력
+    )
 
     # CSV 정렬 실행
     sort_csv_by_alcohol_name(input_csv)
