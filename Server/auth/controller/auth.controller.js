@@ -16,29 +16,7 @@ const getOAuthUrl = async (req, res) => {
             });
         }
 
-        const { code_challenge, code_challenge_method } = req.query;
-
-        if (!code_challenge) {
-            return res.status(400).json({
-                timestamp: new Date().toISOString(),
-                status: 400,
-                error: "Bad Request",
-                message: "필수 쿼리 파라미터가 누락되었습니다: code_challenge",
-                path: req.path
-            });
-        }
-
-        if (!code_challenge_method) {
-            return res.status(400).json({
-                timestamp: new Date().toISOString(),
-                status: 400,
-                error: "Bad Request",
-                message: "필수 쿼리 파라미터가 누락되었습니다: code_challenge_method",
-                path: req.path
-            });
-        }
-
-        const redirectUrl = await oauthService.generateOAuthUrl(provider, code_challenge, code_challenge_method);
+        const redirectUrl = await oauthService.generateOAuthUrl(provider);
 
         res.status(200).json({
             redirect_url: redirectUrl
@@ -61,7 +39,6 @@ const getOAuthUrl = async (req, res) => {
 const handleOAuthLogin = async (req, res) => {
     try {
         const { provider } = req.params;
-        let userInfo;
 
         if (provider === 'kakao') {
             // 카카오: SDK
@@ -77,10 +54,11 @@ const handleOAuthLogin = async (req, res) => {
                 });
             }
 
-            userInfo = await oauthService.getUserInfo(provider, access_token);
+            const result = await oauthService.processOAuthLogin(provider, access_token);
+            return res.status(200).json(result);
 
         } else if (provider === 'google') {
-            const { authorization_code, code_verifier, redirect_uri } = req.body;
+            const { authorization_code, redirect_uri } = req.body;
 
             if (!authorization_code) {
                 return res.status(400).json({
@@ -88,16 +66,6 @@ const handleOAuthLogin = async (req, res) => {
                     status: 400,
                     error: "Bad Request",
                     message: "요청 본문에 필수 파라미터가 누락되었습니다: authorization_code",
-                    path: req.path
-                });
-            }
-
-            if (!code_verifier) {
-                return res.status(400).json({
-                    timestamp: new Date().toISOString(),
-                    status: 400,
-                    error: "Bad Request",
-                    message: "요청 본문에 필수 파라미터가 누락되었습니다: code_verifier",
                     path: req.path
                 });
             }
@@ -112,8 +80,10 @@ const handleOAuthLogin = async (req, res) => {
                 });
             }
 
-            const tokenData = await oauthService.exchangeCodeForToken(provider, authorization_code, code_verifier, redirect_uri);
-            userInfo = await oauthService.getUserInfo(provider, tokenData.access_token);
+            const tokenData = await oauthService.exchangeCodeForToken(provider, authorization_code, redirect_uri);
+
+            const result = await oauthService.processOAuthLogin(provider, tokenData.access_token);
+            return res.status(200).json(result);
 
         } else {
             return res.status(400).json({
@@ -124,16 +94,6 @@ const handleOAuthLogin = async (req, res) => {
                 path: req.path
             });
         }
-
-        // 앱 토큰 생성
-        const appTokens = await oauthService.generateAppTokens(userInfo);
-
-        res.status(200).json({
-            grant_type: "Bearer",
-            access_token: appTokens.accessToken,
-            refresh_token: appTokens.refreshToken,
-            access_token_expires_in: 3600 // 1시간
-        });
 
     } catch (error) {
         console.error('OAuth 로그인 처리 오류:', error);

@@ -16,7 +16,7 @@ const OAUTH_CONFIG = {
     }
 };
 
-const generateOAuthUrl = async (provider, codeChallenge, codeChallengeMethod) => {
+const generateOAuthUrl = async (provider) => {
     if (provider !== 'google') {
         throw new Error(`${provider}는 OAuth URL 생성을 지원하지 않습니다.`);
     }
@@ -27,8 +27,6 @@ const generateOAuthUrl = async (provider, codeChallenge, codeChallengeMethod) =>
         redirect_uri: config.redirectUri,
         response_type: 'code',
         scope: config.scope,
-        code_challenge: codeChallenge,
-        code_challenge_method: codeChallengeMethod
     });
 
     const oauthUrl = `${config.authUrl}?${params.toString()}`;
@@ -36,7 +34,7 @@ const generateOAuthUrl = async (provider, codeChallenge, codeChallengeMethod) =>
     return oauthUrl;
 };
 
-const exchangeCodeForToken = async (provider, authorizationCode, codeVerifier, redirectUri) => {
+const exchangeCodeForToken = async (provider, authorizationCode, redirectUri) => {
     if (provider !== 'google') {
         throw new Error(`${provider}는 토큰 교환을 지원하지 않습니다.`);
     }
@@ -52,7 +50,6 @@ const exchangeCodeForToken = async (provider, authorizationCode, codeVerifier, r
             client_secret: config.clientSecret,
             code: authorizationCode,
             redirect_uri: redirectUri,
-            code_verifier: codeVerifier
         };
 
         const response = await fetch(tokenEndpoint, {
@@ -72,7 +69,7 @@ const exchangeCodeForToken = async (provider, authorizationCode, codeVerifier, r
             if (tokenResponse.error === 'invalid_grant') {
                 throw new Error('인가 코드가 유효하지 않거나 만료되었습니다.');
             } else if (tokenResponse.error === 'invalid_client') {
-                throw new Error('PKCE 검증에 실패했습니다.');
+                throw new Error('클라이언트 인증에 실패했습니다.');
             } else {
                 throw new Error(`${provider} 서버와 통신 중 오류가 발생했습니다.`);
             }
