@@ -14,7 +14,7 @@ const festivalService = {
                 }
             })
             .select('festival_id name location start_date end_date image_url')
-            .sort({ start_date: 1 }) // 시작일 순으로 정렬
+            .sort({ end_date: -1 }) // 종료일 기준 내림차순 정렬
             .lean();
             
             // 날짜 포맷팅 (YYYY-MM-DD)
@@ -27,31 +27,6 @@ const festivalService = {
             return formattedFestivals;
         } catch (error) {
             console.error('연도별 축제 조회 중 오류:', error);
-            throw error;
-        }
-    },
-
-    // 축제 ID로 상세 정보 조회
-    async getFestivalById(festivalId) {
-        try {
-            const festival = await Festival.findOne({ festival_id: festivalId })
-                .select('-_id -__v -created_at') // MongoDB 기본 필드 제외
-                .lean();
-            
-            if (!festival) {
-                return null;
-            }
-            
-            // 날짜 포맷팅
-            const formattedFestival = {
-                ...festival,
-                start_date: festival.start_date.toISOString().split('T')[0],
-                end_date: festival.end_date.toISOString().split('T')[0]
-            };
-            
-            return formattedFestival;
-        } catch (error) {
-            console.error('축제 상세 조회 중 오류:', error);
             throw error;
         }
     }
