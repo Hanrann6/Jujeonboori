@@ -7,7 +7,7 @@ const OAUTH_CONFIG = {
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         redirectUri: process.env.GOOGLE_REDIRECT_URI,
-        scope: 'openid email profile',
+        scope: 'openid email',
         authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
         userInfoUrl: 'https://www.googleapis.com/oauth2/v2/userinfo'
     },
