@@ -1,5 +1,6 @@
 import jwt, { decode } from 'jsonwebtoken';
 import RefreshToken from '../model/refreshToken.model.js';
+import User from '../../user/model/user.model.js';
 
 const OAUTH_CONFIG = {
     google: {
@@ -204,14 +205,13 @@ const removeRefreshTokenFromDB = async (userId, provider) => {
 const generateAppTokens = async (userInfo) => {
     try {
         const accessTokenPayload = {
-            userId: userInfo.providerId,
+            userId: userInfo.userId,
             provider: userInfo.provider,
-            email: userInfo.email,
             type: 'access'
         };
 
         const refreshTokenPayload = {
-            userId: userInfo.providerId,
+            userId: userInfo.userId,
             provider: userInfo.provider,
             type: 'refresh'
         };
@@ -237,7 +237,7 @@ const generateAppTokens = async (userInfo) => {
         );
 
         // Refresh token을 DB에 저장
-        await saveRefreshTokenToDB(userInfo.providerId, userInfo.provider, refreshToken);
+        await saveRefreshTokenToDB(userInfo.userId, userInfo.provider, refreshToken);
 
         return {
             accessToken,
@@ -249,6 +249,53 @@ const generateAppTokens = async (userInfo) => {
         throw new Error('토큰 생성 중 오류가 발생했습니다.');
     }
 };
+
+const processOAuthLogin = async (provider, accessToken) => {
+    try {
+        const oauthUserInfo = await getUserInfo(provider, accessToken);
+
+        let user = await User.findOne({
+            provider: oauthUserInfo.provider,
+            providerId: oauthUserInfo.providerId
+        });
+
+        let isNewUser = false;
+
+        // 신규 사용자면 생성
+        if (!user) {
+            user = await User.create({
+                email: oauthUserInfo.email,
+                provider: oauthUserInfo.provider,
+                providerId: oauthUserInfo.providerId,
+                nickname: null, // 이후에 설정
+                imageUrl: null
+            });
+            isNewUser = true;
+        }
+
+        const tokens = await generateAppTokens({
+            userId: user._id,
+            provider: user.provider,
+        });
+
+        return {
+            grant_type: "Bearer",
+            access_token: tokens.accessToken,
+            refresh_token: tokens.refreshToken,
+            access_token_expires_in: 3600,
+            user: {
+                user_id: user._id,
+                email: user.email,
+                nickname: user.nickname,
+                image_url: user.imageUrl
+            },
+            is_new_user: isNewUser
+        };
+    } catch (error) {
+        console.error('OAuth 로그인 처리 오류:', error);
+        throw error;
+    }
+}
 
 const reissueTokens = async (refreshToken) => {
     try {
@@ -265,9 +312,8 @@ const reissueTokens = async (refreshToken) => {
         }
 
         const newTokens = await generateAppTokens({
-            providerId: decoded.userId,
+            userId: decoded.userId,
             provider: decoded.provider,
-            email: decoded.email || '',
         });
 
         return newTokens;
@@ -320,6 +366,7 @@ export default {
     exchangeCodeForToken,
     getUserInfo,
     generateAppTokens,
+    processOAuthLogin,
     reissueTokens,
     revokeTokens
 };

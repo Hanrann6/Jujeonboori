@@ -56,10 +56,10 @@ router.patch('/me',
     userController.updateMyProfile
 );
 
-router.get('/:user_id',
-    authMiddleware.verifyAccessToken,
-    userController.getUserProfile
-);
+// router.get('/:user_id',
+//     authMiddleware.verifyAccessToken,
+//     userController.getUserProfile
+// );
 
 router.delete('/me',
     authMiddleware.verifyAccessToken,
@@ -112,10 +112,10 @@ router.use((error, req, res, next) => {
 });
 
 // userId 파라미터 유효성 검사
-router.get(
-    '/:userId',
-    validateObjectId('userId'),
-    userController.getUserProfile
-);
+// router.get(
+//     '/:userId',
+//     validateObjectId('userId'),
+//     userController.getUserProfile
+// );
 
 export default router;

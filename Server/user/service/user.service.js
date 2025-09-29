@@ -7,8 +7,7 @@ import { S3Client, DeleteObjectCommand} from '@aws-sdk/client-s3';
 // 내 프로필 조회
 const getMyProfile = async (userInfo) => {
     const user = await User.findOne({ 
-        provider: userInfo.provider, 
-        providerId: userInfo.userId,
+        _id: userInfo.userId,
         status: { $ne: 'deleted' }
     });
 
@@ -29,8 +28,7 @@ const getMyProfile = async (userInfo) => {
 // 내 프로필 수정
 const updateMyProfile = async (userInfo, updateData, uploadedFile) => {
     const user = await User.findOne({ 
-        provider: userInfo.provider, 
-        providerId: userInfo.userId,
+        _id: userInfo.userId,
         status: { $ne: 'deleted' }
     });
 
@@ -69,38 +67,37 @@ const updateMyProfile = async (userInfo, updateData, uploadedFile) => {
     };
 };
 
-// 특정 사용자의 프로필 조회
-const getUserProfile = async (userId) => {
-    // MongoDB ObjectId 유효성 검사
-    if (!isValidObjectId(userId)) {
-        const error = new Error('유효하지 않은 사용자 ID입니다.');
-        error.statusCode = 400;
-        throw error;
-    }
+// // 특정 사용자의 프로필 조회
+// const getUserProfile = async (userId) => {
+//     // MongoDB ObjectId 유효성 검사
+//     if (!isValidObjectId(userId)) {
+//         const error = new Error('유효하지 않은 사용자 ID입니다.');
+//         error.statusCode = 400;
+//         throw error;
+//     }
 
-    const user = await User.findOne({
-        _id: userId,
-        status: { $ne: 'deleted' }
-    });
+//     const user = await User.findOne({
+//         _id: userId,
+//         status: { $ne: 'deleted' }
+//     });
 
-    if (!user) {
-        const error = new Error('해당 ID의 사용자를 찾을 수 없습니다.');
-        error.statusCode = 404;
-        throw error;
-    }
+//     if (!user) {
+//         const error = new Error('해당 ID의 사용자를 찾을 수 없습니다.');
+//         error.statusCode = 404;
+//         throw error;
+//     }
 
-    return {
-        user_id: user._id,
-        nickname: user.nickname,
-        image_url: user.imageUrl
-    };
-};
+//     return {
+//         user_id: user._id,
+//         nickname: user.nickname,
+//         image_url: user.imageUrl
+//     };
+// };
 
 // 회원 탈퇴
 const deleteUser = async (userInfo, refreshToken) => {
     const user = await User.findOne({ 
-        provider: userInfo.provider, 
-        providerId: userInfo.userId,
+        _id: userInfo.userId,
         status: { $ne: 'deleted' }
     });
 
@@ -265,6 +262,6 @@ const cleanupUserData = async (userId) => {
 export default {
     getMyProfile,
     updateMyProfile,
-    getUserProfile,
+    // getUserProfile,
     deleteUser
 };
