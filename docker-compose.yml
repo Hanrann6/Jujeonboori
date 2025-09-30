@@ -5,8 +5,6 @@ services:
     container_name: habitai-server-container
     ports:
       - "3000:3000"
-    env_file:
-      - ./.env   # Jenkins에서 만든 .env 파일
     depends_on:
       - qdrant
 
