@@ -7,7 +7,7 @@ dotenv.config();
 import { pipeline } from "@xenova/transformers";
 
 const COLLECTION_NAME = "sool_collection";
-const QDRANT_URL = "http://127.0.0.1:6333";
+const QDRANT_URL = "http://qdrant:6333"; // local에서 사용 시 localhost로 변경
 
 // 로컬 임베딩 (MiniLM 모델 사용)
 let embedder;
