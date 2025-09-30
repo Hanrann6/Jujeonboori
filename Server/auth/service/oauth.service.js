@@ -12,7 +12,7 @@ const OAUTH_CONFIG = {
         userInfoUrl: 'https://www.googleapis.com/oauth2/v2/userinfo'
     },
     kakao: {
-        userInfoUrl: 'https://kapi.kakao.com/v2/user/me'
+        // SDK
     }
 };
 
@@ -95,6 +95,29 @@ const exchangeCodeForToken = async (provider, authorizationCode, redirectUri) =>
     }
 };
 
+const getUserInfoFromIdToken = (idToken) => {
+    try {
+        // idToken 디코딩
+        const decoded = jwt.decode(idToken);
+
+        if (!decoded) {
+            throw new Error('idToken 디코딩에 실패했습니다.');
+        }
+
+        console.log('디코딩된 idToken:', decoded);
+
+        return {
+            providerId: decoded.sub,
+            provider: 'kakao',
+            email: decoded.email || null,
+            isEmailVerified: !!decoded.email
+        };
+    } catch (error) {
+        console.error('idToken 처리 오류:', error);
+        throw new Error('카카오 사용자 정보 추출에 실패했습니다.');
+    }
+};
+
 const getUserInfo = async (provider, accessToken) => {
     const config = OAUTH_CONFIG[provider];
 
@@ -113,33 +136,17 @@ const getUserInfo = async (provider, accessToken) => {
 
         const userInfo = await response.json();
 
-        let standardUserInfo;
-
-        if (provider === 'google') {
-            standardUserInfo = {
-                providerId: userInfo.id,
-                provider: 'google',
-                email: userInfo.email,
-                isEmailVerified: userInfo.verified_email || false
-            };
-        } else if (provider === 'kakao') {
-            const kakaoAccount = userInfo.kakao_account || {};
-
-            standardUserInfo = {
-                providerId: userInfo.id.toString(),
-                provider: 'kakao',
-                email: kakaoAccount.email,
-                isEmailVerified: kakaoAccount.is_email_verified || false
-            };
-        }
-
-        return standardUserInfo;
+        return {
+            providerId: userInfo.id,
+            provider: 'google',
+            email: userIncfo.email,
+            isEmailVerified: userInfo.verified_email || false
+        };
 
     } catch (error) {
         if (error.message.includes('fetch') || error.message.includes('network')) {
             throw new Error(`${provider} 서버와 통신 중 오류가 발생했습니다.`);
         }
-        
         throw error;
     }
 };
@@ -233,7 +240,6 @@ const generateAppTokens = async (userInfo) => {
             }
         );
 
-        // Refresh token을 DB에 저장
         await saveRefreshTokenToDB(userInfo.userId, userInfo.provider, refreshToken);
 
         return {
@@ -247,9 +253,17 @@ const generateAppTokens = async (userInfo) => {
     }
 };
 
-const processOAuthLogin = async (provider, accessToken) => {
+const processOAuthLogin = async (provider, token) => {
     try {
-        const oauthUserInfo = await getUserInfo(provider, accessToken);
+        let oauthUserInfo;
+
+        if (provider === 'kakao') {
+            // 카카오: idToken에서 정보 추출
+            oauthUserInfo = getUserInfoFromIdToken(token);
+        } else if (provider === 'google') {
+            // 구글: access_token으로 API 호출
+            oauthUserInfo = await getUserInfo(provider, token);
+        }
 
         let user = await User.findOne({
             provider: oauthUserInfo.provider,
@@ -321,7 +335,6 @@ const reissueTokens = async (refreshToken) => {
         } else if (error.name === 'TokenExpiredError') {
             throw new Error('refresh token이 만료되었습니다.');
         }
-
         throw error;
     }
 };
