@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  app:
+    build: ./Server
+    container_name: habitai-server-container
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./Server/.env   # Jenkins에서 만든 .env 파일
+    depends_on:
+      - qdrant
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+volumes:
+  qdrant_storage:
