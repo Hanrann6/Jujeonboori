@@ -64,9 +64,11 @@ async function upsertBatch(points) {
   return await response.json();
 }
 
-
+// ec2 init용 csv 경로
+const csvPath = "/app/recommend/data/sool.csv";
 export async function initEmbedding() {
-  const data = await loadCSVData("../../recommend/data/sool.csv");
+  //const data = await loadCSVData("../../recommend/data/sool.csv");
+  const data = await loadCSVData(csvPath);
 
   // 기존 컬렉션 삭제 및 새로 생성
   await fetch(`${QDRANT_URL}/collections/${COLLECTION_NAME}`, {
