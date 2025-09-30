@@ -1,5 +1,5 @@
-# Node.js 경량 이미지 사용
-FROM node:22-alpine
+# Debian 기반, glibc 포함
+FROM node:22-slim
 
 # 컨테이너 안의 작업 디렉토리
 WORKDIR /app
