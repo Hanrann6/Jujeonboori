@@ -42,19 +42,19 @@ const handleOAuthLogin = async (req, res) => {
 
         if (provider === 'kakao') {
             // 카카오: SDK
-            const { access_token } = req.body;
+            const { id_token } = req.body;
 
-            if (!access_token) {
+            if (!id_token) {
                 return res.status(400).json({
                     timestamp: new Date().toISOString(),
                     status: 400,
                     error: "Bad Request",
-                    message: "요청 본문에 필수 파라미터가 누락되었습니다: access_token",
+                    message: "요청 본문에 필수 파라미터가 누락되었습니다: id_token",
                     path: req.path
                 });
             }
 
-            const result = await oauthService.processOAuthLogin(provider, access_token);
+            const result = await oauthService.processOAuthLogin(provider, id_token);
             return res.status(200).json(result);
 
         } else if (provider === 'google') {
