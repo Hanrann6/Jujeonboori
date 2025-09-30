@@ -129,10 +129,10 @@ export async function initEmbedding() {
     );
 
     try {
-  const res = await fetch("http://127.0.0.1:6333/collections/sool_collection/points", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ points: [safePoint] }),
+      const res = await fetch(`${QDRANT_URL}/collections/${COLLECTION_NAME}/points`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ points: [safePoint] }),
   });
 
   if (!res.ok) {
