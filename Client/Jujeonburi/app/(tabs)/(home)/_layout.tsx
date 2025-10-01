@@ -61,6 +61,15 @@ export default function HomeLayout() {
                     headerTitleAlign: "center",
                     headerShadowVisible: true,
                 }} />
+            <Stack.Screen
+                name="ocr"
+                options={{
+                    headerShown: true,
+                    title: "사진으로 검색하기",
+                    headerTitleStyle: { fontSize: 18, fontWeight: "700" },
+                    headerTitleAlign: "center",
+                    headerShadowVisible: true,
+                }} />
         </Stack>
     );
 }

@@ -13,40 +13,92 @@ import { ActivityIndicator, Image, Linking, Modal, ScrollView, StyleSheet, Text,
 import csvAsset from "../../../assets/data/trad_alcohol.csv";
 import ReviewModal from "../../components/ReviewModal"; // 방금 만든 컴포넌트
 
+// CSV 컬럼 타입
 type AlcoholRow = {
-    "제품명": string;
-    "단맛": number; "신맛": number; "청량감": number; "바디감": number; "도수%": number; "탄산": number;
-    "주종": string; "원재료"?: string; "용량"?: string | number; "가격"?: string | number; "제조사"?: string; "어울리는음식"?: string;
-    "사진URL"?: string; "detailPageUrl"?: string; "docId"?: string | number; "keyword"?: string;
+    "index": string | number;
+    "alcoholName": string;
+    "normalizedName"?: string;
+    "foodPairing"?: string;
+    "sweetness": number;
+    "sourness": number;
+    "freshness": number;
+    "body": number;
+    "degree": number;
+    "alcoholType": string;
+    "keywords"?: string;
+    "volume"?: string | number;
+    "price"?: string;
+    "priceValue?": number;
+    "manufacturer"?: string;
+    "ingredients"?: string;
+    "brewery"?: string;
+    "description"?: string;
+    "representative"?: string;
+    "address"?: string;
+    "contact"?: string;
+    "website"?: string;
+    "imageURL"?: string;
+    "detailPageUrl"?: string;
+    "docId"?: string | number;
 };
+
 type AlcoholItem = {
-    docId?: string;
-    name: string; category: string; abv: number;
-    sweetness: number; sourness: number; freshness: number; body: number; carbonation: number;
-    ingredients?: string; volume?: string; price?: string; maker?: string; pairings?: string;
-    imageUrl?: string; detailUrl?: string;
+    alcohol_id: string;
+    name: string;
+    sweetness: number;
+    sourness: number;
+    freshness: number;
+    body: number;
+    abv: number;
+    category: string;
+    keywords?: string;
+    imageUrl?: string;
+    volume?: string;
+    price?: string;
+    manufacturer?: string;
+    ingredients?: string;
+    pairings?: string;
+    detailUrl?: string;
+    brewery?: string;
+    description?: string;
+    representative?: string;
+    address?: string;
+    contact?: string;
+    website?: string;
 };
+
+// 유효한 http(s) URL인지 체크
+function validHttpUrl(u?: string) {
+    return !!u && /^https?:\/\//i.test(u.trim());
+}
 
 // CSV → 아이템
 function rowToItem(r: AlcoholRow): AlcoholItem {
-    const img = (r["사진URL"] ?? "").toString().trim();
+    const id = String(r["index"]);
+    const img = (r["imageURL"] ?? "").toString().trim();
     return {
-        docId: r["docId"] != null ? String(r["docId"]) : undefined,
-        name: String(r["제품명"]).trim(),
-        category: String(r["주종"] ?? "").trim(),
-        abv: Number(r["도수%"]) || 0,
-        sweetness: Number(r["단맛"]) || 0,
-        sourness: Number(r["신맛"]) || 0,
-        freshness: Number(r["청량감"]) || 0,
-        body: Number(r["바디감"]) || 0,
-        carbonation: Number(r["탄산"]) || 0,
-        ingredients: r["원재료"] || undefined,
-        volume: r["용량"] != null ? String(r["용량"]) : undefined,
-        price: r["가격"] != null ? String(r["가격"]) : undefined,
-        maker: r["제조사"] || undefined,
-        pairings: r["어울리는음식"] || undefined,
-        imageUrl: /^https?:\/\//i.test(img) ? img : undefined,
+        alcohol_id: id,
+        name: String(r["alcoholName"]).trim(),
+        sweetness: Number(r["sweetness"]) || 0,
+        sourness: Number(r["sourness"]) || 0,
+        freshness: Number(r["freshness"]) || 0,
+        body: Number(r["body"]) || 0,
+        abv: Number(r["degree"]) || 0,
+        category: String(r["alcoholType"] ?? "").trim(),
+        keywords: r["keywords"] ? String(r["keywords"]) : undefined,
+        imageUrl: validHttpUrl(img) ? img : undefined,
+        volume: r["volume"] != null ? String(r["volume"]) : undefined,
+        price: r["price"] != null ? String(r["price"]) : undefined,
+        manufacturer: r["manufacturer"] || undefined,
+        ingredients: r["ingredients"] || undefined,
+        pairings: r["foodPairing"] || undefined,
         detailUrl: r["detailPageUrl"] || undefined,
+        brewery: r["brewery"] || undefined,
+        description: r["description"] || undefined,
+        representative: r["representative"] || undefined,
+        address: r["address"] || undefined,
+        contact: r["contact"] || undefined,
+        website: r["website"] || undefined,
     };
 }
 async function loadAll(): Promise<AlcoholItem[]> {
@@ -54,7 +106,7 @@ async function loadAll(): Promise<AlcoholItem[]> {
     await asset.downloadAsync();
     const csv = await FileSystem.readAsStringAsync(asset.localUri!);
     const parsed = Papa.parse<AlcoholRow>(csv, { header: true, dynamicTyping: true, skipEmptyLines: true });
-    const rows = parsed.data.filter((r: any) => r["제품명"]);
+    const rows = parsed.data.filter((r: any) => r["alcoholName"]);
     return rows.map(rowToItem);
 }
 
@@ -128,7 +180,7 @@ export default function AlcoholDetailRoute() {
         if (!id) return null;
         const key = Array.isArray(id) ? id[0] : id;
         const nameKey = decodeURIComponent(key);
-        return items.find(x => x.docId === key) || items.find(x => x.name === nameKey) || null;
+        return items.find(x => x.alcohol_id === key) || items.find(x => x.name === nameKey) || null;
     }, [items, id]);
 
     // 닉네임 로드
@@ -201,35 +253,37 @@ export default function AlcoholDetailRoute() {
                 {item.ingredients ? <Row label="원재료" value={item.ingredients} /> : <Row label="원재료" value="" />}
                 {item.abv ? <Row label="도수" value={`${item.abv}%`} /> : <Row label="도수" value="" />}
                 {item.volume ? <Row label="용량" value={item.volume} /> : <Row label="용량" value="" />}
-                {item.price ? <Row label="가격" value={`${item.price}원`} /> : <Row label="가격" value="" />}
+                {item.price ? <Row label="가격" value={`${item.price}`} /> : <Row label="가격" value="" />}
             </Card>
 
             <Text style={styles.cardTitle}>제품 설명</Text>
             <View >
                 <ProfileCard>
-                    <Dots label="단맛" value={item.sweetness} />
-                    <Dots label="신맛" value={item.sourness} />
-                    <Dots label="청량감" value={item.freshness} />
-                    <Dots label="바디감" value={item.body} />
+                    {item.sweetness ? <Dots label="단맛" value={item.sweetness} /> : null}
+                    {item.sourness ? <Dots label="신맛" value={item.sourness} /> : null}
+                    {item.freshness ? <Dots label="청량감" value={item.freshness} /> : null}
+                    {item.body ? <Dots label="바디감" value={item.body} /> : null}
                 </ProfileCard>
             </View>
-            {item.pairings && <Text style={{ color: "#374151" }}>{item.pairings}</Text>}
+            {item.pairings && <Text style={{ fontSize: 14,  marginHorizontal: 20, color: "black" }}>{item.pairings}</Text>}
+            {item.keywords && (<View style={styles.chipsWrap}>{parseKeywords(item.keywords).map((k, i) => (<Chip key={`${k}-${i}`} label={k} />))}</View>)}
 
             <Text style={styles.cardTitle}>양조장</Text>
             <Card>
-                {item.maker ? <Row label="제조사" value={item.maker} /> : <Row label="양조장" value="" />}
-                {item.detailUrl && (
-                    <Row label="홈페이지" value={item.detailUrl} isLink />)}
+                {item.brewery ? <Row label="양조장" value={item.brewery} /> : null}
+                {item.representative ? <Row label="대표자" value={item.representative} /> : null}
+                {item.address ? <Row label="주소" value={item.address} /> : null}
+                {item.contact ? <Row label="연락처" value={item.contact} /> : null}
+                {item.manufacturer ? <Row label="제조사" value={item.manufacturer} /> : null}
+                {item.detailUrl && (<Row label="상세" value={item.detailUrl} isLink />)}
             </Card>
 
             <View>
-                <View style={{padding:20, flexDirection: "row", alignItems: "center" }}>
-                    <Text style={[styles.cardTitle, { flex: 1 }]}>
-                        리뷰/평점
-                    </Text>
+                <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
+                    <Text style={[styles.cardTitle, { flex: 1 }]}>리뷰/평점</Text>
                     <TouchableOpacity
                         onPress={() => setOpenReview(true)}
-                        style={{ position: "absolute", right: 0, padding: 10 }}
+                        style={{ position: "absolute", right: 0, padding: 10, top: 32 }}
                         accessibilityLabel="리뷰 작성"
                     >
                         <Ionicons name="add-circle-outline" size={24} color="#111827" />
@@ -239,7 +293,7 @@ export default function AlcoholDetailRoute() {
                 {/*리뷰*/}
                 <Card>
                     {topReview ? (
-                            <View style={[styles.card,{padding:0}]}>
+                        <View style={[styles.card, { padding: 0 }]}>
                             <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                                 <Text style={styles.reviewScore}>{avgRating.toFixed(1)}</Text>
                                 <View style={{ flex: 1, marginLeft: 30 }}>
@@ -310,7 +364,7 @@ function Card({ children }: { children: React.ReactNode }) {
     return <View style={styles.card}>{children}</View>;
 }
 function ProfileCard({ children }: { children: React.ReactNode }) {
-    return <View style={[styles.card, { backgroundColor: "#FFF7EB" }]}>{children}</View>;
+    return <View style={styles.profileCard}>{children}</View>;
 }
 function Row({ label, value, isLink }: { label: string; value: string; isLink?: boolean }) {
     const handlePress = () => {
@@ -333,10 +387,11 @@ function Row({ label, value, isLink }: { label: string; value: string; isLink?: 
         </View>
     );
 }
+
 function Dots({ label, value }: { label: string; value: number }) {
     return (
         <View style={{ flexDirection: "row", marginVertical: 3, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ width: 60, color: "#111827", fontWeight: "800", marginRight: 20, }}>{label}</Text>
+            <Text style={{ fontSize: 15, width: 60, color: "#111827", fontWeight: "800", marginRight: 20, }}>{label}</Text>
             {Array.from({ length: 5 }).map((_, i) => {
                 const filled = i < Math.round(value);
                 return (
@@ -353,7 +408,21 @@ function Dots({ label, value }: { label: string; value: number }) {
         </View>
     );
 }
+function parseKeywords(kw?: string) {
+    if (!kw) return [];
+    return kw
+        .split(/[,\s#]+/)     // 콤마, 공백, 해시태그 기준 분리
+        .map(s => s.trim())
+        .filter(Boolean);
+}
 
+function Chip({ label }: { label: string }) {
+    return (
+        <View style={styles.chip}>
+            <Text style={styles.chipText}>#{label}</Text>
+        </View>
+    );
+}
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -362,33 +431,70 @@ const styles = StyleSheet.create({
     },
     itemName: {
         fontSize: 28,
-        fontWeight: "600",
+        fontWeight: "700",
         textAlign: "center",
         color: "#111827"
     },
     divider: {
-        borderBottomWidth: 3,
+        marginHorizontal: -10,
+        borderBottomWidth: 4,
         borderBottomColor: "black",
         marginTop: -8,
     },
     card: {
-        backgroundColor: "#FAFAFA",
+        backgroundColor: "#F5F5F5",
         padding: 20,
+        paddingHorizontal: 25,
         gap: 3,
+        borderRadius: 8,
+        marginBottom: 8,
+        marginHorizontal: 5,
+    },
+    profileCard: {
+        padding: 30,
+        gap: 5,
+        borderRadius: 10,
+        marginHorizontal: 20,
+        marginBottom: -10,
+        backgroundColor: "#FFF7EB",
+        borderColor: '#FFD8A8',
+        borderWidth: 2,
+        borderStyle: 'dashed',
     },
     cardTitle: {
-        fontSize: 18,
+        fontSize: 20,
         textAlign: "center",
         fontWeight: "800",
-        marginTop: 8,
+        marginTop: 50,
         color: "#111827"
     },
     linkBox: {
         flex: 1,
     },
     link: {
-        fontSize: 14,
+        fontSize: 15,
         color: "#555",
+    },
+    chipsWrap: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        marginHorizontal: 30,
+        justifyContent: "center",
+    },
+    chip: {
+        borderRadius: 999,
+        borderWidth: 2,
+        borderColor: "#FFD8A8",
+        backgroundColor: "#FFD8A8",
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        marginRight: 8,
+        marginBottom: 8,
+    },
+    chipText: {
+        fontSize: 13,
+        fontWeight: "800",
+        color: "#111827",
     },
     reviewScore: {
         fontSize: 36,
@@ -424,7 +530,5 @@ const styles = StyleSheet.create({
     moreLink: {
         color: "#2563EB",
         fontSize: 13,
-
     },
-
 });

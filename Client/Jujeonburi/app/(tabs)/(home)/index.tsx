@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
     Animated,
     Easing,
+    Image,
     Keyboard,
     Platform,
     Pressable,
@@ -20,6 +21,7 @@ import {
     TextInput,
     View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import csvAsset from "../../../assets/data/trad_alcohol.csv";
 import AlcoholRecommend from "../../components/AlcoholRecommend";
 import Weathercard from "../../components/Weathercard";
@@ -38,6 +40,8 @@ const BLACK = "#111827";
 const MUTED = "#6B7280";
 
 export default function HomeScreen() {
+    const insets = useSafeAreaInsets();
+
     const [query, setQuery] = useState("");
     const [filters, setFilters] = useState<Filters>({ query: "", categories: [] });
 
@@ -47,7 +51,7 @@ export default function HomeScreen() {
     const contentH = useRef(0);                             // 실제 컨텐츠 높이 저장
     const [backdropTop, setBackdropTop] = useState(0);
 
-    // 이름 검색 → 상세페이지 id(docId를 우선 쓰고, 없으면 이름 인코딩하도록) 매핑
+    // 이름 검색 → 상세페이지 id를 우선 쓰고, 없으면 이름 인코딩하도록) 매핑
     const [nameIndex, setNameIndex] = useState<Map<string, string>>(new Map());
 
     useEffect(() => {
@@ -59,10 +63,10 @@ export default function HomeScreen() {
 
             const map = new Map<string, string>();
             for (const row of parsed.data) {
-                const rawName = row?.["제품명"];
+                const rawName = row?.["alcoholName"];
                 if (!rawName) continue;
                 const name = String(rawName).trim();
-                const id = row?.["docId"] != null ? String(row["docId"]) : encodeURIComponent(name);
+                const id = row?.["index"] != null ? String(row["index"]) : encodeURIComponent(name);
                 map.set(name.toLowerCase(), id); // 소문자 키로 보관(대/소문자 무시)
             }
             setNameIndex(map);
@@ -85,7 +89,7 @@ export default function HomeScreen() {
     const onApply = (f: Omit<Filters, "query">) => {
         // 검색창의 query(문자 입력값)와, 패널에서 받은 나머지 필터(f)를 합쳐 최종 객체 생성
         const next: Filters = { ...f, query: query.trim() };
-        
+
         //패널 닫기 (부드럽게 닫히도록 애니메이션 적용) 
         setOpen(false);
         Animated.timing(animH, {
@@ -99,11 +103,11 @@ export default function HomeScreen() {
         router.push({
             pathname: "/(tabs)/(home)/searchResult",
             params: {
-              q: next.query || "",
-              min: next.minPrice != null ? String(next.minPrice) : "",
-              max: next.maxPrice != null ? String(next.maxPrice) : "",
-              // 배열은 JSON 문자열로 넘기면 안전
-              cats: JSON.stringify(next.categories || []),
+                q: next.query || "",
+                min: next.minPrice != null ? String(next.minPrice) : "",
+                max: next.maxPrice != null ? String(next.maxPrice) : "",
+                // 배열은 JSON 문자열로 넘기면 안전
+                cats: JSON.stringify(next.categories || []),
             },
         });
     };
@@ -142,10 +146,10 @@ export default function HomeScreen() {
                                 returnKeyType="search"
                                 onSubmitEditing={goSearch}
                             />
-                            <Ionicons name="close-circle-outline" 
-                            size={20} 
-                            color={MUTED} 
-                            onPress={() => setQuery("")} />
+                            <Ionicons name="close-circle-outline"
+                                size={20}
+                                color={MUTED}
+                                onPress={() => setQuery("")} />
                         </View>
                         <Pressable style={s.filterBtn} onPress={toggle}>
                             <Text style={s.filterBtnText}>필터</Text>
@@ -171,6 +175,9 @@ export default function HomeScreen() {
                 {/* 메인 콘텐츠*/}
                 <Weathercard />
                 <View style={s.recContainer}>
+                    <View style={s.pricedRec}>
+                        <Text style={s.recTitle}><Text style={s.nick}>오늘 날씨에 어울리는</Text> 추천 전통주</Text>
+                    </View>
                     <View style={s.personalRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
                         <AlcoholRecommend limit={5} />
@@ -183,6 +190,16 @@ export default function HomeScreen() {
 
             {/* 필터 적용 패널 외부 영역을 터치하면 닫히도록 */}
             {open && <Pressable style={[s.backdrop, { top: backdropTop }]} onPress={toggle} />}
+
+            {/* OCR 버튼*/}
+            <Pressable
+                onPress={() => router.push("/ocr")}
+                style={[s.fab, { bottom: 24 + insets.bottom }]}>
+                <Image
+                    source={require("../../../assets/images/ocr_img.png")}
+                    style={s.fabIcon}/>
+                <Text style={s.fabLabel}>사진으로{"\n"}검색하기</Text>
+            </Pressable>
         </SafeAreaView>
     );
 }
@@ -419,4 +436,26 @@ const s = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         backgroundColor: "transparent",
     },
+    fab: {
+        position: "absolute",
+        right: 16,
+        width: 80,
+        height: 80,
+        borderRadius: 999,
+        backgroundColor: "#F6B300",
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: "#000",
+        shadowRadius: 999,
+        elevation: 2,
+    },
+    fabIcon: { 
+        width: 26, 
+        height: 26, 
+        resizeMode: "contain", 
+        marginBottom: 2 },
+
+    fabLabel: { 
+        fontSize: 11, 
+        fontWeight: "700" },
 });

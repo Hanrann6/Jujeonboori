@@ -1,10 +1,16 @@
 // app/(beforeLogin)/login.tsx
 
+import { router } from "expo-router";
 import { Image, Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function LoginScreen() {
     // TODO: Kakao SDK 연결 함수
-    const onKakao = () => { };
+    //
+    const onKakao = () => {
+        const suggested = ""; // 우선 ''(공백)으로로 설정. 연동 후 위 주석으로 교체
+         router.push({ pathname: "/(beforeLogin)/setNick", params: { suggested } });
+     
+     };
 
     return (
         <SafeAreaView style={styles.safe}>

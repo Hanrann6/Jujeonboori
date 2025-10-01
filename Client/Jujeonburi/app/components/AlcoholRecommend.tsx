@@ -10,48 +10,94 @@ import Papa from "papaparse";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import csvAsset from "../../assets/data/trad_alcohol.csv";
-
 // CSV 컬럼 타입
 type AlcoholRow = {
-  index?: number;
-  "제품명": string;
-  "단맛": number;
-  "신맛": number;
-  "청량감": number;
-  "바디감": number;
-  "도수%": number;
-  "탄산": number;
-  "주종": string;
-  "keyword"?: string;
-  "용량"?: string | number;
-  "가격"?: string | number;
-  "제조사"?: string;
-  "원재료"?: string;
-  "어울리는음식"?: string;
-  "사진URL"?: string;
+  "index": string | number;
+  "alcoholName": string;
+  "normalizedName"?: string;
+  "foodPairing"?: string;
+  "sweetness": number;
+  "sourness": number;
+  "freshness": number;
+  "body": number;
+  "degree": number;
+  "alcoholType": string;
+  "keywords"?: string;
+  "volume"?: string | number;
+  "price"?: string;
+  "priceValue?": number;
+  "manufacturer"?: string;
+  "ingredients"?: string;
+  "brewery"?: string;
+  "description"?: string;
+  "representative"?: string;
+  "address"?: string;
+  "contact"?:string;
+  "website"?: string;
+  "imageURL"?: string;
   "detailPageUrl"?: string;
   "docId"?: string | number;
 };
 
 type AlcoholItem = {
+  alcohol_id: string;
   name: string;
   sweetness: number;
   sourness: number;
   freshness: number;
   body: number;
   abv: number;
-  carbonation: number;
   category: string;
-  keyword?: string;
+  keywords?: string;
   imageUrl?: string;
-  volume?: string;          // 용량
+  volume?: string;         
   price?: string;
-  maker?: string;           // 제조사
+  manufacturer?: string;          
   ingredients?: string;
-  pairings?: string;        // 어울리는음식
+  pairings?: string;       
   detailUrl?: string;
-  docId?: string;
+  brewery?: string;
+  description?: string;
+  representative?: string;
+  address?: string;
+  contact?:string;
+  website?: string;
 };
+
+// 유효한 http(s) URL인지 체크
+function validHttpUrl(u?: string) {
+  return !!u && /^https?:\/\//i.test(u.trim());
+}
+
+// CSV → 아이템
+function rowToItem(r: AlcoholRow): AlcoholItem {
+const id = String(r.index); 
+const img = (r["imageURL"] ?? "").toString().trim();
+return {
+  alcohol_id: id,
+  name: String(r["alcoholName"]).trim(),
+  sweetness: Number(r["sweetness"]) || 0,
+  sourness: Number(r["sourness"]) || 0,
+  freshness: Number(r["freshness"]) || 0,
+  body: Number(r["body"]) || 0,
+  abv: Number(r["degree"]) || 0,
+  category: String(r["alcoholType"] ?? "").trim(),
+  keywords: r["keywords"] ? String(r["keywords"]) : undefined,
+  imageUrl: validHttpUrl(img) ? img : undefined,
+  volume: r["volume"] != null ? String(r["volume"]) : undefined,
+  price: r["price"] != null ? String(r["price"]) : undefined,
+  manufacturer: r["manufacturer"] || undefined,
+  ingredients: r["ingredients"] || undefined,
+  pairings: r["foodPairing"] || undefined,
+  detailUrl: r["detailPageUrl"] || undefined,
+  brewery: r["brewery"] || undefined,
+  description: r["description"] || undefined,
+  representative: r["representative"] || undefined,
+  address: r["address"] || undefined,
+  contact: r["contact"] || undefined,
+  website: r["website"] || undefined,
+};
+}
 
 type TasteProfile = {
   sweetness: number;
@@ -67,37 +113,7 @@ type TasteProfile = {
 };
 
 type Props = { limit?: number; title?: string };
-
-// 유효한 http(s) URL인지 체크
-function validHttpUrl(u?: string) {
-  return !!u && /^https?:\/\//i.test(u.trim());
-}
-
-// CSV → 아이템
-function rowToItem(r: AlcoholRow): AlcoholItem {
-  const img = (r["사진URL"] ?? "").toString().trim();
-  return {
-    name: String(r["제품명"]).trim(),
-    sweetness: Number(r["단맛"]) || 0,
-    sourness: Number(r["신맛"]) || 0,
-    freshness: Number(r["청량감"]) || 0,
-    body: Number(r["바디감"]) || 0,
-    abv: Number(r["도수%"]) || 0,
-    carbonation: Number(r["탄산"]) || 0,
-    category: String(r["주종"] ?? "").trim(),
-    keyword: r["keyword"] ? String(r["keyword"]) : undefined,
-
-    imageUrl: validHttpUrl(img) ? img : undefined,
-    volume: r["용량"] != null ? String(r["용량"]) : undefined,
-    price: r["가격"] != null ? String(r["가격"]) : undefined,
-    maker: r["제조사"] || undefined,
-    ingredients: r["원재료"] || undefined,
-    pairings: r["어울리는음식"] || undefined,
-    detailUrl: r["detailPageUrl"] || undefined,
-    docId: r["docId"] != null ? String(r["docId"]) : undefined,
-  };
-}
-
+  
 // 저장된 전통주 CSV 가져옴 
 async function loadAlcoholDataset(): Promise<AlcoholItem[]> {
   const asset = Asset.fromModule(csvAsset);
@@ -108,7 +124,7 @@ async function loadAlcoholDataset(): Promise<AlcoholItem[]> {
     dynamicTyping: true,
     skipEmptyLines: true,
   });
-  const rows = parsed.data.filter((r) => (r as any)["제품명"]);
+  const rows = parsed.data.filter((r) => (r as any)["alcoholName"]);
   return rows.map(rowToItem);
 }
 
@@ -139,14 +155,13 @@ function score(item: AlcoholItem, p: TasteProfile): number {
   const sSour = W.sourness * (5 - Math.abs(item.sourness - p.sourness));
   const sSpark = W.freshness * (5 - Math.abs(item.freshness - p.freshness));
   const sBody = W.body * (5 - Math.abs(item.body - p.body));
-  const sCarb = W.carbonation * (5 - Math.abs(item.carbonation - p.carbonation));
   //도수의 경우, ±5% 오차 범위를 허용하고, 차이가 10% 이상이면 0점, 0~10% 이내면 0~5점으로 계산
   const tol = p.abvTolerance ?? 5;
   const abvDiff = Math.abs(item.abv - p.abv);
   const sAbvRaw = Math.max(0, 1 - Math.max(0, abvDiff - tol) / 10); // 0~1
   const sAbv = W.abv * (5 * sAbvRaw);
 
-  return sSweet + sSour + sSpark + sBody + sCarb + sAbv;
+  return sSweet + sSour + sSpark + sBody + sAbv;
 }
 
 function recommend(items: AlcoholItem[], p: TasteProfile, limit: number) {
@@ -180,11 +195,6 @@ async function toggleFav(id: string): Promise<boolean> {
   const next = has ? list.filter(x => x !== id) : [...list, id];
   await setFavIds(next);
   return !has;
-}
-
-// 초기 찜 확인
-async function isFav(id: string): Promise<boolean> {
-  return (await getFavIds()).includes(id);
 }
 
 // 추천 카드 1개를 담당하는 컴포넌트 
@@ -283,9 +293,9 @@ export default function AlcoholRecommend({ limit = 5 }: Props) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
         data={picks}
-        keyExtractor={(it) => it.docId ?? it.name}
+        keyExtractor={(it) => it.alcohol_id}
         renderItem={({ item }) => {
-          const id = String(item.docId ?? item.name);
+          const id = String(item.alcohol_id ?? item.name);
           const liked = favIds.includes(id);
           const onToggle = async () => {
             // 토글 후 부모 상태를 다시 로드 (여러 카드 일관성)
@@ -300,7 +310,7 @@ export default function AlcoholRecommend({ limit = 5 }: Props) {
               onOpen={() =>
                 router.push({
                   pathname: "/(tabs)/(home)/[id]",
-                  params: { id: item.docId ?? encodeURIComponent(item.name) },
+                  params: { id: item.alcohol_id ?? encodeURIComponent(item.name) },
                 })
               }
             />
