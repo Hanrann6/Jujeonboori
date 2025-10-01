@@ -9,12 +9,12 @@ import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, TextIn
 import csvAsset from "../../../assets/data/trad_alcohol.csv";
 
 type Row = {
-    "제품명": string;
-    "주종"?: string;
-    "도수%": number;
-    "사진URL"?: string;
-    "가격"?: string | number;
-    "docId"?: string | number;
+    "alcoholName": string;
+    "alcoholType"?: string;
+    "degree": number;
+    "imageURL"?: string;
+    "price"?: string | number;
+    "alcohol_id"?: string;
 };
 type Item = {
     id: string;
@@ -81,19 +81,19 @@ export default function SearchScreen() {
 
             const items: Item[] = [];
             for (const r of parsed.data) {
-                const raw = r?.["제품명"];
+                const raw = r?.["alcoholName"];
                 if (!raw) continue;
                 const name = String(raw).trim();
-                const id = r?.["docId"] != null ? String(r["docId"]) : encodeURIComponent(name);
-                const img = (r["사진URL"] ?? "").toString().trim();
+                const id = r?.["alcohol_id"] != null ? String(r["alcohol_id"]) : encodeURIComponent(name);
+                const img = (r["imageURL"] ?? "").toString().trim();
                 items.push({
                     id,
                     name,
                     nameL: name.toLowerCase(),
                     imageUrl: validHttp(img) ? img : undefined,
-                    abv: Number(r["도수%"]) || undefined,
-                    category: r["주종"] || undefined,
-                    priceN: toPrice(r["가격"]),     // 🔸 가격 숫자화
+                    abv: Number(r["degree"]) || undefined,
+                    category: r["alcoholType"] || undefined,
+                    priceN: toPrice(r["price"]),
                 });
             }
             setList(items);
@@ -113,7 +113,6 @@ export default function SearchScreen() {
                 if (!it.category || !selCats.includes(it.category)) return false;
             }
             // 3) 가격 필터: min/max 중 하나라도 설정됐을 때만 체크
-
             if (minPrice != null || maxPrice != null) {
                 const p = it.priceN ?? null;          // CSV에서 숫자 가격을 파싱해 둔 필드 (없으면 null)
                 if (p == null) return false;          // 가격 없는 항목은 제외하고 싶다면
