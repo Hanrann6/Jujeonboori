@@ -16,6 +16,17 @@ const OAUTH_CONFIG = {
     }
 };
 
+const convertToSeconds = (timeString) => {
+    const units = {
+        s: 1,
+        m: 60,
+        h: 3600,
+        d: 86400
+    };
+    const match = timeString.match(/^(\d+)([smhd])$/);
+    return parseInt(match[1]) * units[match[2]];
+};
+
 const generateOAuthUrl = async (provider) => {
     if (provider !== 'google') {
         throw new Error(`${provider}는 OAuth URL 생성을 지원하지 않습니다.`);
@@ -139,7 +150,7 @@ const getUserInfo = async (provider, accessToken) => {
         return {
             providerId: userInfo.id,
             provider: 'google',
-            email: userIncfo.email,
+            email: userInfo.email,
             isEmailVerified: userInfo.verified_email || false
         };
 
@@ -244,7 +255,8 @@ const generateAppTokens = async (userInfo) => {
 
         return {
             accessToken,
-            refreshToken
+            refreshToken,
+            accessTokenExpiresIn: convertToSeconds(process.env.JWT_ACCESS_EXPIRES_IN)
         };
 
     } catch (error) {
@@ -293,7 +305,7 @@ const processOAuthLogin = async (provider, token) => {
             grant_type: "Bearer",
             access_token: tokens.accessToken,
             refresh_token: tokens.refreshToken,
-            access_token_expires_in: 3600,
+            access_token_expires_in: tokens.accessTokenExpiresIn,
             user: {
                 user_id: user._id,
                 email: user.email,

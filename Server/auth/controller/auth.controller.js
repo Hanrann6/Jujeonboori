@@ -139,7 +139,8 @@ const reissueToken = async (req, res) => {
         res.status(200).json({
             grant_type: "Bearer",
             access_token: newTokens.accessToken,
-            refresh_token: newTokens.refreshToken
+            refresh_token: newTokens.refreshToken,
+            access_token_expires_in: newTokens.accessTokenExpiresIn
         });
     } catch (error) {
         console.error('토큰 재발급 오류:', error);
