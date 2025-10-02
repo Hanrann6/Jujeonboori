@@ -2,12 +2,14 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
 import { loadCSVData, buildSoolText } from "../utils/csvLoader.js";
 import dotenv from "dotenv";
+import path from "path";
 dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 import { pipeline } from "@xenova/transformers";
 
 const COLLECTION_NAME = "sool_collection";
-const QDRANT_URL = "http://qdrant:6333"; // local에서 사용 시 localhost로 변경
+const QDRANT_URL = process.env.QDRANT_URL; // local에서 사용 시 localhost로 변경
 
 // 로컬 임베딩 (MiniLM 모델 사용)
 let embedder;
@@ -65,10 +67,12 @@ async function upsertBatch(points) {
 }
 
 // ec2 init용 csv 경로
-const csvPath = "/app/recommend/data/sool.csv";
+const csvPath2 = "/app/recommend/data/sool.csv";
+const csvPath = "../../recommend/data/sool.csv"; // 로컬 용
+
 export async function initEmbedding() {
-  //const data = await loadCSVData("../../recommend/data/sool.csv");
   const data = await loadCSVData(csvPath);
+  console.log("QDRANT_URL env:", process.env.QDRANT_URL);
 
   // 기존 컬렉션 삭제 및 새로 생성
   await fetch(`${QDRANT_URL}/collections/${COLLECTION_NAME}`, {
@@ -104,10 +108,6 @@ export async function initEmbedding() {
     const safePoint = {
       id: i + 1,
       vector: vectors[i],
-      // payload: {
-      //   alcoholName: metadatas[i].alcoholName || "",
-      //   degree: metadatas[i].degree || 0, // degree는 숫자로 변환
-      // },
       payload: {
         alcoholName: metadatas[i].alcoholName,
         sweetness: metadatas[i].sweetness,
@@ -120,6 +120,7 @@ export async function initEmbedding() {
         keyword: metadatas[i].keyword,
         volume: metadatas[i].volume,
         price: metadatas[i].price,
+        imageURL: metadatas[i].imageURL,
       },
     };
 
@@ -153,9 +154,6 @@ await new Promise((r) => setTimeout(r, 200));
 
     
   }
-
-  //const response = await fetch("http://127.0.0.1:6333/collections/sool_collection/points", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ points: [ { id: 1, // ✅ 숫자로 변경 vector: vectors[0], payload: { ...metadatas[0] }, }, ], }), });
-
 
   console.log("Qdrant 임베딩 완료 ");
 }
