@@ -2,7 +2,9 @@ version: "3.8"
 services:
   app:
     build: ./Server
-    container_name: habitai-server-container
+    container_name: sool-server-container
+    env_file:
+      - ${ENV_FILE_PATH}
     ports:
       - "3000:3000"
     depends_on:
