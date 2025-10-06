@@ -1,54 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import Papa from 'papaparse';
 import { fileURLToPath } from 'url';
+import Alcohol from '../model/alcohol.model.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const CSV_PATH = path.join(__dirname, 'sool.csv');
-
-// CSV 데이터 로드 및 파싱
-const loadAlcoholData = () => {
-    try {
-        const csvData = fs.readFileSync(CSV_PATH, 'utf8');
-        const parsed = Papa.parse(csvData, {
-            header: true,
-            skipEmptyLines: true,
-            dynamicTyping: true
-        });
-
-        return parsed.data.map(row => ({
-            index: row.index,
-            alcoholName: row.alcoholName,
-            normalizedName: row.normalizedName,
-            foodPairing: row.foodPairing,
-            sweetness: row.sweetness,
-            sourness: row.sourness,
-            freshness: row.freshness,
-            body: row.body,
-            degree: row.degree,
-            alcoholType: row.alcoholType,
-            keywords: row.keywords ? row.keywords.split(',').map(k => k.trim()) : [],
-            volume: row.volume,
-            price: row.price,
-            priceValue: row.priceValue,
-            ingredients: row.ingredients,
-            brewery: row.brewery,
-            description: row.description,
-            representative: row.representative,
-            address: row.address,
-            contact: row.contact,
-            website: row.website,
-            imageUrl: row.imageUrl,
-            detailPageUrl: row.detailPageUrl,
-            docId: row.docId
-        }));
-    } catch (error) {
-        console.error('CSV 파일 로드 실패:', error);
-        return [];
-    }
-};
 
 const getAlcoholList = async (page = 1, size = 10, filters = {}) => {
     try {
@@ -64,18 +17,18 @@ const getAlcoholList = async (page = 1, size = 10, filters = {}) => {
         const pageSize = Math.max(1, Math.min(50, parseInt(size)));
         const skip = (pageNumber - 1) * pageSize;
 
-        // 매번 CSV 파일에서 데이터 로드
-        let alcohols = loadAlcoholData();
+        const searchQuery = buildSearchQuery(filters);
+        const [alcohols, totalElements] = await Promise.all([
+            Alcohol.find(searchQuery)
+                .skip(skip)
+                .limit(pageSize)
+                .lean(),
+            Alcohol.countDocuments(searchQuery)
+        ]);
 
-        // 검색/필터 적용
-        alcohols = applyFilters(alcohols, filters);
-
-        // 페이지네이션
-        const totalElements = alcohols.length;
         const totalPages = Math.ceil(totalElements / pageSize);
-        const paginatedAlcohols = alcohols.slice(skip, skip + pageSize);
 
-        const alcoholList = paginatedAlcohols.map(alcohol => ({
+        const alcoholList = alcohols.map(alcohol => ({
             alcohol_id: alcohol.index,
             name: alcohol.alcoholName,
             category: alcohol.alcoholType,
@@ -94,6 +47,9 @@ const getAlcoholList = async (page = 1, size = 10, filters = {}) => {
 
     } catch (error) {
         console.error('전통주 목록 조회 오류:', error);
+        if (error.statusCode) {
+            throw error;
+        }
         const serviceError = new Error('전통주 목록 조회 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -108,35 +64,39 @@ const getAlcoholDetail = async (alcoholId) => {
             throw error;
         }
 
-        // CSV 파일에서 데이터 로드
-        const alcohols = loadAlcoholData();
-        const alcohol = alcohols.find(a => a.index === parseInt(alcoholId));
+        const pipeline = [
+            { $match: { index: parseInt(alcoholId) } },
+            {
+                $lookup: {
+                    from: 'reviews',
+                    localField: 'index',
+                    foreignField: 'alcohol',
+                    as: 'reviews'
+                }
+            },
+            {
+                $addFields: {
+                    reviewCount: { $size: '$reviews' },
+                    averageRating: {
+                        $cond: {
+                            if: { $gt: [{ $size: '$reviews' }, 0] },
+                            then: { $avg: '$reviews.rating' },
+                            else: 0
+                        }
+                    }
+                }
+            }
+        ];
 
-        if (!alcohol) {
+        const result = await Alcohol.aggregate(pipeline);
+
+        if (!result || result.length === 0) {
             const error = new Error('해당 ID의 전통주를 찾을 수 없습니다.');
             error.statusCode = 404;
             throw error;
         }
 
-        // MongoDB에서 리뷰 데이터 조회 (평점 계산)
-        let averageRating = 0;
-        let reviewCount = 0;
-
-        try {
-            // Review 모델 동적 import
-            const { default: Review } = await import('../review/model/review.model.js');
-            
-            const reviews = await Review.find({ alcohol: parseInt(alcoholId) });
-            reviewCount = reviews.length;
-            
-            if (reviewCount > 0) {
-                const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-                averageRating = Math.round((totalRating / reviewCount) * 10) / 10;
-            }
-        } catch (reviewError) {
-            console.error('리뷰 데이터 조회 실패:', reviewError);
-            // 리뷰 조회 실패해도 전통주 정보는 반환
-        }
+        const alcohol = result[0];
 
         const alcoholDetail = {
             alcohol_id: alcohol.index,
@@ -161,8 +121,8 @@ const getAlcoholDetail = async (alcoholId) => {
             contact: alcohol.contact,
             website: alcohol.website,
             image_url: alcohol.imageUrl,
-            average_rating: averageRating,
-            review_count: reviewCount
+            average_rating: Math.round(alcohol.averageRating * 10) / 10,
+            review_count: alcohol.reviewCount
         };
 
         return alcoholDetail;
@@ -179,10 +139,10 @@ const getAlcoholDetail = async (alcoholId) => {
     }
 };
 
-// 사용 가능한 키워드 목록 조회 (CSV에서 추출)
+// 사용 가능한 키워드 목록 조회
 const getAvailableKeywords = async () => {
     try {
-        const alcohols = loadAlcoholData();
+        const alcohols = await Alcohol.find({}, 'keywords').lean();
         const keywordSet = new Set();
         
         alcohols.forEach(alcohol => {
@@ -202,50 +162,37 @@ const getAvailableKeywords = async () => {
     }
 };
 
-// 필터 적용 함수
-const applyFilters = (alcohols, filters) => {
-    let filtered = [...alcohols];
+// 검색 쿼리 구성 함수
+const buildSearchQuery = (filters) => {
+    const query = {};
 
-    // 1. 일반 검색 - 전통주 이름
+    // 1. 일반 검색 - 전통주명
     if (filters.search) {
-        const searchTerm = filters.search.toLowerCase();
-        filtered = filtered.filter(alcohol => 
-            alcohol.alcoholName && alcohol.alcoholName.toLowerCase().includes(searchTerm)
-        );
+        query.alcoholName = { $regex: filters.search, $options: 'i' };
     }
 
     // 2-1. 필터 검색 - 가격대별
     if (filters.price_min !== undefined || filters.price_max !== undefined) {
-        filtered = filtered.filter(alcohol => {
-            const price = alcohol.priceValue;
-            let matches = true;
-            
-            if (filters.price_min !== undefined && price < filters.price_min) {
-                matches = false;
-            }
-            if (filters.price_max !== undefined && price > filters.price_max) {
-                matches = false;
-            }
-            
-            return matches;
-        });
+        query.priceValue = {};
+        if (filters.price_min !== undefined) {
+            query.priceValue.$gte = filters.price_min;
+        }
+        if (filters.price_max !== undefined) {
+            query.priceValue.$lte = filters.price_max;
+        }
     }
 
     // 2-2. 필터 검색 - 주종별
     if (filters.category) {
-        filtered = filtered.filter(alcohol => 
-            alcohol.alcoholType === filters.category
-        );
+        query.alcoholType = filters.category;
     }
 
     // 3. 키워드 목록 중 선택해서 검색
     if (filters.keyword) {
-        filtered = filtered.filter(alcohol => 
-            alcohol.keywords && alcohol.keywords.includes(filters.keyword)
-        );
+        query.keywords = { $in: [filters.keyword] };
     }
 
-    return filtered;
+    return query;
 };
 
 export default {
