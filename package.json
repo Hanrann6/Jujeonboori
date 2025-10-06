@@ -4,6 +4,7 @@
     "@react-native-kakao/core": "^2.4.0",
     "@react-native-kakao/user": "^2.4.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.20.0",
     "multer-s3": "^3.0.1"
   }
 }
