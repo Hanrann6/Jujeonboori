@@ -1,27 +1,28 @@
 // app/(tabs)/(home)/ocr.tsx
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Image,
   Linking,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from "react-native";
 
-const API_BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://13.209.223.34:3000";
+const API_BASE = process.env.EXPO_PUBLIC_API_URL;
 
 type OCRResponse = {
   이름: string;
   도수: string;
-  단맛: string;
-  신맛: string;
-  쓴맛: string;
+  단맛: number;
+  신맛: number;
+  쓴맛: number;
   "어울리는 음식": string;
   "구성 원재료": string;
 };
@@ -57,7 +58,6 @@ export default function OCRScreen() {
       setAsset(res.assets[0]);
     }
   };
-
 
   const takePhoto = async () => {
     setResult(null);
@@ -137,74 +137,73 @@ export default function OCRScreen() {
       setUploading(false);
     }
   };
-  /*
-    const gotoDetail = () => {
-      if (!result?.이름) return;
-      // 상세 화면은 id가  또는 이름 fallback 지원 → 이름을 인코딩해서 보냄
-      router.push({
-        pathname: "/(tabs)/(home)/[id]",
-        params: { id: encodeURIComponent(result.이름), alcoholName: result.이름 },
-      });
-    };
-  */
+
+  const gotoDetail = () => {
+    if (!result?.이름) return;
+    router.push({
+      pathname: "/(tabs)/(home)/[id]",
+      params: { id: encodeURIComponent(result.이름), alcoholName: result.이름 },
+    });
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}><Text style={{ color: "#F59E0B"}}>전통주의 라벨</Text>을 찍어주세요. </Text>
-          <Text style={styles.hint}>원활한 검색을 위해 라벨이 잘 보이는 사진을 이용해주세요. {"\n"}가능하다면, 라벨 부분만 크롭해주세요. </Text>
+          <Text style={styles.title}><Text style={{ color: "#F59E0B" }}>전통주의 라벨</Text>을 찍어주세요. </Text>
+          <Text style={styles.hint}>원활한 인식을 위해 라벨이 잘 보이는 사진을 이용해주세요. {"\n"}가능하다면, 라벨 부분만 크롭해주세요. </Text>
         </View>
         {/* 선택/촬영 버튼 */}
         <View style={styles.row}>
-          <Pressable style={styles.btn} onPress={pickFromLibrary}>
+          <TouchableOpacity style={styles.btn} onPress={pickFromLibrary}>
             <Text style={styles.btnText}>앨범에서 선택</Text>
-          </Pressable>
-          <Pressable style={styles.btn} onPress={takePhoto}>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn} onPress={takePhoto}>
             <Text style={styles.btnText}>카메라 촬영</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
         {/* 미리보기 */}
-        <View style={{ flex: 1, gap: 12}}>
-        {asset && (
-          <View style={styles.previewWrap}>
-            <Image source={{ uri: asset.uri }} style={styles.preview} resizeMode="contain" />
-          </View>
-        )}
-
-        {/* 업로드 버튼 */}
-        <Pressable
-          style={[styles.uploadBtn, (!asset || uploading) && styles.btnDisabled]}
-          onPress={submit}
-          disabled={!asset || uploading}
-        >
-          {uploading ? (
-            <ActivityIndicator color="#111827" />
-          ) : (
-            <Text style={styles.uploadText}>이 사진으로 검색하기</Text>
+        <ScrollView style={{ flex: 1, gap: 12 }}>
+          {asset && (
+            <View style={styles.previewWrap}>
+              <Image source={{ uri: asset.uri }} style={styles.preview} resizeMode="contain" />
+            </View>
           )}
-        </Pressable>
 
-        </View>
-        {/* 결과 */}
-        {result && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>인식 결과</Text>
-            <Row k="이름" v={result.이름} />
-            {/*TODO: result.단맛, 신맛, 청량감 바디감을 5단계 도트로 표시*/}
-            <Row k="단맛" v={result.단맛} />
-            <Row k="신맛" v={result.신맛} />
-            <Row k="쓴맛" v={result.쓴맛} />
-            <Row k="도수" v={result.도수} />
-            <Row k="어울리는 음식" v={result["어울리는 음식"]} />
-            <Row k="구성 원재료" v={result["구성 원재료"]} />
-            {/*
-            <Pressable style={styles.detailBtn} onPress={gotoDetail}>
-              <Text style={styles.detailText}>상세 페이지로 이동</Text>
-            </Pressable>
-            */}
-          </View>
-        )}
+          {/* 업로드 버튼 - 인식 결과가 나오면 해당 버튼은 사라지도록 함.*/}
+          {!result && (<TouchableOpacity
+            style={[styles.uploadBtn, (!asset || uploading) && styles.btnDisabled]}
+            onPress={submit}
+            disabled={!asset || uploading}
+          >
+            {uploading ? (
+              <ActivityIndicator color="#111827" />
+            ) : (
+              <Text style={styles.uploadText}>이 사진으로 검색하기</Text>
+            )}
+          </TouchableOpacity>
+          )}
+          {/* 결과 */}
+          {result && (
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>인식 결과</Text>
+              <View style={styles.divider} />
+              <Row k="이름" v={result.이름} />
+              <Row k="도수" v={`${result.도수}도`} />
+              {result.단맛 ? <Dots label="단맛" value={result.단맛} /> : <Row k="단맛" v={`${result.단맛}/5`} />}
+              {result.신맛 ? <Dots label="신맛" value={result.신맛} /> : <Row k="신맛" v={`${result.신맛}/5`} />}
+              {result.쓴맛 ? <Dots label="쓴맛" value={result.쓴맛} /> : <Row k="쓴맛" v={`${result.쓴맛}/5`} />}
+              <Row k="어울리는 음식" v={result["어울리는 음식"]} />
+              <Row k="구성 원재료" v={result["구성 원재료"]} />
+
+              <TouchableOpacity style={styles.detailBtn} onPress={gotoDetail}>
+                <Text style={styles.detailText}>상세 페이지로 이동</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -219,32 +218,33 @@ function Row({ k, v }: { k: string; v?: string }) {
   );
 }
 function Dots({ label, value }: { label: string; value: number }) {
-    return (
-        <View style={{ flexDirection: "row", marginVertical: 3, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ fontSize: 15, width: 60, color: "#111827", fontWeight: "800", marginRight: 20, }}>{label}</Text>
-            {Array.from({ length: 5 }).map((_, i) => {
-                const filled = i < Math.round(value);
-                return (
-                    <View
-                        key={i}
-                        style={{
-                            width: 20, height: 20, borderRadius: 999, marginRight: 8,
-                            borderWidth: 1, borderColor: "lightgray",
-                            backgroundColor: filled ? "#FFBF60" : "#FAFAFA",
-                        }}
-                    />
-                );
-            })}
-        </View>
-    );
+  return (
+    <View style={styles.rowKV}>
+      <Text style={{ fontSize: 15, width: 60, color: "#111827", fontWeight: "800", marginRight: 55, }}>{label}</Text>
+      {Array.from({ length: 5 }).map((_, i) => {
+        const filled = i < Math.round(value);
+        return (
+          <View
+            key={i}
+            style={{
+              width: 20, height: 20, borderRadius: 999, gap: 8,
+              borderWidth: 1, borderColor: "lightgray",
+              backgroundColor: filled ? "#FFBF60" : "#FAFAFA",
+      
+            }}
+          />
+        );
+      })}
+    </View>
+  );
 }
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#fff" },
   container: { flex: 1, padding: 20, gap: 16 },
   textContainer: {
     alignItems: "flex-start",
-    justifyContent:"center",
-    marginTop:30,
+    justifyContent: "center",
+    marginTop: 30,
     paddingHorizontal: 20
   },
   title: {
@@ -253,17 +253,19 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#111827"
   },
-  hint: { 
+  hint: {
     marginTop: 4,
-    fontSize: 13, 
+    fontSize: 13,
     color: "#6B7280",
-    marginBottom: 20 },
-  row: { 
-    marginTop:-10,
-    marginBottom:10,
+    marginBottom: 20
+  },
+  row: {
+    marginTop: -10,
+    marginBottom: 10,
     paddingHorizontal: 20,
-    flexDirection: "row", 
-    gap: 10 },
+    flexDirection: "row",
+    gap: 10
+  },
   btn: {
     flex: 1,
     height: 44,
@@ -274,9 +276,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  btnText: { 
-    color: "#111827", 
-    fontWeight: "700" 
+  btnText: {
+    color: "#111827",
+    fontWeight: "700"
   },
   previewWrap: {
     height: 240,
@@ -286,63 +288,70 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9FAFB",
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal:10,
+    marginHorizontal: 10,
   },
-  preview: { 
-    width: "100%", 
-    height: "100%", 
-    borderRadius: 8 },
+  preview: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 8
+  },
   uploadBtn: {
     height: 48,
     borderRadius: 12,
     backgroundColor: "#FFBF60",
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal:20,
+    marginHorizontal: 20,
   },
   btnDisabled: { opacity: 0.5 },
-  uploadText: { 
+  uploadText: {
     fontSize: 15,
-    color: "#111827", 
-    fontWeight: "800" 
+    color: "#111827",
+    fontWeight: "800"
   },
   // 결과 카드
   card: {
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+    margin: 7,
+    borderWidth: 1.5,
+    borderColor: "black",
     borderRadius: 12,
+    borderStyle: "dashed",
     padding: 14,
     backgroundColor: "#FAFAFA",
     gap: 8,
   },
-  cardTitle: { 
+  cardTitle: {
     textAlign: "center",
-    fontSize: 18,
-    fontWeight: "800", 
-    color: "#111827", 
-    marginBottom: 4 
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#111827",
   },
-
-  rowKV: { flexDirection: "row", alignItems: "center", gap: 8 , paddingHorizontal:40},
+  divider: {
+    borderBottomWidth: 1.5,
+    borderBottomColor: "black",
+    borderStyle: "dashed",
+    marginVertical: 4,
+  },
+  rowKV: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 40 },
   k: {
-    flex: 1, 
+    flex: 1,
     textAlign: "left",
-    color: "#374151", 
-    fontWeight: "700", 
+    color: "#374151",
+    fontWeight: "700",
   },
   v: {
     textAlign: "center",
-    flex: 1, 
-    color: "#111827" },
-
+    flex: 1,
+    color: "#111827"
+  },
   detailBtn: {
+    flex: 1,
     marginTop: 8,
     height: 42,
     borderRadius: 10,
-    backgroundColor: "#111827",
+    backgroundColor: "#FFBF60",
     alignItems: "center",
     justifyContent: "center",
   },
-  detailText: { color: "#fff", fontWeight: "700" },
+  detailText: { color: "black", fontWeight: "700" },
 });

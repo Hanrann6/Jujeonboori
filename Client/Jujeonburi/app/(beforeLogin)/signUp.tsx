@@ -46,7 +46,7 @@ export default function SignUpScreen() {
     const ops: Promise<void>[] = [
       SecureStore.setItemAsync("access_token", data.access_token),
       SecureStore.setItemAsync("refresh_token", data.refresh_token),
-      SecureStore.setItemAsync("access_expires_at", String(accessExpiresAt)),
+      SecureStore.setItemAsync("access_expires_at", String(accessExpiresAt)) 
     ];
 
     await Promise.all(ops);
@@ -72,8 +72,10 @@ export default function SignUpScreen() {
         throw new Error("서버로부터 인가를 받지 못했습니다.");
       }
 
+      //토큰 저장
       const resJson: KakaoResponse = await res.json();
       await saveTokens(resJson);
+      console.log("Kakao login success:", resJson);
       //await router.replace(resJson.is_new_user ? "/(beforeLogin)/setNick" : "/(tabs)/(home)/index");
       router.push("/(beforeLogin)/setNick");
     

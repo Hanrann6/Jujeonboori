@@ -12,14 +12,13 @@ import {
     Easing,
     Image,
     Keyboard,
-    Platform,
     Pressable,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
-    View,
+    View
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import csvAsset from "../../../assets/data/trad_alcohol.csv";
@@ -280,21 +279,7 @@ function FilterContent({
 const s = StyleSheet.create({
     safe: { flex: 1, backgroundColor: "#fff" },
     container: { flex: 1, paddingBottom: 24 },
-    header: {
-        height: 48,
-        paddingHorizontal: 12,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: BORDER,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: "900",
-        color: BLACK,
-        ...(Platform.OS === "android" ? { includeFontPadding: false } : null),
-    },
+    // 검색창
     searchRow: { flexDirection: "row", alignItems: "center", gap: 8, padding: 20, paddingBottom: 8 },
     searchBox: {
         flex: 1,
@@ -442,7 +427,7 @@ const s = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 999,
-        backgroundColor: "#F6B300",
+        backgroundColor: "#283353",
         alignItems: "center",
         justifyContent: "center",
         shadowColor: "#000",
@@ -453,9 +438,11 @@ const s = StyleSheet.create({
         width: 26, 
         height: 26, 
         resizeMode: "contain", 
+        backgroundColor:"#FFF", 
         marginBottom: 2 },
 
     fabLabel: { 
-        fontSize: 11, 
+        fontSize: 11,
+        color:"#FFF", 
         fontWeight: "700" },
 });

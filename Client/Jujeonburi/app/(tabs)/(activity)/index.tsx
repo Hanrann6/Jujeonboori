@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
     lineHeight: 24,
     marginBottom: 4,
+    color:"black"
   },
   body: {
     fontSize: 12,

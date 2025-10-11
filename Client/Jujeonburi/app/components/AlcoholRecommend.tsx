@@ -10,6 +10,7 @@ import Papa from "papaparse";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import csvAsset from "../../assets/data/trad_alcohol.csv";
+
 // CSV 컬럼 타입
 type AlcoholRow = {
   "index": string | number;
@@ -25,7 +26,7 @@ type AlcoholRow = {
   "keywords"?: string;
   "volume"?: string | number;
   "price"?: string;
-  "priceValue?": number;
+  "priceValue": number;
   "manufacturer"?: string;
   "ingredients"?: string;
   "brewery"?: string;
@@ -41,17 +42,18 @@ type AlcoholRow = {
 
 type AlcoholItem = {
   alcohol_id: string;
-  name: string;
+  alcoholName: string;
   sweetness: number;
   sourness: number;
   freshness: number;
   body: number;
-  abv: number;
-  category: string;
+  degree: number;
+  alcoholType: string;
   keywords?: string;
   imageUrl?: string;
   volume?: string;         
   price?: string;
+  priceValue?: number;
   manufacturer?: string;          
   ingredients?: string;
   pairings?: string;       
@@ -75,17 +77,18 @@ const id = String(r.index);
 const img = (r["imageURL"] ?? "").toString().trim();
 return {
   alcohol_id: id,
-  name: String(r["alcoholName"]).trim(),
+  alcoholName: String(r["alcoholName"]).trim(),
   sweetness: Number(r["sweetness"]) || 0,
   sourness: Number(r["sourness"]) || 0,
   freshness: Number(r["freshness"]) || 0,
   body: Number(r["body"]) || 0,
-  abv: Number(r["degree"]) || 0,
-  category: String(r["alcoholType"] ?? "").trim(),
+  degree: Number(r["degree"]) || 0,
+  alcoholType: String(r["alcoholType"] ?? "").trim(),
   keywords: r["keywords"] ? String(r["keywords"]) : undefined,
   imageUrl: validHttpUrl(img) ? img : undefined,
   volume: r["volume"] != null ? String(r["volume"]) : undefined,
   price: r["price"] != null ? String(r["price"]) : undefined,
+  priceValue: r["priceValue"] != null ? Number(r["priceValue"]) : undefined,
   manufacturer: r["manufacturer"] || undefined,
   ingredients: r["ingredients"] || undefined,
   pairings: r["foodPairing"] || undefined,
@@ -104,12 +107,12 @@ type TasteProfile = {
   sourness: number;
   freshness: number;
   body: number;
-  abv: number;
+  degree: number;
   carbonation: number;
-  abvTolerance?: number; //도수 허용 오차(defaultprofile에서 ±5%으로 설정해둠)
+  degreeTolerance?: number; //도수 허용 오차(defaultprofile에서 ±5%으로 설정해둠)
   categories?: string[]; //비워두면 전체에서 추천, 값이 있으면 해당 주종만 대상으로 추천
-  //sweetness | sourness | freshness | body | abv | carbonation에 대한 가중치
-  weights?: Partial<Record<keyof Omit<TasteProfile, "abvTolerance" | "categories" | "weights">, number>>;
+  //sweetness | sourness | freshness | body | degree | carbonation에 대한 가중치
+  weights?: Partial<Record<keyof Omit<TasteProfile, "degreeTolerance" | "categories" | "weights">, number>>;
 };
 
 type Props = { limit?: number; title?: string };
@@ -135,37 +138,37 @@ function normalizeProfile(raw: any): TasteProfile {
     sourness: Number(raw?.sourness) ?? 0,
     freshness: Number(raw?.freshness) ?? 0,
     body: Number(raw?.body) ?? 0,
-    abv: Number(raw?.abv) ?? 0,
+    degree: Number(raw?.degree) ?? 0,
     carbonation: Number(raw?.carbonation) ?? 0,
-    abvTolerance: Number(raw?.abvTolerance) || 5,
+    degreeTolerance: Number(raw?.degreeTolerance) || 5,
     categories: Array.isArray(raw?.categories) ? raw.categories : undefined,
     weights: raw?.weights || undefined,
   };
 }
 
 const DEFAULT_PROFILE: TasteProfile = {
-  sweetness: 3, sourness: 3, freshness: 3, body: 3, abv: 6, carbonation: 1, abvTolerance: 5,
+  sweetness: 3, sourness: 3, freshness: 3, body: 3, degree: 6, carbonation: 1, degreeTolerance: 5,
 };
 
 // 전통주 추천에 사용하는 스코어링
 function score(item: AlcoholItem, p: TasteProfile): number {
-  const W = { sweetness: 1, sourness: 1, freshness: 1, body: 1, carbonation: 0, abv: 0.5, ...(p.weights || {}) };
+  const W = { sweetness: 1, sourness: 1, freshness: 1, body: 1, carbonation: 0, degree: 0.5, ...(p.weights || {}) };
   //각 축(단맛/신맛/청량감/바디감/탄산)의 차이가 0이면 5점(최고), 차이가 5면 0점(최저).
   const sSweet = W.sweetness * (5 - Math.abs(item.sweetness - p.sweetness));
   const sSour = W.sourness * (5 - Math.abs(item.sourness - p.sourness));
   const sSpark = W.freshness * (5 - Math.abs(item.freshness - p.freshness));
   const sBody = W.body * (5 - Math.abs(item.body - p.body));
   //도수의 경우, ±5% 오차 범위를 허용하고, 차이가 10% 이상이면 0점, 0~10% 이내면 0~5점으로 계산
-  const tol = p.abvTolerance ?? 5;
-  const abvDiff = Math.abs(item.abv - p.abv);
-  const sAbvRaw = Math.max(0, 1 - Math.max(0, abvDiff - tol) / 10); // 0~1
-  const sAbv = W.abv * (5 * sAbvRaw);
+  const tol = p.degreeTolerance ?? 5;
+  const degreeDiff = Math.abs(item.degree - p.degree);
+  const sdegreeRaw = Math.max(0, 1 - Math.max(0, degreeDiff - tol) / 10); // 0~1
+  const sdegree = W.degree * (5 * sdegreeRaw);
 
-  return sSweet + sSour + sSpark + sBody + sAbv;
+  return sSweet + sSour + sSpark + sBody + sdegree;
 }
 
 function recommend(items: AlcoholItem[], p: TasteProfile, limit: number) {
-  const filtered = !p.categories?.length ? items : items.filter(it => p.categories!.includes(it.category));
+  const filtered = !p.categories?.length ? items : items.filter(it => p.categories!.includes(it.alcoholType));
   return filtered
     .map(it => ({ it, s: score(it, p) }))
     .sort((a, b) => b.s - a.s)
@@ -239,8 +242,8 @@ function RecCard({
 
       {/* 전통주 메타 정보 */}
       <Pressable onPress={onOpen} android_ripple={{ color: "#F3F4F6" }}>
-        <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
-        <Text style={styles.meta}>{item.category} · {item.abv}%</Text>
+        <Text numberOfLines={2} style={styles.name}>{item.alcoholName}</Text>
+        <Text style={styles.meta}>{item.alcoholType} · {item.degree}%</Text>
       </Pressable>
     </View>
   );
@@ -295,7 +298,7 @@ export default function AlcoholRecommend({ limit = 5 }: Props) {
         data={picks}
         keyExtractor={(it) => it.alcohol_id}
         renderItem={({ item }) => {
-          const id = String(item.alcohol_id ?? item.name);
+          const id = String(item.alcohol_id ?? item.alcoholName);
           const liked = favIds.includes(id);
           const onToggle = async () => {
             // 토글 후 부모 상태를 다시 로드 (여러 카드 일관성)
@@ -310,7 +313,7 @@ export default function AlcoholRecommend({ limit = 5 }: Props) {
               onOpen={() =>
                 router.push({
                   pathname: "/(tabs)/(home)/[id]",
-                  params: { id: item.alcohol_id ?? encodeURIComponent(item.name) },
+                  params: { id: item.alcohol_id ?? encodeURIComponent(item.alcoholName) },
                 })
               }
             />

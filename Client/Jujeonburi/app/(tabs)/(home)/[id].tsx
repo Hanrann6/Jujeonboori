@@ -180,7 +180,10 @@ export default function AlcoholDetailRoute() {
         if (!id) return null;
         const key = Array.isArray(id) ? id[0] : id;
         const nameKey = decodeURIComponent(key);
-        return items.find(x => x.alcohol_id === key) || items.find(x => x.name === nameKey) || null;
+        const norm = (s: string) =>
+            (s || "").replace(/\s+/g, "").replace(/[()]/g, "").toLowerCase();
+        
+        return items.find(x => x.alcohol_id === key) || items.find(x => norm(x.name) === norm(nameKey)) || null;
     }, [items, id]);
 
     // 닉네임 로드
@@ -283,7 +286,7 @@ export default function AlcoholDetailRoute() {
                     <Text style={[styles.cardTitle, { flex: 1 }]}>리뷰/평점</Text>
                     <TouchableOpacity
                         onPress={() => setOpenReview(true)}
-                        style={{ position: "absolute", right: 0, padding: 10, top: 32 }}
+                        style={{ position: "absolute", right: 0, padding: 10, top: 62 }}
                         accessibilityLabel="리뷰 작성"
                     >
                         <Ionicons name="add-circle-outline" size={24} color="#111827" />
