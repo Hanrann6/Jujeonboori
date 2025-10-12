@@ -3,7 +3,7 @@ import Alcohol from '../model/alcohol.model.js';
 
 const __filename = fileURLToPath(import.meta.url);
 
-const getAlcoholList = async (page = 1, size = 10, filters = {}) => {
+const getAlcoholList = async (filters = {}) => {
     try {
         // 필터 조건이 하나도 없으면 검색어 필수
         const hasAnyFilter = filters.search || filters.category || filters.keyword || filters.price_min !== undefined || filters.price_max !== undefined;
@@ -13,20 +13,8 @@ const getAlcoholList = async (page = 1, size = 10, filters = {}) => {
             throw error;
         }
 
-        const pageNumber = Math.max(1, parseInt(page));
-        const pageSize = Math.max(1, Math.min(50, parseInt(size)));
-        const skip = (pageNumber - 1) * pageSize;
-
         const searchQuery = buildSearchQuery(filters);
-        const [alcohols, totalElements] = await Promise.all([
-            Alcohol.find(searchQuery)
-                .skip(skip)
-                .limit(pageSize)
-                .lean(),
-            Alcohol.countDocuments(searchQuery)
-        ]);
-
-        const totalPages = Math.ceil(totalElements / pageSize);
+        const alcohols = await Alcohol.find(searchQuery).lean();
 
         const alcoholList = alcohols.map(alcohol => ({
             alcohol_id: alcohol.index,
@@ -36,13 +24,7 @@ const getAlcoholList = async (page = 1, size = 10, filters = {}) => {
         }));
 
         return {
-            alcohols: alcoholList,
-            page_info: {
-                page: pageNumber,
-                size: pageSize,
-                total_elements: totalElements,
-                total_pages: totalPages
-            }
+            alcohols: alcoholList
         };
 
     } catch (error) {
