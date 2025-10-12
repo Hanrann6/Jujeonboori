@@ -6,10 +6,7 @@ import { S3Client, DeleteObjectCommand} from '@aws-sdk/client-s3';
 
 // 내 프로필 조회
 const getMyProfile = async (userInfo) => {
-    const user = await User.findOne({ 
-        _id: userInfo.userId,
-        status: { $ne: 'deleted' }
-    });
+    const user = await User.findById(userInfo.userId);
 
     if (!user) {
         const error = new Error('사용자를 찾을 수 없습니다.');
@@ -27,10 +24,7 @@ const getMyProfile = async (userInfo) => {
 
 // 내 프로필 수정
 const updateMyProfile = async (userInfo, updateData, uploadedFile) => {
-    const user = await User.findOne({ 
-        _id: userInfo.userId,
-        status: { $ne: 'deleted' }
-    });
+    const user = await User.findById(userInfo.userId);
 
     if (!user) {
         const error = new Error('사용자를 찾을 수 없습니다.');
@@ -96,10 +90,7 @@ const updateMyProfile = async (userInfo, updateData, uploadedFile) => {
 
 // 회원 탈퇴
 const deleteUser = async (userInfo, refreshToken) => {
-    const user = await User.findOne({ 
-        _id: userInfo.userId,
-        status: { $ne: 'deleted' }
-    });
+    const user = await User.findById(userInfo.userId);
 
     if (!user) {
         const error = new Error('사용자를 찾을 수 없습니다.');
@@ -107,9 +98,15 @@ const deleteUser = async (userInfo, refreshToken) => {
         throw error;
     }
 
+    // 이미 탈퇴한 사용자면 바로 성공 응답 (중복 탈퇴 허용)
+    if (user.status === 'deleted') {
+        return true;
+    }
+
     await cleanupUserData(user._id);
 
     user.status = 'deleted';
+    user.imageUrl = null;
     user.updatedAt = new Date();
     await user.save();
 
@@ -143,7 +140,6 @@ const processImageUpload = async (file) => {
         return file.location;
         
     } catch (error) {
-        console.error('S3 업로드 오류:', error);
         const uploadError = new Error('이미지 업로드에 실패했습니다.');
         uploadError.statusCode = 500;
         throw uploadError;
@@ -191,7 +187,6 @@ const deleteUserImagesFromS3 = async (userId) => {
                 });
 
                 await s3Client.send(deleteCommand);
-                console.log(`S3에서 프로필 이미지 삭제 완료: ${s3Key}`);
             }
         }
 
@@ -207,7 +202,6 @@ const deleteUserImagesFromS3 = async (userId) => {
                     });
 
                     await s3Client.send(deleteCommand);
-                    console.log(`S3에서 리뷰 이미지 삭제 완료: ${s3Key}`);
                 }
             }
         }
@@ -238,21 +232,15 @@ const cleanupUserData = async (userId) => {
     try {
         // 북마크 데이터 정리
         const deletedBookmarks = await Bookmark.deleteMany({ userId });
-        console.log(`북마크 ${deletedBookmarks.deletedCount}개 삭제 완료`);
 
         // 리뷰 데이터 정리
         const deletedReviews = await Review.deleteMany({ userId });
-        console.log(`리뷰 ${deletedReviews.deletedCount}개 삭제 완료`);
 
         // Refresh Token 정리
         const deletedTokens = await RefreshToken.deleteMany({ user_id: userId });
-        console.log(`Refresh Token ${deletedTokens.deletedCount}개 삭제 완료`);
         
         // S3에 업로드된 사용자 이미지 삭제
-        await deleteUserImagesFromS3(userId);
-        
-        console.log(`사용자 ${userId}의 관련 데이터 정리 완료`);
-        
+        await deleteUserImagesFromS3(userId);        
     } catch (error) {
         console.error('사용자 데이터 정리 중 오류:', error);
         // 데이터 정리 실패해도 회원탈퇴는 진행

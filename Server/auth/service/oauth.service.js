@@ -75,8 +75,6 @@ const exchangeCodeForToken = async (provider, authorizationCode, redirectUri) =>
         const tokenResponse = await response.json();
 
         if (!response.ok) {
-            console.error(`${provider} 토큰 교환 실패:`, tokenResponse);
-
             if (tokenResponse.error === 'invalid_grant') {
                 throw new Error('인가 코드가 유효하지 않거나 만료되었습니다.');
             } else if (tokenResponse.error === 'invalid_client') {
@@ -115,8 +113,6 @@ const getUserInfoFromIdToken = (idToken) => {
             throw new Error('idToken 디코딩에 실패했습니다.');
         }
 
-        console.log('디코딩된 idToken:', decoded);
-
         return {
             providerId: decoded.sub,
             provider: 'kakao',
@@ -124,7 +120,6 @@ const getUserInfoFromIdToken = (idToken) => {
             isEmailVerified: !!decoded.email
         };
     } catch (error) {
-        console.error('idToken 처리 오류:', error);
         throw new Error('카카오 사용자 정보 추출에 실패했습니다.');
     }
 };
@@ -181,9 +176,7 @@ const saveRefreshTokenToDB = async (userId, provider, token) => {
             }
         );
 
-        console.log(`Refresh token 저장 완료: ${userId} (${provider})`);
     } catch (error) {
-        console.error('Refresh token 저장 중 오류:', error);
         throw new Error('토큰 저장에 실패했습니다.');
     }
 };
@@ -198,7 +191,6 @@ const checkRefreshTokenInDB = async (userId, provider, token) => {
 
         return refreshTokenDoc !== null;
     } catch (error) {
-        console.error('Refresh token 조회 중 오류:', error);
         return false;
     }
 };
@@ -210,9 +202,7 @@ const removeRefreshTokenFromDB = async (userId, provider) => {
             provider: provider
         });
 
-        console.log(`Refresh token 삭제 완료: ${userId} (${provider})`);
     } catch (error) {
-        console.error('Refresh token 삭제 중 오류:', error);
         throw new Error('토큰 삭제에 실패했습니다.');
     }
 };
@@ -260,7 +250,6 @@ const generateAppTokens = async (userInfo) => {
         };
 
     } catch (error) {
-        console.error('JWT 토큰 생성 오류:', error);
         throw new Error('토큰 생성 중 오류가 발생했습니다.');
     }
 };
@@ -279,21 +268,43 @@ const processOAuthLogin = async (provider, token) => {
 
         let user = await User.findOne({
             provider: oauthUserInfo.provider,
-            providerId: oauthUserInfo.providerId
+            providerId: oauthUserInfo.providerId,
+            status: { $ne: 'deleted' }
         });
 
         let isNewUser = false;
 
         // 신규 사용자면 생성
         if (!user) {
-            user = await User.create({
-                email: oauthUserInfo.email,
+            // 탈퇴한 계정이 있는지 확인
+            const deletedUser = await User.findOne({
                 provider: oauthUserInfo.provider,
                 providerId: oauthUserInfo.providerId,
-                nickname: null, // 이후에 설정
-                imageUrl: null
+                status: 'deleted'
             });
-            isNewUser = true;
+
+            if (deletedUser) {
+                // 재가입 - 탈퇴 계정 복구
+                deletedUser.status = 'active';
+                deletedUser.nickname = null;
+                deletedUser.imageUrl = null;
+                deletedUser.updatedAt = new Date();
+                await deletedUser.save();
+                
+                user = deletedUser;
+                isNewUser = true; // 재가입이므로 신규 사용자 아님
+            } else {
+                // 진짜 신규 가입
+                user = await User.create({
+                    email: oauthUserInfo.email,
+                    provider: oauthUserInfo.provider,
+                    providerId: oauthUserInfo.providerId,
+                    nickname: null,
+                    imageUrl: null,
+                    status: 'active'
+                });
+                isNewUser = true;
+            }
         }
 
         const tokens = await generateAppTokens({
@@ -315,7 +326,6 @@ const processOAuthLogin = async (provider, token) => {
             is_new_user: isNewUser
         };
     } catch (error) {
-        console.error('OAuth 로그인 처리 오류:', error);
         throw error;
     }
 }
