@@ -19,7 +19,7 @@ export function loadAlcoholData() {
       .pipe(csv())
       .on("data", (row) => {
         // price, degree 숫자로 변환
-        row.price = Number(row.price);
+        row.priceValue = Number(row.priceValue);
         row.degree = Number(row.degree);
         results.push(row);
       })
@@ -33,7 +33,7 @@ export function loadAlcoholData() {
 
 // 조건에 맞는 전통주 랜덤 6개 반환
 export function getAlcoholsUnderPrice(limitPrice = 30000, count = 6) {
-  const filtered = alcohols.filter((a) => a.price <= limitPrice);
+  const filtered = alcohols.filter((a) => a.priceValue <= limitPrice);
 
   // Fisher-Yates shuffle 후 count 개수 추출
   for (let i = filtered.length - 1; i > 0; i--) {
@@ -42,9 +42,10 @@ export function getAlcoholsUnderPrice(limitPrice = 30000, count = 6) {
   }
 
   return filtered.slice(0, count).map((a) => ({
+    id: a.index,
     name: a.alcoholName,
     degree: a.degree,
-    image: a.imageURL,
+    image: a.imageUrl,
   }));
 }
 
