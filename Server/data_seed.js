@@ -196,7 +196,7 @@ async function seedAllData() {
         await Festival.insertMany(festivalData);
         console.log(`축제 데이터 삽입 완료\n`);
 
-        const csvFile = fs.readFileSync('./Server/alcohol_crawl/real_final.csv', 'utf8');
+        const csvFile = fs.readFileSync('./alcohol_crawl/real_final.csv', 'utf8');
         
         await new Promise((resolve, reject) => {
             Papa.parse(csvFile, {
