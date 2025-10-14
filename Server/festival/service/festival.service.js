@@ -13,7 +13,7 @@ const festivalService = {
                     $lte: endOfYear
                 }
             })
-            .select('festival_id name location start_date end_date image_url')
+            .select('festival_id name location start_date end_date official_url image_url')
             .sort({ end_date: -1 }) // 종료일 기준 내림차순 정렬
             .lean();
             
