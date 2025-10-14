@@ -51,7 +51,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .catch((err) => console.error("MongoDB 연결 실패", err));
 
 // 추천 라우터
-app.use("/recommendations", recommendRoutes);
+app.use("/recommend", recommendRoutes);
 //가격별 추천 라우터
 app.use("/recommend/price", priceRecommendRoutes);
 //날씨별 추천 라우터

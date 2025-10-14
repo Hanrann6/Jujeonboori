@@ -2,20 +2,19 @@ import Bookmark from "../model/bookmark.model.js";
 import User from "../../user/model/user.model.js";
 import Alcohol from "../../alcohol/model/alcohol.model.js";
 import {
-  sendBookmarkEvent,
-  sendReviewEvent,
-  sendViewDetailEvent,
+  sendBookmarkEvent
 } from "../../personalize/service/personalize.service.js";
 
 
 
 // 북마크 추가
 export const addBookmark = async (req, res) => {
-  const { userId, alcoholId } = req.body;
+  const { userId, alcoholIndex } = req.body;
 
   try {
     const user = await User.findById(userId);
-    const alcohol = await Alcohol.findById(alcoholId);
+    // findById 대신 findOne으로 index 필드 검색
+    const alcohol = await Alcohol.findOne({ index: alcoholIndex });
 
     if (!user || !alcohol) {
       return res
@@ -24,16 +23,17 @@ export const addBookmark = async (req, res) => {
     }
 
     // 중복 체크
-    const exists = await Bookmark.findOne({ userId, alcoholId });
+    const exists = await Bookmark.findOne({ userId, alcoholId: alcohol._id });
     if (exists) {
       return res.status(400).json({ message: "이미 북마크된 전통주입니다." });
     }
 
-    const bookmark = new Bookmark({ userId, alcoholId });
+    // db에는 _id로 저장
+    const bookmark = new Bookmark({ userId, alcoholId: alcohol._id });
     await bookmark.save();
 
     // Personalize에 이벤트 전송
-    await sendBookmarkEvent(userId, alcoholId.toString());
+    await sendBookmarkEvent(userId, alcohol.index.toString());
 
     res.status(201).json({ message: "북마크 완료", bookmark });
   } catch (err) {
