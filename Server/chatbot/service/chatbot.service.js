@@ -87,7 +87,8 @@ export async function recommendSool(userId, userQuestion) {
 3. imageURL도 주어진 전통주 목록에 있는 imageURL을 사용하세요.
 4. reason은 사용자의 질문과 이 전통주를 추천한 이유를 논리적으로 설명하세요.
 5. 추천 리스트 전에 "~~한 질문에 맞는 전통주 3가지를 추천했어요."와 같은 answer 문장을 JSON 형식으로 추가하세요.
-6. 반드시 아래 JSON 구조 하나만 반환하세요:
+6. detailPage는 http://13.209.223.34:3000/alcohols/ 에 해당 전통주의 index를 붙여 반환하세요.
+7. 반드시 아래 JSON 구조 하나만 반환하세요:
 {
   "answer": "김치전에 어울리는 전통주 3가지를 추천했어요.",
   "result": [
@@ -96,7 +97,7 @@ export async function recommendSool(userId, userQuestion) {
     "description": "전통주 특징 요약",
     "reason": "전통주 추천 이유",
     "imageURL": "이미지 URL",
-    "detailPage": "상세페이지 URL"
+    "detailPage": "http://13.209.223.34:3000/alcohols/{alcohol_id}"
     },  
   ...
   ]
