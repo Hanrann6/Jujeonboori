@@ -50,12 +50,13 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .then(() => console.log("MongoDB 연결 완료"))
   .catch((err) => console.error("MongoDB 연결 실패", err));
 
+
+// //가격별 추천 라우터
+// app.use("/recommend/price", priceRecommendRoutes);
+// //날씨별 추천 라우터
+// app.use("/recommend/weather", weatherRecommendRouter);
 // 추천 라우터
 app.use("/recommend", recommendRoutes);
-//가격별 추천 라우터
-app.use("/recommend/price", priceRecommendRoutes);
-//날씨별 추천 라우터
-app.use("/recommend/weather", weatherRecommendRouter);
 // 북마크 라우터
 app.use("/bookmark", bookmarkRoutes);
 // 챗봇 라우터
