@@ -1,13 +1,8 @@
-// weather-recommend.service.js
-import { getWeatherData } from "../../../weather-api/weatherService.js";
 // price-recommend.service.js 에서 로드된 alcohols 배열을 import
 import { getAlcoholsData } from "../../price-recommend/service/price-recommend.service.js";
 
 // 날씨 기반 추천 함수
-export async function getAlcoholsByWeather(lat, lon, count = 6) {
-  // 현재 날씨 데이터 가져오기
-  const weatherData = await getWeatherData(lat, lon);
-  const { temperature, precipitationType } = weatherData.weather;
+export async function getAlcoholsByWeather(temperature, precipitationType, count = 6) {
 
   const alcohols = getAlcoholsData(); // 공용 alcohols 배열 가져오기
 
