@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const getAlcoholList = async (filters = {}) => {
     try {
         // 필터 조건이 하나도 없으면 검색어 필수
-        const hasAnyFilter = filters.search || filters.category || filters.keyword || filters.price_min !== undefined || filters.price_max !== undefined;
+        const hasAnyFilter = filters.search || filters.category || filters.keywords || filters.price_min !== undefined || filters.price_max !== undefined;
         if (!hasAnyFilter) {
             const error = new Error('검색어 또는 필터 조건이 필요합니다.');
             error.statusCode = 400;
@@ -169,9 +169,10 @@ const buildSearchQuery = (filters) => {
         query.alcoholType = filters.category;
     }
 
-    // 3. 키워드 목록 중 선택해서 검색
-    if (filters.keyword) {
-        query.keywords = { $in: [filters.keyword] };
+    // 3. 키워드 목록 중 선택해서 검색 (다중 선택)
+    if (filters.keywords && Array.isArray(filters.keywords) && filters.keywords.length > 0) {
+        // query.keywords = { $in: [filters.keywords] };
+        query.keywords = { $all: filters.keywords };
     }
 
     return query;

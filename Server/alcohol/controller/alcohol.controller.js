@@ -3,13 +3,18 @@ import { sendViewDetailEvent } from '../../personalize/service/personalize.servi
 
 const getAlcoholList = async (req, res) => {
     try {
-        const { search, category, keyword, price_min, price_max } = req.query;
+        const { search, category, keywords, price_min, price_max } = req.query;
 
         // 필터 객체
         const filters = {};
         if (search) filters.search = search;
         if (category) filters.category = category;
-        if (keyword) filters.keyword = keyword;
+
+        // 키워드 배열 처리
+        if (keywords) {
+            filters.keywords = Array.isArray(keywords) ? keywords : [keywords];
+        }
+
         if (price_min !== undefined) filters.price_min = parseInt(price_min);
         if (price_max !== undefined) filters.price_max = parseInt(price_max);
 
@@ -52,8 +57,6 @@ const getAlcoholDetail = async (req, res) => {
             const userId = req.user.userId;
             
             await sendViewDetailEvent(userId, alcohol_id.toString());
-            
-            console.log(`Personalize 이벤트 전송 완료: 사용자 ${userId}, 전통주 ${alcohol_id}`);
         } catch (personalizeError) {
             // Personalize 이벤트 실패해도 API 응답은 정상 처리
             console.error('Personalize 이벤트 전송 실패:', personalizeError);
