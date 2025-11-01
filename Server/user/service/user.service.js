@@ -23,7 +23,7 @@ const getMyProfile = async (userInfo) => {
 };
 
 // 내 프로필 수정
-const updateMyProfile = async (userInfo, updateData, uploadedFile) => {
+const updateMyProfile = async (userInfo, updateData) => {
     const user = await User.findById(userInfo.userId);
 
     if (!user) {
@@ -32,32 +32,20 @@ const updateMyProfile = async (userInfo, updateData, uploadedFile) => {
         throw error;
     }
 
-    const fieldsToUpdate = {};
-
-    if (updateData.nickname) {
-        await validateNickname(updateData.nickname, user._id);
-        fieldsToUpdate.nickname = updateData.nickname;
-    }
-
-    if (uploadedFile) {
-        fieldsToUpdate.imageUrl = await processImageUpload(uploadedFile);
-    }
-
-    if (Object.keys(fieldsToUpdate).length === 0) {
-        const error = new Error('수정할 정보가 없습니다.');
+    // 닉네임 업데이트
+    if (!updateData.nickname) {
+        const error = new Error('닉네임은 필수입니다.');
         error.statusCode = 400;
         throw error;
     }
 
-    Object.assign(user, fieldsToUpdate);
+    user.nickname = updateData.nickname;
     user.updatedAt = new Date();
     await user.save();
 
     return {
         user_id: user._id,
-        email: user.email,
-        nickname: user.nickname,
-        image_url: user.imageUrl
+        nickname: user.nickname
     };
 };
 

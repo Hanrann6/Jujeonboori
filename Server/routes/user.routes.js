@@ -52,7 +52,6 @@ router.get('/me',
 
 router.patch('/me',
     authMiddleware.verifyAccessToken,
-    upload.single('image'),
     userController.updateMyProfile
 );
 
