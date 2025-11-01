@@ -166,7 +166,7 @@ const buildSearchQuery = (filters) => {
 
     // 2-2. 필터 검색 - 주종별
     if (filters.category) {
-        query.alcoholType = filters.category;
+        query.alcoholType = { $regex: filters.category, $options: 'i' };
     }
 
     // 3. 키워드 목록 중 선택해서 검색 (다중 선택)
