@@ -18,7 +18,7 @@ export default function BeforeLoginLayout() {
             <Stack.Screen
                 name="index"
                 options={{
-                    headerShown: false, // 헤더 숨김
+                    headerShown: false, 
                 }} />
             <Stack.Screen name="login"
                 options={{

@@ -20,8 +20,8 @@ export default function ChatbotLayout() {
                 name="index"
                 options={{
                     headerShown: true,
-                    title: "챗봇",
-                    headerTitleStyle: { fontSize: 18, fontWeight: "700" },
+                    title: "챗봇 술동이",
+                    headerTitleStyle: { fontFamily:"BagelFatOne",fontSize: 22},
                     headerTitleAlign: "center",
                     headerLeft: () => <BackBtn />,
                     headerShadowVisible: true,

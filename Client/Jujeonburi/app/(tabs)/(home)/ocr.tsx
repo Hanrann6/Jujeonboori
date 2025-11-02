@@ -191,15 +191,11 @@ export default function OCRScreen() {
               <View style={styles.divider} />
               <Row k="이름" v={result.이름} />
               <Row k="도수" v={`${result.도수}도`} />
+              <Row k="어울리는 음식" v={result["어울리는 음식"]} />
+              <Row k="구성 원재료" v={result["구성 원재료"]} />
               {result.단맛 ? <Dots label="단맛" value={result.단맛} /> : <Row k="단맛" v={`${result.단맛}/5`} />}
               {result.신맛 ? <Dots label="신맛" value={result.신맛} /> : <Row k="신맛" v={`${result.신맛}/5`} />}
               {result.쓴맛 ? <Dots label="쓴맛" value={result.쓴맛} /> : <Row k="쓴맛" v={`${result.쓴맛}/5`} />}
-              <Row k="어울리는 음식" v={result["어울리는 음식"]} />
-              <Row k="구성 원재료" v={result["구성 원재료"]} />
-
-              <TouchableOpacity style={styles.detailBtn} onPress={gotoDetail}>
-                <Text style={styles.detailText}>상세 페이지로 이동</Text>
-              </TouchableOpacity>
             </View>
           )}
         </ScrollView>

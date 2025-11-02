@@ -4,9 +4,9 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import Papa from "papaparse";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     Animated,
     Easing,
@@ -23,7 +23,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import csvAsset from "../../../assets/data/trad_alcohol.csv";
 import AlcoholRecommend from "../../components/AlcoholRecommend";
+import PriceRecommend from "../../components/PriceRecommend";
 import Weathercard from "../../components/Weathercard";
+import WeatherRecommend from "../../components/WeatherRecommend";
 
 type Filters = {
     query: string;
@@ -117,12 +119,17 @@ export default function HomeScreen() {
     }, [query]);
     const [nickname, setNickname] = useState<string>("");
 
-    useEffect(() => {
-        (async () => {
-            const nick = (await AsyncStorage.getItem("nickname")) ?? "";
-            setNickname(nick);
-        })();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+          let alive = true;
+          (async () => {
+            const v = await AsyncStorage.getItem("nickname");
+            if (alive) setNickname(v ?? "");
+          })();
+          return () => { alive = false; }; 
+        }, [])
+      );
+
     return (
         <SafeAreaView style={s.safe}>
             <ScrollView style={s.container}>
@@ -176,6 +183,8 @@ export default function HomeScreen() {
                 <View style={s.recContainer}>
                     <View style={s.pricedRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>오늘 날씨에 어울리는</Text> 추천 전통주</Text>
+                        {/** <WeatherRecommend /> // 현재 위치로 추천*/}                 
+                        <WeatherRecommend lat={37.5665} lon={126.9780} /> 
                     </View>
                     <View style={s.personalRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
@@ -183,6 +192,7 @@ export default function HomeScreen() {
                     </View>
                     <View style={s.pricedRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>3만원 이하</Text> 추천 전통주</Text>
+                        <PriceRecommend maxPrice={30000} />
                     </View>
                 </View>
             </ScrollView>

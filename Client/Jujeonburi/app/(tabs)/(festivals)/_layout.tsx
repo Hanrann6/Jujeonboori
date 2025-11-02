@@ -11,6 +11,7 @@ function BackBtn() {
         </TouchableOpacity>
     );
   }
+  
 export default function FestivalLayout() {
     return (
         <Stack>
@@ -19,7 +20,7 @@ export default function FestivalLayout() {
                 options={{
                     headerShown: true,
                     title: "우리 전통주 축제",
-                    headerTitleStyle: { fontSize: 18, fontWeight: "700" },
+                    headerTitleStyle: { fontFamily:"BagelFatOne",fontSize: 22},
                     headerTitleAlign: "center",
                     headerLeft: () => <BackBtn />,
                     headerShadowVisible: true,

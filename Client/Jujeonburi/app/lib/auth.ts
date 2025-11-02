@@ -3,10 +3,10 @@
 //토큰 관련 유틸 모듈
 //저장/로드/만료체크/재발급/자동 Authorization 헤더 주입
 
-// app/lib/auth.ts
 import * as SecureStore from "expo-secure-store";
 
 const API_BASE = process.env.EXPO_PUBLIC_API_URL!;
+const KEY_USER_ID = "user_id";
 
 //access token 만료시간: 받아올때는 초단위, 저장할때는 ms단위 절대시각으로,
 const TOKENS = {
@@ -15,6 +15,20 @@ const TOKENS = {
   access_expires_at: "access_expires_at", // ms 단위 절대시각
 };
 const CLOCK_SKEW_MS = 60 * 1000; // 만료 60초 전부터 갱신하도록 여유 시간
+//로그인, 회원가입 통합 응답 타입
+export type KakaoLoginResponse = {
+  grant_type: "Bearer";
+  access_token: string;
+  refresh_token: string;
+  access_token_expires_in?: number;
+  user: {
+    user_id: string | number;
+    email?: string | null;
+    nickname?: string | null;
+    image_url?: string | null;
+  };
+  is_new_user: boolean;
+};
 
 export type ReissueResponse = {
   access_token: string;
@@ -26,7 +40,7 @@ export type ReissueResponse = {
 export async function saveTokens(res: ReissueResponse) {
   const expiresIn = Number(res.access_token_expires_in)?? 3600;
   const accessExpiresAt = Date.now() + expiresIn * 1000; //만료되는 시점 (ms 단위 절대시각)
-
+  
   const ops: Promise<void>[] = [
     SecureStore.setItemAsync(TOKENS.access_token, res.access_token),
     SecureStore.setItemAsync(TOKENS.access_expires_at, String(accessExpiresAt)),
@@ -55,6 +69,7 @@ export async function clearTokens() {
     SecureStore.deleteItemAsync(TOKENS.access_token),
     SecureStore.deleteItemAsync(TOKENS.refresh_token),
     SecureStore.deleteItemAsync(TOKENS.access_expires_at),
+    SecureStore.deleteItemAsync(KEY_USER_ID),
   ]);
 }
 
@@ -63,6 +78,7 @@ export async function clearTokens() {
 let inFlightRefresh: Promise<string> | null = null;
 
 export async function getValidAccessToken(): Promise<string | null> {
+  //console.log("[TOKENS]", await loadTokens());
   const {access_token, refresh_token, access_expires_at } = await loadTokens();
   if (!access_token) return null;
 
@@ -130,8 +146,108 @@ export async function authedFetch(input: RequestInfo | URL, init: RequestInit = 
   }
   return res;
 }
+// --- 카카오 로그인 통합 ---
+export async function loginWithKakaoIdToken(idToken: string): Promise<{
+  isNewUser: boolean;
+}> {
+  const res = await fetch(`${API_BASE}/oauth/login/kakao`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id_token: idToken }),
+  });
+
+  const raw = await res.text();
+  if (!res.ok) {
+    throw new Error(`kakao login 실패 (${res.status}) ${raw}`);
+  }
+
+  const json = JSON.parse(raw) as KakaoLoginResponse;
+
+  // 1) 토큰은 신규/기존 모두 저장해야 이후 온보딩/프로필 저장 API 호출 가능
+  await saveTokens({
+    access_token: json.access_token,
+    refresh_token: json.refresh_token,
+    access_token_expires_in: Number.isFinite(Number(json.access_token_expires_in))
+      ? Number(json.access_token_expires_in)
+      : 3600,
+  });
+
+  // 2) 유저 식별자 + 프로필 캐시
+  await saveUserId(json.user.user_id);
+
+  // 3) 화면 분기용 리턴
+  return { isNewUser: Boolean(json.is_new_user) };
+}
 
 export async function isLoggedIn() {
   const t = await getValidAccessToken();
   return !!t;
+}
+
+export async function logout(): Promise<void> {
+  const { access_token, refresh_token } = await loadTokens();
+
+  try {
+    if (access_token && refresh_token) {
+      await fetch(`${API_BASE}/oauth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+        body: JSON.stringify({ refreshToken: refresh_token }),
+      });
+    }
+  } finally {
+    await clearTokens();
+  }
+}
+
+export async function deleteAccount() {
+  await getValidAccessToken();
+  const { access_token, refresh_token } = await loadTokens();
+  if (!access_token || !refresh_token) throw new Error("로그인이 필요합니다.");
+  const url = `${API_BASE}/users/me`;
+  console.log("[DELETE] url:", url);
+  console.log("[DELETE] auth(access):", access_token.slice(0, 20), "…");
+  console.log("[DELETE] body:", { refreshToken: refresh_token.slice(0, 20) + "…" });
+
+  const res = await fetch(`${API_BASE}/users/me`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
+    },
+
+    body: JSON.stringify({ refreshToken: refresh_token }),
+  });
+  const raw = await res.text().catch(() => "");
+  console.log("[DELETE] status:", res.status, res.statusText);
+  console.log("[DELETE] raw:", raw);
+  
+  if (!res.ok) {
+    const msg = await res.text().catch(() => "");
+    throw new Error(`회원탈퇴 실패 (${res.status}) ${msg || res.statusText}`);
+  }
+
+  await clearTokens();
+  if (res.status === 204) return {};
+  try { return await res.json(); } catch { return {}; }
+}
+
+//user id 저장
+// 저장
+export async function saveUserId(id: string | number) {
+  await SecureStore.setItemAsync(KEY_USER_ID, String(id));
+}
+
+// 조회
+export async function getUserId(): Promise<string | null> {
+  const v = await SecureStore.getItemAsync(KEY_USER_ID);
+  return v && v.trim() ? v : null;
+}
+
+// (선택) 삭제: 로그아웃 시 함께 지우고 싶다면 clearTokens에 포함
+export async function clearUserId() {
+  await SecureStore.deleteItemAsync(KEY_USER_ID);
 }

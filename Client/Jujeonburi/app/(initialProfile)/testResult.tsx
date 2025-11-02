@@ -1,19 +1,20 @@
 //app/(initialProfile)/testResult.tsx
-
+import { authedFetch, getUserId } from "@/app/lib/auth";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useMemo, useState } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 type Profile = {
-    sweetness: number;   
-    sourness: number;    
-    freshness: number;   
-    body: number;        
-    abv?: number;        // 도수 (선호도) 6(저도) 또는 16(고도)
-    carbonation?: number; // 탄산 선호도 0(무탄산) 또는 1(탄산) 또는 undefined
+    sweetness: number;
+    sourness: number;
+    freshness: number;
+    body: number;
+    abv?: number;
+    carbonation?: number;
 };
 
-const MAX = 5; // 네 축 모두 0~5 범위 내로
+const MAX = 5;
 
 const clamp5 = (v: unknown) => {
     const n = Number(v ?? 0);
@@ -36,7 +37,7 @@ const carbonationLabel = (c?: number) => {
 export default function TestResult() {
     const { nickname = "", profile: profileParam = "{}" } =
         useLocalSearchParams<{ nickname?: string; profile?: string }>();
-
+    const [submitting, setSubmitting] = useState(false);
     const toNumOrUndef = (v: unknown) => {
         const n = Number(v);
         return Number.isFinite(n) ? n : undefined;
@@ -62,6 +63,40 @@ export default function TestResult() {
         { key: "sourness", label: "신맛" },
         { key: "freshness", label: "청량감" },
         { key: "body", label: "바디감" },];
+    //서버 전송 함수
+    const postPreference = async () => {
+        const payload = {
+            sweetness: Number(profile.sweetness ?? 0),
+            sourness: Number(profile.sourness ?? 0),
+            carbonation: profile.carbonation == null ? 0 : Number(profile.carbonation),
+            body: Number(profile.body ?? 0),
+            refreshing: Number(profile.freshness ?? 0),
+            abv: Number(profile.abv ?? 0),
+        };
+        const userId = await getUserId();
+        const res = await authedFetch(`${API_BASE}/preference?userId=${userId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+        const raw = await res.text();
+        console.log("취향 저장 내용:", raw);
+        if (!res.ok) {
+            throw new Error(`취향 저장 실패 (${res.status}) ${raw}`);
+        }
+    };
+
+    const onContinue = async () => {
+        try {
+            setSubmitting(true);
+            await postPreference();
+            router.replace("../(tabs)/(home)");
+        } catch (e: any) {
+            Alert.alert("저장 오류", e?.message ?? "취향 저장 중 문제가 발생했습니다.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     return (
         <View style={styles.container} >
@@ -99,9 +134,8 @@ export default function TestResult() {
             </Text>
             <TouchableOpacity
                 style={styles.btn}
-                onPress={() => {router.replace("../(tabs)/(home)")}}
-                activeOpacity={0.8}
-            >
+                onPress={onContinue}
+                activeOpacity={0.8}>
                 <Text style={styles.btnText}>계속</Text>
             </TouchableOpacity>
         </View>

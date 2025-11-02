@@ -1,6 +1,4 @@
 import { authedFetch } from "@/app/lib/auth";
-
-
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
@@ -25,16 +23,15 @@ type BotResultItem = {
   description?: string;
   reason?: string;
   imageURL?: string;
-  detailPage?: string | null;
-  index?: string; // (서버가 나중에 내려줄 수 있으니 옵션)
+  alcoholId: string;
 };
 
 // 우리 UI에서 쓰는 통합 타입(기존 카드 렌더링과 호환)
 type RelatedAlcohol = {
   name: string;
-  image_url?: string;          
-  description?: string;        
-  detail_page_url?: string;    // detailPage 매핑
+  image_url?: string;
+  description?: string;
+  alcoholId: string;
   reason?: string;
 };
 
@@ -66,24 +63,24 @@ async function askChatbot(question: string) {
   const data = (await res.json()) as ChatbotResponse;
 
   // 서버 결과 → 우리 카드 모델로 매핑
-    const payload = data?.result ?? {};
-    const list =
-      Array.isArray((data as any)?.result)      
-        ? ((data as any).result as BotResultItem[])
-        : (payload.result ?? []);
-  
-    const related: RelatedAlcohol[] = list.map((r) => ({
-      name: r.name,
-      image_url: r.imageURL,             
-      description: r.description,        
-      detail_page_url: r.detailPage ?? undefined,
-      reason: r.reason,
-    }));
-      const answer =
-        payload.answer ??
-        (related.length > 0 ? "아래 추천을 참고해보세요!" : "추천 결과를 찾지 못했어요.");
-    
-      console.log("서버에서 받아온 답:", { answer, related });  // 화면에서 쓸 형태로 반환
+  const payload = data?.result ?? {};
+  const list =
+    Array.isArray((data as any)?.result)
+      ? ((data as any).result as BotResultItem[])
+      : (payload.result ?? []);
+
+  const related: RelatedAlcohol[] = list.map((r) => ({
+    name: r.name,
+    image_url: r.imageURL,
+    description: r.description,
+    alcoholId: r.alcoholId,
+    reason: r.reason,
+  }));
+  const answer =
+    payload.answer ??
+    (related.length > 0 ? "아래 추천을 참고해보세요!" : "추천 결과를 찾지 못했어요.");
+
+  console.log("서버에서 받아온 답:", { answer, related });  // 화면에서 쓸 형태로 반환
   return {
     related,
     answer,
@@ -124,7 +121,7 @@ function Bubble({ role, text, createdAt, related, }: { role: Role; text: string;
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ gap: 10, paddingTop: 8 }}
       data={related}
-      keyExtractor={(it, idx) => `${it.name}-${idx}`} 
+      keyExtractor={(it, idx) => `${it.name}-${idx}`}
       renderItem={({ item }) => (
         <Pressable
           style={styles.recCard}
@@ -132,9 +129,7 @@ function Bubble({ role, text, createdAt, related, }: { role: Role; text: string;
             router.push({
               pathname: "/(tabs)/(home)/[id]",
               params: {
-                // index가 있으면 그걸로, 없으면 name으로 상세 페이지 매칭
-                id: encodeURIComponent(item.name),
-                alcoholName: item.name,
+                id:item.alcoholId
               },
             })
           }
@@ -149,8 +144,8 @@ function Bubble({ role, text, createdAt, related, }: { role: Role; text: string;
             resizeMode="cover"
           />
           <Text numberOfLines={2} style={styles.recName}>{item.name}</Text>
-           {item.reason ? <Text  style={styles.recDesc}>{item.reason}</Text> : null}
-           </Pressable>
+          {item.reason ? <Text style={styles.recDesc}>{item.reason}</Text> : null}
+        </Pressable>
       )}
     />
   ) : null;
@@ -396,11 +391,11 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#fff",
     alignItems: "center",
-    margin:4
+    margin: 4
   },
   recThumb: { width: 100, height: 120, borderRadius: 8, backgroundColor: "#F3F4F6" },
   recName: { marginTop: 6, fontWeight: "700", color: "#111827", textAlign: "center" },
-  recDesc:{
+  recDesc: {
     marginTop: 8,
     fontSize: 12,
     color: "#6B7280",

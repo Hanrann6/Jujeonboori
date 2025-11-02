@@ -196,7 +196,7 @@ async function fetchUltraShortTemperature(lat: number, lon: number) {
     const pty = items.find((it: any) => it.category === "PTY" && it.fcstDate === fcstDate && it.fcstTime === fcstTime)?.fcstValue;
 
     const skyDesc = sky === "1" ? "맑음" : sky === "3" ? "구름많음" : sky === "4" ? "흐림" : "";
-    const ptyDesc = pty === "0" ? "" : pty === "1" ? "비" : pty === "2" ? "비/눈" : pty === "3" ? "눈"
+    const ptyDesc = pty === "0" ? "맑음" : pty === "1" ? "비" : pty === "2" ? "비/눈" : pty === "3" ? "눈"
         : pty === "5" ? "빗방울" : pty === "6" ? "빗방울/눈날림" : pty === "7" ? "눈날림" : "";
 
     return { temperature, skyDesc, ptyDesc };
@@ -244,6 +244,7 @@ export default function Weathercard() {
             const { temperature, skyDesc, ptyDesc } =
                 await fetchUltraShortTemperature(target.lat, target.lon); // ← 동일 좌표로 날씨
             setTemp(temperature);
+            console.log("[KMA Result]", { temperature, skyDesc, ptyDesc });
 
         } catch (e: any) {
             console.log("[KMA]", e?.message || e);
