@@ -34,8 +34,7 @@ const updateMyProfile = async (req, res) => {
     try {
         const updatedProfile = await userService.updateMyProfile(
             req.user,
-            req.body,
-            req.file
+            req.body
         );
         
         res.status(200).json(updatedProfile);
