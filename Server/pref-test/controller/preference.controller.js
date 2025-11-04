@@ -6,19 +6,10 @@ import { getPreferenceCsv } from "../service/s3.service.js";
 
 export async function submitPreference(req, res) {
   try {
-    // // 쿠키에서 토큰 꺼내기
-    // const token = req.cookies.accessToken;
-    // if (!token) return res.status(401).json({ message: "토큰 없음" });
 
-    // // JWT 검증 → userId = sub
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // const userId = decoded.sub;
-    // if (!userId)
-    //   return res.status(400).json({ message: "토큰에 userId(sub)가 없음" });
-
-    const userId = String(req.query.userId || req.body.userId || "");
+    const { userId } = req.user;
     if (!userId)
-      return res.status(400).json({ message: "userId가 필요합니다." });
+      return res.status(400).json({ message: "user가 필요합니다." });
 
     // 요청 body 검증
     const check = validatePreference(req.body);
@@ -44,7 +35,7 @@ export async function submitPreference(req, res) {
 // S3에서 선호도 결과 조회
 export async function getPreference(req, res) {
   try {
-    const userId = String(req.query.userId || req.body.userId || "");
+    const { userId } = req.user;
     if (!userId) {
       return res.status(400).json({ message: "userId가 필요합니다." });
     }
