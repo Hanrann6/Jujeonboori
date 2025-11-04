@@ -2,7 +2,8 @@ import { recommendSool } from "../service/chatbot.service.js";
 import { getChatLogs } from "../service/chatbot.service.js";
 
 export async function recommendController(req, res) {
-  const { userId, question } = req.body;
+  const { userId } = req.user;
+  const { question } = req.body;
   if (!question) return res.status(400).json({ error: "질문이 필요합니다." });
 
   try {
@@ -15,7 +16,7 @@ export async function recommendController(req, res) {
 }
 
 export async function getLogsController(req, res) {
-  const { userId } = req.params; // URL 경로에서 받음
+  const { userId } = req.user;
   if (!userId) return res.status(400).json({ error: "userId 필요" });
 
   try {

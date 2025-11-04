@@ -8,8 +8,8 @@ import {
 
 const router = express.Router();
 
-router.post("/",authMiddleware.verifyAccessToken, addBookmark);
-router.get("/",authMiddleware.verifyAccessToken, getBookmarksByUser);
-router.delete("/",authMiddleware.verifyAccessToken, deleteBookmark);
+router.post("/", authMiddleware.verifyAccessToken, addBookmark);
+router.get("/", authMiddleware.verifyAccessToken, getBookmarksByUser);
+router.delete("/", authMiddleware.verifyAccessToken, deleteBookmark);
 
 export default router;
