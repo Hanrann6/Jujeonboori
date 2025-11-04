@@ -1,4 +1,5 @@
 import express from "express";
+import authMiddleware from "../auth/middleware/auth.middleware.js";
 import {
   addBookmark,
   getBookmarksByUser,
@@ -7,8 +8,8 @@ import {
 
 const router = express.Router();
 
-router.post("/", addBookmark);
-router.get("/:userId", getBookmarksByUser);
-router.delete("/", deleteBookmark);
+router.post("/", authMiddleware.verifyAccessToken, addBookmark);
+router.get("/", authMiddleware.verifyAccessToken, getBookmarksByUser);
+router.delete("/", authMiddleware.verifyAccessToken, deleteBookmark);
 
 export default router;
