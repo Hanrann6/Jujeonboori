@@ -9,7 +9,11 @@ import {
 
 // 북마크 추가
 export const addBookmark = async (req, res) => {
-  const { userId, alcoholIndex } = req.body;
+
+  const { userId } = req.user;
+  if (!userId) return res.status(400).json({ message: "user가 필요합니다." });
+
+  const { alcoholIndex } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -43,7 +47,7 @@ export const addBookmark = async (req, res) => {
 
 // 북마크 목록 조회
 export const getBookmarksByUser = async (req, res) => {
-  const { userId } = req.params;
+  const { userId } = req.user;
 
   try {
     const bookmarks = await Bookmark.find({ userId }).populate("alcoholId");
@@ -55,10 +59,15 @@ export const getBookmarksByUser = async (req, res) => {
 
 // 북마크 삭제
 export const deleteBookmark = async (req, res) => {
-  const { userId, alcoholId } = req.body;
+  const { userId } = req.user;
+  const { alcoholIndex } = req.body;
 
   try {
-    const deleted = await Bookmark.findOneAndDelete({ userId, alcoholId });
+    const alcohol = await Alcohol.findOne({ index: alcoholIndex });
+    const deleted = await Bookmark.findOneAndDelete({
+      userId,
+      alcoholId: alcohol._id,
+    });
     if (!deleted) {
       return res.status(404).json({ message: "북마크가 존재하지 않습니다." });
     }
