@@ -1,11 +1,15 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
 import { qdrant, COLLECTION_NAME } from "./qdrant.service.js";
 import { pipeline } from "@xenova/transformers";
 import ChatLog from "../model/chatbot.model.js"
 import dotenv from "dotenv";
+
 dotenv.config();
 
-// 로컬 임베더 초기화 (MiniLM, 384차원)
+let embedderInstance; // 싱글톤 인스턴스
+
+// 로컬 임베더 초기화 (MiniLM)
 let embedder;
 async function getEmbedder() {
   if (!embedder) {
