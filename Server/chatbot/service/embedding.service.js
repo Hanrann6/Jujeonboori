@@ -3,8 +3,8 @@ import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
 import { loadCSVData, buildSoolText } from "../utils/csvLoader.js";
 import dotenv from "dotenv";
 import path from "path";
-dotenv.config();
-// dotenv.config({ path: path.resolve(process.cwd(), "../../.env") }); // 로컬용 env
+//dotenv.config(); // 배포용 env
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") }); // 로컬용 env
 
 import { pipeline } from "@xenova/transformers";
 
@@ -67,8 +67,7 @@ async function upsertBatch(points) {
 }
 
 // ec2 init용 csv 경로
-const csvPath2 = "/app/recommend/data/sool.csv";
-const csvPath = "../../recommend/data/sool.csv"; // 로컬 용
+const csvPath = process.env.QDRANT_INIT_CSV_PATH;
 
 export async function initEmbedding() {
   const data = await loadCSVData(csvPath);
@@ -109,7 +108,9 @@ export async function initEmbedding() {
       id: i + 1,
       vector: vectors[i],
       payload: {
+        index: metadatas[i].index,
         alcoholName: metadatas[i].alcoholName,
+        foodPairing: metadatas[i].foodPairing,
         sweetness: metadatas[i].sweetness,
         sourness: metadatas[i].sourness,
         freshness: metadatas[i].freshness,
@@ -120,7 +121,7 @@ export async function initEmbedding() {
         keyword: metadatas[i].keyword,
         volume: metadatas[i].volume,
         price: metadatas[i].price,
-        imageURL: metadatas[i].imageURL,
+        imageURL: metadatas[i].imageUrl,
       },
     };
 
