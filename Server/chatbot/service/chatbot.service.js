@@ -66,7 +66,7 @@ export async function recommendSool(userId, userQuestion) {
   const context = soolList
     .map(
       (d) =>
-        `- index: ${d.index}, 제품명: ${d.alcoholName} , 도수: (${d.degree}%), 키워드: ${d.keyword}, imageURL: ${
+        `- index: ${d.index}, 제품명: ${d.alcoholName} , 도수: (${d.degree}%), 어울리는 음식: ${d.foodParing}, 키워드: ${d.keyword}, imageURL: ${
           d.imageURL || "없음"
         }`
     )
