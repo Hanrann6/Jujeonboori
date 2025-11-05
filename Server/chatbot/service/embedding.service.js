@@ -3,8 +3,8 @@ import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
 import { loadCSVData, buildSoolText } from "../utils/csvLoader.js";
 import dotenv from "dotenv";
 import path from "path";
-//dotenv.config(); // 배포용 env
-dotenv.config({ path: path.resolve(process.cwd(), "../../.env") }); // 로컬용 env
+dotenv.config(); // 배포용 env
+//dotenv.config({ path: path.resolve(process.cwd(), "../../.env") }); // 로컬용 env
 
 import { pipeline } from "@xenova/transformers";
 
