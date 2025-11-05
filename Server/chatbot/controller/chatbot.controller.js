@@ -1,4 +1,5 @@
-import { recommendSool } from "../service/chatbot.service.js";
+//import { recommendSool } from "../service/chatbot.service.js";
+import { recommendSool } from "../service/langchain.service.js";
 import { getChatLogs } from "../service/chatbot.service.js";
 
 export async function recommendController(req, res) {
