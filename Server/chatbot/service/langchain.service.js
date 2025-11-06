@@ -27,7 +27,7 @@ class XenovaEmbeddings extends Embeddings {
     if (!embedderInstance) {
       embedderInstance = await pipeline(
         "feature-extraction",
-        "Xenova/paraphrase-multilingual-mpnet-base-v2"
+        "Xenova/all-MiniLM-L6-v2"
       );
     }
     return embedderInstance;
