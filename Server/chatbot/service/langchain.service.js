@@ -27,7 +27,7 @@ class XenovaEmbeddings extends Embeddings {
     if (!embedderInstance) {
       embedderInstance = await pipeline(
         "feature-extraction",
-        "Xenova/all-MiniLM-L6-v2"
+        "Xenova/paraphrase-multilingual-mpnet-base-v2"
       );
     }
     return embedderInstance;
@@ -51,6 +51,35 @@ class XenovaEmbeddings extends Embeddings {
     }
     return outputs;
   }
+}
+
+// 임베딩을 위한 쿼리 정제 함수
+function cleanQueryForEmbedding(query) {
+  // 제거할 공통 구문 (소음)
+  const noisePhrases = [
+    "전통주 추천해 줘",
+    "전통주 추천",
+    "추천해 줘",
+    "추천해",
+    "전통주",
+    "술",
+  ];
+
+  let cleanedQuery = query;
+  for (const phrase of noisePhrases) {
+    // 공통 구문을 공백으로 대체
+    cleanedQuery = cleanedQuery.replace(phrase, " ");
+  }
+
+  // 양쪽 공백 제거
+  cleanedQuery = cleanedQuery.trim();
+
+  // 쿼리가 비어버린 경우 안전하게 원본 쿼리를 사용
+  if (cleanedQuery.length === 0) {
+    return query;
+  }
+
+  return cleanedQuery;
 }
 
 // json 파싱 함수
@@ -103,8 +132,11 @@ const outputParser = new StringOutputParser();
 async function retrieveAndFormatContext(input) {
   const userQuestion = input.userQuestion;
 
+  // 임베딩 전 질문 정제
+  const cleanedQuestion = cleanQueryForEmbedding(userQuestion);
+
   // 네이티브 임베딩
-  const questionVec = await embeddings.embedQuery(userQuestion);
+  const questionVec = await embeddings.embedQuery(cleanedQuestion);
 
   // 네이티브 Qdrant 검색
   const result = await qdrant.search(COLLECTION_NAME, {
@@ -124,15 +156,16 @@ async function retrieveAndFormatContext(input) {
   const contextString = soolList
     .map(
       (d) =>
-        `- index: ${d.index}, 제품명: ${d.alcoholName} , 도수: (${d.degree}%), 어울리는 음식: ${d.foodPairing}, 키워드: ${d.keyword}, imageURL: ${
-          d.imageURL || "없음"
+        `- alcoholId: ${d.index}, 제품명: ${d.alcoholName} , 도수: (${
+          d.degree
+        }%), 어울리는 음식: ${d.foodPairing}, 키워드: ${d.keyword}, imageUrl: ${
+          d.imageUrl || "없음"
         }`
     )
     .join("\n");
   
-  console.log("--- DEBUG: 전달되는 Context ---");
+  console.log("전달되는 Context: ");
   console.log(contextString);
-  console.log("-------------------------------");
 
   // 체인의 다음 단계로 { context, userQuestion } 객체를 전달
   return {

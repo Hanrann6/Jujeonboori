@@ -54,10 +54,10 @@ export const getRecommendations = async (userId = "1", numResults = 6) => {
 
         // 원하는 최종 출력 형식으로 객체 생성
         return {
-          index: itemDetail.index,
+          alcoholId: itemDetail.index,
           name: itemDetail.alcoholName, // DB 필드명(alcoholName) -> 출력 필드명(name)
           degree: itemDetail.degree,
-          image: itemDetail.imageUrl, // DB 필드명(imageUrl) -> 출력 필드명(image)
+          imageUrl: itemDetail.imageUrl, // DB 필드명(imageUrl) -> 출력 필드명(image)
         };
       })
       .filter((item) => item !== null); // null인 경우 최종 결과에서 제외
