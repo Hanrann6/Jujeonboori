@@ -54,9 +54,9 @@ export async function getAlcoholsByWeather(temperature, precipitationType, count
   }
 
   return filtered.slice(0, count).map((a) => ({
-    index: a.index,
+    alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
-    image: a.imageUrl,
+    imageUrl: a.imageUrl,
   }));
 }

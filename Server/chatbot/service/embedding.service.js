@@ -6,8 +6,8 @@ import path from "path";
 import { pipeline } from "@xenova/transformers";
 import { Embeddings } from "@langchain/core/embeddings";
 import { Document } from "@langchain/core/documents";
-dotenv.config(); // 배포용 env
-//dotenv.config({ path: path.resolve(process.cwd(), "../../.env") }); // 로컬용 env
+//dotenv.config(); // 배포용 env
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") }); // 로컬용 env
 
 const COLLECTION_NAME = "sool_collection";
 const QDRANT_URL = process.env.QDRANT_URL; // local에서 사용 시 localhost로 변경
@@ -21,7 +21,7 @@ class XenovaEmbeddings extends Embeddings {
     if (!embedderInstance) {
       embedderInstance = await pipeline(
         "feature-extraction",
-        "Xenova/all-MiniLM-L6-v2"
+        "Xenova/paraphrase-multilingual-mpnet-base-v2"
       );
     }
     return embedderInstance;
@@ -46,14 +46,14 @@ class XenovaEmbeddings extends Embeddings {
 }
 
 
-// util 함수: 데이터를 batch로 나누기
-function chunkArray(array, size) {
-  const result = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-  return result;
-}
+// // util 함수: 데이터를 batch로 나누기
+// function chunkArray(array, size) {
+//   const result = [];
+//   for (let i = 0; i < array.length; i += size) {
+//     result.push(array.slice(i, i + size));
+//   }
+//   return result;
+// }
 
 function cleanPayload(obj) {
   const cleaned = {};
@@ -69,15 +69,15 @@ function cleanPayload(obj) {
   return cleaned;
 }
 
-// fetch로 Qdrant 업로드
-async function upsertBatch(points) {
-  const response = await fetch(`${QDRANT_URL}/collections/${COLLECTION_NAME}/points`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ points }),
-  });
-  return await response.json();
-}
+// // fetch로 Qdrant 업로드
+// async function upsertBatch(points) {
+//   const response = await fetch(`${QDRANT_URL}/collections/${COLLECTION_NAME}/points`, {
+//     method: "PUT",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ points }),
+//   });
+//   return await response.json();
+// }
 
 // ec2 init용 csv 경로
 const csvPath = process.env.QDRANT_INIT_CSV_PATH;
@@ -99,7 +99,7 @@ export async function initEmbedding() {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      vectors: { size: 384, distance: "Cosine" },
+      vectors: { size: 768, distance: "Cosine" },
     }),
   });
   console.log("새 컬렉션 생성 완료.");

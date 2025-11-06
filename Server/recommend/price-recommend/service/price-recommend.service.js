@@ -42,10 +42,10 @@ export function getAlcoholsUnderPrice(limitPrice = 30000, count = 6) {
   }
 
   return filtered.slice(0, count).map((a) => ({
-    id: a.index,
+    alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
-    image: a.imageUrl,
+    imageUrl: a.imageUrl,
   }));
 }
 
