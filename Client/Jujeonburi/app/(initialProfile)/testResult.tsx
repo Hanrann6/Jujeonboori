@@ -23,10 +23,11 @@ const clamp5 = (v: unknown) => {
 const abvLabel = (abv?: number) => {
     const n = Number(abv);
     if (!Number.isFinite(n)) return "도수 정보 없음";
-    if (n >= 16) return "높은 도수 선호";
-    if (n <= 6) return "낮은 도수 선호";
+    if (n > 10) return "높은 도수 선호";
+    if (n <= 10) return "낮은 도수 선호";
     return "중간 도수 선호";
 };
+
 const carbonationLabel = (c?: number) => {
     const n = Number(c);
     if (n === 1) return "탄산 선호";

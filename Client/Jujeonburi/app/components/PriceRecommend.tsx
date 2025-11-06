@@ -1,18 +1,18 @@
 import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useState } from "react";
 import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 
 /** ===== 서버 응답 ===== */
 type ApiItem = {
-  id: string;            
+  id: string;
   name: string;
   degree?: number;
-  image?: string;        
+  image?: string;
 };
 
 /** ===== 화면 아이템 ===== */
@@ -78,38 +78,42 @@ export default function PriceRecommend({
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const url = `${API_BASE}/recommend/price?price=${maxPrice}`;
-        console.log("[price-url]", url);
+  useFocusEffect(
+    React.useCallback(() => {
+      let alive = true;
+      (async () => {
+        try {
+          setLoading(true);
+          const url = `${API_BASE}/recommend/price?price=${maxPrice}`;
+          //console.log("[price-url]", url);
 
-        const res = await authedFetch(url, { method: "GET" });
-        const raw = await res.text();
-        if (!res.ok) throw new Error(`GET /recommend/price 실패(${res.status}) ${raw}`);
-        const data = JSON.parse(raw) as ApiItem[];
-        const favs = await getFavIds();
+          const res = await authedFetch(url, { method: "GET" });
+          const raw = await res.text();
+          if (!res.ok) throw new Error(`GET /recommend/price 실패(${res.status}) ${raw}`);
+          const data = JSON.parse(raw) as ApiItem[];
+          const favs = await getFavIds();
 
-        const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
-          const id = String(r.id);
-          return {
-            id,
-            name: r.name,
-            degree: r.degree,
-            imageUrl: r.image,
-            liked: favs.includes(id),
-          };
-        });
+          const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
+            const id = String(r.id);
+            return {
+              id,
+              name: r.name,
+              degree: r.degree,
+              imageUrl: r.image,
+              liked: favs.includes(id),
+            };
+          });
 
-        setItems(mapped);
-      } catch (e: any) {
-        setErr(e?.message || "가격 추천을 불러오는 중 오류가 발생했습니다.");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [maxPrice, limit]);
+          if (alive) setItems(mapped);
+        } catch (e: any) {
+          if (alive) setErr(e?.message || "가격 기반 추천을 불러오는 중 오류가 발생했습니다.");
+        } finally {
+          if (alive) setLoading(false);
+        }
+      })();
+      return () => { alive = false; };
+    }, [limit])
+  );
 
   return (
     <View style={{ marginTop: 12 }}>
@@ -156,7 +160,7 @@ const styles = StyleSheet.create({
 
   card: {
     width: 140,
-    
+
     borderWidth: 1, borderColor: "#E5E7EB",
     borderRadius: 10, padding: 8, backgroundColor: "#fff",
     position: "relative",

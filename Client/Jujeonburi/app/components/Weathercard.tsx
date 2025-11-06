@@ -1,6 +1,7 @@
 //app\components\Weathercard.tsx
 
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
@@ -198,6 +199,8 @@ async function fetchUltraShortTemperature(lat: number, lon: number) {
     const skyDesc = sky === "1" ? "맑음" : sky === "3" ? "구름많음" : sky === "4" ? "흐림" : "";
     const ptyDesc = pty === "0" ? "맑음" : pty === "1" ? "비" : pty === "2" ? "비/눈" : pty === "3" ? "눈"
         : pty === "5" ? "빗방울" : pty === "6" ? "빗방울/눈날림" : pty === "7" ? "눈날림" : "";
+    await AsyncStorage.setItem("@weather:temperature", String(temperature,));
+    await AsyncStorage.setItem("@weather:pty",String(pty) );
 
     return { temperature, skyDesc, ptyDesc };
 }
@@ -229,8 +232,8 @@ export default function Weathercard() {
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== "granted") {
                 Alert.alert("위치 권한 필요", "날씨/위치 기반 추천을 위해 권한이 필요해요.");
-                setPlace("권한 없음"); setTemp(null); 
-                 return;
+                setPlace("권한 없음"); setTemp(null);
+                return;
             }
 
             const loc = await Location.getCurrentPositionAsync({});
@@ -245,7 +248,7 @@ export default function Weathercard() {
                 await fetchUltraShortTemperature(target.lat, target.lon); // ← 동일 좌표로 날씨
             setTemp(temperature);
             console.log("[KMA Result]", { temperature, skyDesc, ptyDesc });
-
+            //
         } catch (e: any) {
             console.log("[KMA]", e?.message || e);
             setPlace("날씨 불러오기 실패"); setTemp(null);
@@ -269,9 +272,7 @@ export default function Weathercard() {
             <View style={styles.card}>
                 <View style={styles.header}>
                     <Text style={styles.place} numberOfLines={1}>{place}</Text>
-                    
                 </View>
-
                 <Text style={styles.temp}>
                     {loading ? "…" : temp != null ? `${temp}℃` : "--"}
                 </Text>
@@ -280,9 +281,9 @@ export default function Weathercard() {
                 </Text>
             </View>
             <View style={styles.refreshContainer}>
-            <Pressable onPress={run} style={styles.refresh} hitSlop={10}>
-                        <Ionicons name="locate" size={30} color={BLACK} />
-                    </Pressable>
+                <Pressable onPress={run} style={styles.refresh} hitSlop={10}>
+                    <Ionicons name="locate" size={30} color={BLACK} />
+                </Pressable>
             </View>
         </View>
     );
@@ -302,24 +303,26 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         padding: 5,
     },
-    header: { 
-        flexDirection: "row", 
-        alignItems: "center", 
-        justifyContent: "space-between" },
-    place: { 
-        color: MUTED, 
-        fontSize: 16, 
-        fontWeight: "600", 
-        maxWidth: "85%" 
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between"
     },
-    refreshContainer:{
+    place: {
+        color: MUTED,
+        fontSize: 16,
+        fontWeight: "600",
+        maxWidth: "85%"
+    },
+    refreshContainer: {
         marginBottom: 70,
     },
     refresh: {
         width: 45, height: 45, borderRadius: 999,
         alignItems: "center",
-        justifyContent: "center", 
-        backgroundColor: "#FFFFFFAA",    },
+        justifyContent: "center",
+        backgroundColor: "#FFFFFFAA",
+    },
     temp: { fontSize: 36, fontWeight: "900", color: BLACK },
     desc: { marginTop: 6, fontSize: 16, fontWeight: "500", color: BLACK },
 });

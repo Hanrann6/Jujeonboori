@@ -2,12 +2,13 @@
 import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Location from "expo-location";
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useState } from "react";
 import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
+const KEY_TEMP = "@weather:temperature";
+const KEY_PTY = "@weather:pty";
 
 type ApiItem = {
   index: string | number;
@@ -65,57 +66,47 @@ function Card({ item, onToggle, onOpen }: { item: Item; onToggle: () => void; on
 
 /** ===== 메인 컴포넌트 ===== */
 export default function WeatherRecommend({
-  lat,
-  lon,
+  temperature: temperatureFallback,
+  precipitationType: ptyFallback,
   horizontal = true,
   limit = 10,
 }: {
-  lat?: number;
-  lon?: number;
+  temperature?: number;        // Optional fallback
+  precipitationType?: number;  // Optional fallback
   horizontal?: boolean;
   limit?: number;
 }) {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-
+  const toNum = (v: any) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : undefined;
+  };
+  useFocusEffect(
+    React.useCallback(() => {
+      let alive = true;
     (async () => {
       try {
         setLoading(true);
         setErr(null);
 
-        // 1)좌표
-        let useLat = lat;
-        let useLon = lon;
+        // 1) 저장된 날씨 값 읽기
+        const [tRaw, pRaw] = await Promise.all([
+          AsyncStorage.getItem(KEY_TEMP),
+          AsyncStorage.getItem(KEY_PTY),
+        ]);
 
-        if (useLat == null || useLon == null) {
-          const { status } = await Location.requestForegroundPermissionsAsync();
-          if (status !== "granted") {
-            throw new Error("위치 권한이 필요합니다.");
-          }
-          const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-          useLat = pos.coords.latitude;
-          useLon = pos.coords.longitude;
-        }
+        // 2) 기본값 치환 (fallback)
+        const temperature = toNum(tRaw) ?? 15;   // ← fallback 15
+        const pty         = toNum(pRaw) ?? 1;    // ← fallback 1
 
-        // 2) 유효성 체크 (숫자 & finite)
-        const validLat = typeof useLat === "number" && Number.isFinite(useLat);
-        const validLon = typeof useLon === "number" && Number.isFinite(useLon);
-        if (!validLat || !validLon) {
-          throw new Error("위치값이 올바르지 않습니다.(lat/lon)");
-        }
-
-        // 3) URLSearchParams 로 안전하게 쿼리 구성 (+ 과도한 소수점 절삭)
+        // 3) URL 구성 (서버 명세: temperature / precipitationType)
         const qs = new URLSearchParams();
-        qs.set("lat", String(Number((useLat as number).toFixed(6))));
-        qs.set("lon", String(Number((useLon as number).toFixed(6))));
-        //const url = `${API_BASE}/recommend/weather?${qs.toString()}`;
-        //아래는 발표용
-        const url = `${API_BASE}/recommend/weather?temperature=15&precipitationType=1`;
-        console.log("[weather-url]", url);
+        qs.set("temperature", String(temperature));
+        qs.set("precipitationType", String(pty));
+        const url = `${API_BASE}/recommend/weather?${qs.toString()}`;
+        //console.log("[weather-url]", url);
 
         const res = await authedFetch(url, { method: "GET" });
         const raw = await res.text();
@@ -124,18 +115,16 @@ export default function WeatherRecommend({
         const data = JSON.parse(raw) as ApiItem[];
         const favs = await getFavIds();
 
-        const mapped: Item[] = (data ?? [])
-          .slice(0, limit)
-          .map((r) => {
-            const id = String(r.index ?? r.name);
-            return {
-              id,
-              name: r.name,
-              degree: r.degree,
-              imageUrl: r.image,
-              liked: favs.includes(id),
-            };
-          });
+        const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
+          const id = String(r.index ?? r.name);
+          return {
+            id,
+            name: r.name,
+            degree: r.degree,
+            imageUrl: r.image,
+            liked: favs.includes(id),
+          };
+        });
 
         if (alive) setItems(mapped);
       } catch (e: any) {
@@ -146,7 +135,8 @@ export default function WeatherRecommend({
     })();
 
     return () => { alive = false; };
-  }, [lat, lon, limit]);
+  }, [limit]) 
+);
 
   return (
     <View style={{ marginTop: 12 }}>

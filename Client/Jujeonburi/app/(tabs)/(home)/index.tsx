@@ -7,19 +7,7 @@ import * as FileSystem from "expo-file-system";
 import { router, useFocusEffect } from "expo-router";
 import Papa from "papaparse";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-    Animated,
-    Easing,
-    Image,
-    Keyboard,
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View
-} from "react-native";
+import { Animated, Easing, Image, Keyboard, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import csvAsset from "../../../assets/data/trad_alcohol.csv";
 import AlcoholRecommend from "../../components/AlcoholRecommend";
@@ -34,8 +22,8 @@ type Filters = {
     categories: string[];
 };
 
-const CATEGORIES = ["탁주", "약주/청주", "과실주", "증류주", "기타 주류"];
-//자주쓰는 색상 정의
+const CATEGORIES = ["탁주", "약주청주", "과실주", "증류주", "기타 주류"];
+
 const BORDER = "#E5E7EB";
 const BLACK = "#111827";
 const MUTED = "#6B7280";
@@ -182,9 +170,8 @@ export default function HomeScreen() {
                 <Weathercard />
                 <View style={s.recContainer}>
                     <View style={s.pricedRec}>
-                        <Text style={s.recTitle}><Text style={s.nick}>오늘 날씨에 어울리는</Text> 추천 전통주</Text>
-                        {/** <WeatherRecommend /> // 현재 위치로 추천*/}                 
-                        <WeatherRecommend lat={37.5665} lon={126.9780} /> 
+                        <Text style={s.recTitle}><Text style={s.nick}>오늘 날씨에 어울리는</Text> 추천 전통주</Text>            
+                        <WeatherRecommend/> 
                     </View>
                     <View style={s.personalRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
@@ -203,7 +190,7 @@ export default function HomeScreen() {
             {/* OCR 버튼*/}
             <Pressable
                 onPress={() => router.push("/ocr")}
-                style={[s.fab, { bottom: 24 + insets.bottom }]}>
+                style={[s.fab, { bottom: 10 + insets.bottom }]}>
                 <Image
                     source={require("../../../assets/images/ocr_img.png")}
                     style={s.fabIcon}/>
@@ -319,13 +306,15 @@ const s = StyleSheet.create({
 
     recContainer: {
         flex: 1,
+        paddingBottom:20,
+        
     },
     personalRec: {
         padding: 20,
         gap: 8,
     },
     pricedRec: {
-        padding: 20,
+        padding: 18,
         gap: 8,
     },
     recTitle: {
