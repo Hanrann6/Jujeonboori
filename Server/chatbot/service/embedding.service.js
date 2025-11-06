@@ -21,7 +21,7 @@ class XenovaEmbeddings extends Embeddings {
     if (!embedderInstance) {
       embedderInstance = await pipeline(
         "feature-extraction",
-        "Xenova/paraphrase-multilingual-mpnet-base-v2"
+        "Xenova/all-MiniLM-L6-v2"
       );
     }
     return embedderInstance;
@@ -99,7 +99,7 @@ export async function initEmbedding() {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      vectors: { size: 768, distance: "Cosine" },
+      vectors: { size: 384, distance: "Cosine" },
     }),
   });
   console.log("새 컬렉션 생성 완료.");
