@@ -6,8 +6,8 @@ import path from "path";
 import { pipeline } from "@xenova/transformers";
 import { Embeddings } from "@langchain/core/embeddings";
 import { Document } from "@langchain/core/documents";
-//dotenv.config(); // 배포용 env
-dotenv.config({ path: path.resolve(process.cwd(), "../../.env") }); // 로컬용 env
+dotenv.config(); // 배포용 env
+//dotenv.config({ path: path.resolve(process.cwd(), "../../.env") }); // 로컬용 env
 
 const COLLECTION_NAME = "sool_collection";
 const QDRANT_URL = process.env.QDRANT_URL; // local에서 사용 시 localhost로 변경
