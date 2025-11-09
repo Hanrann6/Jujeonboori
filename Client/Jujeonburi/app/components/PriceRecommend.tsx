@@ -9,13 +9,12 @@ const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 
 /** ===== 서버 응답 ===== */
 type ApiItem = {
-  id: string;
+  alcoholId: string | number;
   name: string;
   degree?: number;
-  image?: string;
+  imageUrl?: string;
 };
 
-/** ===== 화면 아이템 ===== */
 type Item = {
   id: string;
   name: string;
@@ -94,12 +93,12 @@ export default function PriceRecommend({
           const favs = await getFavIds();
 
           const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
-            const id = String(r.id);
+            const id = String(r.alcoholId);
             return {
               id,
               name: r.name,
               degree: r.degree,
-              imageUrl: r.image,
+              imageUrl: r.imageUrl,
               liked: favs.includes(id),
             };
           });

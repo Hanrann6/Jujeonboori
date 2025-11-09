@@ -11,10 +11,10 @@ const KEY_TEMP = "@weather:temperature";
 const KEY_PTY = "@weather:pty";
 
 type ApiItem = {
-  index: string | number;
+  alcoholId: string | number;
   name: string;
   degree?: number;
-  image?: string;
+  imageUrl?: string;
 };
 
 type Item = {
@@ -116,12 +116,12 @@ export default function WeatherRecommend({
         const favs = await getFavIds();
 
         const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
-          const id = String(r.index ?? r.name);
+          const id = String(r.alcoholId ?? r.name);
           return {
             id,
             name: r.name,
             degree: r.degree,
-            imageUrl: r.image,
+            imageUrl: r.imageUrl,
             liked: favs.includes(id),
           };
         });

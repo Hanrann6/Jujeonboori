@@ -1,6 +1,6 @@
-import { authedFetch } from "@/app/lib/auth";
+import { authedFetch, getUserId } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,6 +16,8 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+
 
 // --- API 타입 ---
 type BotResultItem = {
@@ -41,6 +43,60 @@ type ChatbotResponse = {
     result?: BotResultItem[];
   };
 };
+// --- 로그 API 타입 ---
+type ChatLog = {
+  _id: string;
+  userId: string;
+  question: string;
+  answer?: {
+    name: string;
+    summary?: string;
+    reason?: string;
+    image?: string;
+    detailPage?: string; // 있을 수도 있음
+  }[];
+  createdAt: string; // ISO
+};
+type ChatLogResp = { logs: ChatLog[] };
+
+// 상세 URL에서 id를 뽑아낼 수 있으면 뽑아오기(없으면 빈 문자열)
+function extractIdFromDetail(url?: string): string {
+  if (!url) return "";
+  try {
+    const u = new URL(url);
+    return u.searchParams.get("id") || u.pathname.split("/").filter(Boolean).pop() || "";
+  } catch { return ""; }
+}
+
+// 서버 로그 1건 -> 우리 메시지 2건(질문/답변)으로 변환
+function mapLogToMsgs(log: ChatLog): Msg[] {
+  const ts = new Date(log.createdAt).getTime() || Date.now();
+  const related: RelatedAlcohol[] = (log.answer || []).map(a => ({
+    name: a.name,
+    image_url: a.image,
+    description: a.summary,
+    reason: a.reason,
+    alcoholId: extractIdFromDetail(a.detailPage),
+  }));
+
+  const userMsg: Msg = {
+    id: `${log._id}-q`,
+    role: "user",
+    text: log.question,
+    createdAt: ts,
+  };
+
+  const botText = related.length > 0 ? "아래 추천을 참고해보세요!" : "추천 결과가 없어요.";
+  const botMsg: Msg = {
+    id: `${log._id}-a`,
+    role: "assistant",
+    text: botText,
+    createdAt: ts + 1,
+    related,
+  };
+
+  return [userMsg, botMsg];
+}
 
 const API_BASE = process.env.EXPO_PUBLIC_API_URL;
 
@@ -107,7 +163,7 @@ const SEED: Msg[] = [
     id: "default",
     role: "assistant",
     text:
-      "안녕하세요! 주전부리의 챗봇 술동이에요.\n무엇을 도와드릴까요?",
+      "안녕하세요! 주전부리의 챗봇 술동이에요.\n어떤 전통주를 마셔야할지 잘 모르겠다면,\n저에게 질문해주세요!",
     createdAt: now - 1000 * 60 * 2,
   },
 ];
@@ -116,38 +172,43 @@ const SEED: Msg[] = [
 function Bubble({ role, text, createdAt, related, }: { role: Role; text: string; createdAt: number; related?: RelatedAlcohol[] }) {
   const isUser = role === "user";
   const RelatedList = related && related.length > 0 ? (
-    <FlatList
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ gap: 10, paddingTop: 8 }}
-      data={related}
-      keyExtractor={(it, idx) => `${it.name}-${idx}`}
-      renderItem={({ item }) => (
-        <Pressable
-          style={styles.recCard}
-          onPress={() =>
-            router.push({
-              pathname: "/(tabs)/(home)/[id]",
-              params: {
-                id:item.alcoholId
-              },
-            })
-          }
-        >
-          <Image
-            source={
-              item.image_url
-                ? { uri: item.image_url }
-                : require("../../../assets/images/bottle_placeholder.png")
+
+    <View>
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: 10, paddingTop: 8 }}
+        data={related}
+        keyExtractor={(it, idx) => `${it.name}-${idx}`}
+        renderItem={({ item }) => (
+          <Pressable
+            style={styles.recCard}
+            onPress={() =>
+              router.push({
+                pathname: "/(tabs)/(home)/[id]",
+                params: {
+                  id: item.alcoholId
+                },
+              })
             }
-            style={styles.recThumb}
-            resizeMode="cover"
-          />
-          <Text numberOfLines={2} style={styles.recName}>{item.name}</Text>
-          {item.reason ? <Text style={styles.recDesc}>{item.reason}</Text> : null}
-        </Pressable>
-      )}
-    />
+          >
+            <Image
+              source={
+                item.image_url
+                  ? { uri: item.image_url }
+                  : require("../../../assets/images/bottle_placeholder.png")
+              }
+              style={styles.recThumb}
+              resizeMode="cover"
+            />
+            <Text numberOfLines={2} style={styles.recName}>{item.name}</Text>
+            {item.reason ? <Text style={styles.recDesc}>{item.reason}</Text> : null}
+          </Pressable>
+        )}
+      />
+      <Text style={[styles.bubbleText, styles.botText]}>카드를 누르면 해당 전통주의 상세 페이지로 이동해요.{"\n"}다른 추천이 필요하면 언제든지 질문해주세요!</Text>
+    </View>
+
   ) : null;
 
   //사용자 말풍선
@@ -173,12 +234,18 @@ function Bubble({ role, text, createdAt, related, }: { role: Role; text: string;
   );
 }
 
+/* ---------- 색상 ---------- */
+const BORDER = "#E5E7EB";
+const SUB = "#374151";
+const CARD_BG = "#FFF7EB";
+
 export default function ChatBot() {
   const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState<Msg[]>(SEED);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const listRef = useRef<FlatList<Msg>>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const dayLabel = useMemo(() => {
     const d = new Date(messages[0]?.createdAt ?? Date.now());
@@ -241,7 +308,53 @@ export default function ChatBot() {
       createdAt={item.createdAt}
       related={item.related} />
   );
+  const HeaderCard = () => (
+    <View style={styles.hero}>
+      <View style={styles.heroTexts}>
+        <Text style={{ marginLeft: -5, marginRight: 5 }}>💡 </Text>
+        <Text style={styles.body}>
+          주전부리의 챗봇, 술동이는{"\n"}상황에 어울리는 전통주를 추천해주는 AI 챗봇이에요.
+        </Text>
+      </View>
+    </View>
+  );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      let cancelled = false;
+      (async () => {
+        try {
+          setInitialLoading(true);
+          const userId = await getUserId();
+          if (!userId) { setInitialLoading(false); return; }
+
+          const url = `${API_BASE}/chatbot/logs`;
+          const res = await authedFetch(url, { method: "GET" });
+          console.log("[챗봇 로그] 요청 URL:", url);
+          console.log("[챗봇 로그] 응답 상태:", res.status);
+          if (!res.ok) {
+            const t = await res.text().catch(() => "");
+            throw new Error(`GET /chatbot/logs 실패(${res.status}) ${t}`);
+          }
+          const data = (await res.json()) as ChatLogResp;
+          console.log("[챗봇 로그] 응답 데이터:", data);
+
+          // 오래된 것부터 정렬 후 변환
+          const histMsgs = (data.logs || [])
+            .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+            .flatMap(mapLogToMsgs);
+
+          if (!cancelled) {
+            // seed(안내문) + 히스토리로 초기화
+            setMessages([SEED[0], ...histMsgs]);
+          }
+        } finally {
+          if (!cancelled) setInitialLoading(false);
+        }
+      })();
+      return () => { cancelled = true; };
+    }, [])
+  );
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView
@@ -249,6 +362,14 @@ export default function ChatBot() {
         behavior={Platform.select({ ios: "padding", android: undefined })}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
+        {/* 초기 히스토리 로딩 표시: seed만 있을 때 + 서버 로딩 중*/} 
+        {/*
+        {initialLoading && messages.length <= 1 ? (
+          <View style={{ padding: 16, alignItems: "center" }}>
+            <ActivityIndicator />
+          </View>
+        ) : null}
+        */}
         {/* 메시지 영역 */}
         <FlatList
           ref={listRef}
@@ -262,6 +383,7 @@ export default function ChatBot() {
           ListHeaderComponent={
             <View style={styles.dayLabelWrap}>
               <Text style={styles.dayLabel}>{dayLabel}</Text>
+              <HeaderCard />
             </View>
           }
           onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
@@ -314,13 +436,12 @@ const styles = StyleSheet.create({
   row: { width: "100%", flexDirection: "row" },
   rowLeft: { justifyContent: "flex-start", alignItems: "flex-start" }, // ⬅️ 상단 정렬
   rowRight: { justifyContent: "flex-end" },
-
   avatar: {
-    width: 41,
-    height: 38,
+    width: 43,
+    height: 40,
     borderRadius: 14,
     marginRight: 8,
-    backgroundColor: "#FFF7ED",
+    backgroundColor: "#FAFAFA",
   },
   bubble: {
     maxWidth: "85%",
@@ -342,8 +463,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 14,
   },
 
-  bubbleText: { fontSize: 14, lineHeight: 20 },
-  botText: { color: "#111827", fontWeight: "600" },
+  bubbleText: { fontSize: 13, lineHeight: 18 },
+  botText: { color: "#111827", fontWeight: "500" },
   userText: { color: "#111827" },
 
   // 입력 바
@@ -391,14 +512,43 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#fff",
     alignItems: "center",
-    margin: 4
+    margin: 4,
+    marginBottom: 10,
   },
-  recThumb: { width: 100, height: 120, borderRadius: 8, backgroundColor: "#F3F4F6" },
+  recThumb: {
+    width: 100,
+    height: 120,
+    borderRadius: 8,
+    backgroundColor: "#F3F4F6"
+  },
   recName: { marginTop: 6, fontWeight: "700", color: "#111827", textAlign: "center" },
   recDesc: {
     marginTop: 8,
     fontSize: 12,
     color: "#6B7280",
     textAlign: "center"
-  }
+  },
+  hero: {
+    backgroundColor: CARD_BG,
+    marginTop: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: BORDER,
+  },
+  heroTexts: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 10,
+  },
+  body: {
+    fontSize: 12,
+    color: SUB,
+    textAlign: "justify",
+    lineHeight: 16,
+    alignItems: "center",
+  },
 });

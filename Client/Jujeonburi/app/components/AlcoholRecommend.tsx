@@ -3,7 +3,6 @@ import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -11,10 +10,10 @@ const API_BASE = process.env.EXPO_PUBLIC_API_URL;
 
 /* ====== API 타입 (변경된 스펙) ====== */
 type ApiRec = {
-  index: string | number;   // ← item_id -> index
+  alcoholId: string | number;  
   name: string;
   degree?: number;
-  image?: string;           // ← image_url -> image
+  imageUrl: string;           
 };
 // 이제 응답은 배열 그대로 내려옴
 type ApiRes = ApiRec[];
@@ -80,10 +79,7 @@ export default function AlcoholRecommend({ limit = 5 }: { limit?: number }) {
     (async () => {
       try {
         setLoading(true);
-        const userId = await SecureStore.getItemAsync("user_id");
-        if (!userId) throw new Error("user_id 없음 (로그인이 필요합니다)");
-
-        const res = await authedFetch(`${API_BASE}/recommend/${encodeURIComponent(userId)}`, {
+        const res = await authedFetch(`${API_BASE}/recommend/`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -93,18 +89,18 @@ export default function AlcoholRecommend({ limit = 5 }: { limit?: number }) {
         // console.log("[recommend] status:", res.status);
         // console.log("[recommend] raw:", raw);
 
-        if (!res.ok) throw new Error(`GET /recommend/${userId} 실패(${res.status}) ${raw}`);
+        if (!res.ok) throw new Error(`GET /recommend/실패(${res.status}) ${raw}`);
 
         const data = JSON.parse(raw) as ApiRes;  // ← 배열로 파싱
         const localFavs = await getFavIds();
 
         const mapped: RecItem[] = (data ?? []).slice(0, limit).map((r, i) => {
-          const id = String(r?.index ?? r?.name ?? `idx-${i}`); // 안전한 키
+          const id = String(r?.alcoholId ?? r?.name ?? `idx-${i}`); // 안전한 키
           return {
             id,
             degree: r.degree,
             name: r.name,
-            imageUrl: r.image, // ← 필드명 변경
+            imageUrl: r.imageUrl,
             liked: localFavs.includes(id), // 서버 is_bookmarked 없어져서 로컬만 사용
           };
         });

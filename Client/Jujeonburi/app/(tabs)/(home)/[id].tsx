@@ -217,7 +217,6 @@ export default function AlcoholDetailRoute() {
   };
   useEffect(() => {
     if (!id || typeof id !== "string") {
-      // 스택 히스토리까지 정리하고 홈으로
       router.replace("/(tabs)/(home)");
     }
   }, [id]);
@@ -380,13 +379,13 @@ function Chip({ label }: { label: string }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 15 },
-  itemName: { fontSize: 28, fontWeight: "700", textAlign: "center", color: "#111827" },
-  divider: { marginHorizontal: -10, borderBottomWidth: 4, borderBottomColor: "black", marginTop: -8 },
+  itemName: { fontSize: 24, fontWeight: "700", textAlign: "center", color: "#111827" },
+  divider: { marginHorizontal: -10, borderBottomWidth: 2, borderBottomColor: "black", marginTop: -8 },
   card: { backgroundColor: "#F5F5F5", padding: 20, paddingHorizontal: 25, gap: 3, borderRadius: 8, marginBottom: 8, marginHorizontal: 5 },
   profileCard: { padding: 30, gap: 5, borderRadius: 10, marginHorizontal: 20, marginBottom: -10, backgroundColor: "#FFF7EB", borderColor: '#FFD8A8', borderWidth: 2, borderStyle: 'dashed' },
   cardTitle: { fontSize: 20, textAlign: "center", fontWeight: "800", marginTop: 50, color: "#111827" },
   linkBox: { flex: 1 },
-  link: { fontSize: 15, color: "#555" },
+  link: { fontSize: 15, color: "black" },
   chipsWrap: { flexDirection: "row", flexWrap: "wrap", marginHorizontal: 30, justifyContent: "center" },
   chip: { borderRadius: 999, borderWidth: 2, borderColor: "#FFD8A8", backgroundColor: "#FFD8A8", paddingVertical: 5, paddingHorizontal: 10, marginRight: 8, marginBottom: 8 },
   chipText: { fontSize: 13, fontWeight: "800", color: "#111827" },

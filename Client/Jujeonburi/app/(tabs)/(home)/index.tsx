@@ -170,11 +170,13 @@ export default function HomeScreen() {
                 <Weathercard />
                 <View style={s.recContainer}>
                     <View style={s.pricedRec}>
-                        <Text style={s.recTitle}><Text style={s.nick}>오늘 날씨에 어울리는</Text> 추천 전통주</Text>            
+                        <Text style={s.recTitle}><Text style={s.nick}>오늘 날씨에 어울리는</Text> 추천 전통주</Text>  
+                        <Text style={s.recsub}>오늘은 이 전통주를 마셔보는 게 어떨까요?</Text>          
                         <WeatherRecommend/> 
                     </View>
                     <View style={s.personalRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
+                        <Text style={s.recsub}>주류 취향을 반영해 AI가 피드백하여 전통주를 추천해드려요.</Text>          
                         <AlcoholRecommend limit={5} />
                     </View>
                     <View style={s.pricedRec}>
@@ -322,6 +324,11 @@ const s = StyleSheet.create({
         fontWeight: "800",
         color: "#111827",
         margin: 10,
+    },
+    recsub:{
+        marginTop:-15,
+        margin:10, 
+        fontSize:14
     },
     nick: {
         color: "#F59E0B"
