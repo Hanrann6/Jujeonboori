@@ -1,6 +1,5 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-//import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant";
-import { qdrant, COLLECTION_NAME } from "./qdrant.service.js"; // 네이티브 클라이언트 (수정 불필요)
+import { qdrant, COLLECTION_NAME } from "./qdrant.service.js";
 import { pipeline } from "@xenova/transformers";
 import ChatLog from "../model/chatbot.model.js";
 import dotenv from "dotenv";
@@ -8,8 +7,6 @@ import { Embeddings } from "@langchain/core/embeddings";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence, RunnableLambda } from "@langchain/core/runnables";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-//import { JsonOutputParser } from "@langchain/core/output_parsers";
-//import { XenovaTransformersEmbeddings } from "@langchain/community/embeddings/xenova";
 import path from "path";
 import fs from "fs";
 
@@ -55,7 +52,7 @@ class XenovaEmbeddings extends Embeddings {
 
 // 임베딩을 위한 쿼리 정제 함수
 function cleanQueryForEmbedding(query) {
-  // 제거할 공통 구문 (소음)
+  // 제거할 공통 구문
   const noisePhrases = [
     "전통주 추천해 줘",
     "전통주 추천",
@@ -120,7 +117,7 @@ const chatModel = new ChatGoogleGenerativeAI({
 });
 
 // 프롬프트
-// {context}와 {userQuestion} 변수를 받도록 수정
+// context와 userQuestion 변수를 받도록
 const promptTempletePath = path.resolve(process.cwd(), "chatbot/utils/prompt.txt");
 const promptTemplateString = fs.readFileSync(promptTempletePath, "utf-8");
 const prompt = ChatPromptTemplate.fromTemplate(promptTemplateString);
@@ -144,7 +141,7 @@ async function retrieveAndFormatContext(input) {
     limit: 6,
   });
 
-  // 네이티브 검색 결과(payload)로 Context 포매팅
+  // 네이티브 검색 결과로 Context 포매팅
   const soolList = result.map((r) => r.payload);
 
   if (soolList.length === 0 || !soolList[0]) { // 0개 또는 빈 payload 방어
@@ -152,7 +149,7 @@ async function retrieveAndFormatContext(input) {
     return "일치하는 전통주 정보를 찾지 못했습니다.";
   }
 
-  // 'd'의 속성을 바로 사용
+  // d의 속성을 바로 사용
   const contextString = soolList
     .map(
       (d) =>
@@ -167,7 +164,7 @@ async function retrieveAndFormatContext(input) {
   console.log("전달되는 Context: ");
   console.log(contextString);
 
-  // 체인의 다음 단계로 { context, userQuestion } 객체를 전달
+  // 체인의 다음 단계로 context, userQuestion 객체를 전달
   return {
     context: contextString,
     userQuestion: userQuestion,

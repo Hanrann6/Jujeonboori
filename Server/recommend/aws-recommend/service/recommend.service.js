@@ -2,7 +2,7 @@ import { GetRecommendationsCommand } from "@aws-sdk/client-personalize-runtime";
 import { personalizeClient } from "../../../config/personalize.js";
 import Alcohol from "../../../alcohol/model/alcohol.model.js"
 
-export const getRecommendations = async (userId = "1", numResults = 6) => {
+export const getRecommendations = async (userId, numResults = 6) => {
   const command = new GetRecommendationsCommand({
     campaignArn: process.env.CAMPAIGN_ARN,
     userId,
