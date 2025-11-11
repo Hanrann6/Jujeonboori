@@ -50,8 +50,30 @@ export const getBookmarksByUser = async (req, res) => {
   const { userId } = req.user;
 
   try {
-    const bookmarks = await Bookmark.find({ userId }).populate("alcoholId");
-    res.json(bookmarks);
+    const bookmarks = await Bookmark.find({ userId }).populate({
+      path: "alcoholId",
+      select: "index alcoholName degree imageUrl",
+    });
+
+    const results = bookmarks
+      .map((bookmark) => {
+        // populate된 alcoholId가 없는 경우(DB에서 삭제된 경우 등)를 대비
+        if (!bookmark.alcoholId) {
+          return null;
+        }
+
+        const { alcoholId } = bookmark;
+
+        return {
+          // alcohol의 index를 alcoholId로 명명
+          alcoholId: alcoholId.index,
+          alcoholName: alcoholId.alcoholName,
+          degree: alcoholId.degree,
+          imageUrl: alcoholId.imageUrl,
+        };
+      })
+      .filter((item) => item !== null);
+    res.json(results);
   } catch (err) {
     res.status(500).json({ message: "조회 실패", error: err.message });
   }
