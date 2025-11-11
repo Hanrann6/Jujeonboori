@@ -66,7 +66,7 @@ export const getBookmarksByUser = async (req, res) => {
 
         return {
           // alcohol의 index를 alcoholId로 명명
-          alcoholId: alcoholId.index,
+          alcoholIndex: alcoholId.index,
           alcoholName: alcoholId.alcoholName,
           degree: alcoholId.degree,
           imageUrl: alcoholId.imageUrl,
