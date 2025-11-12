@@ -23,27 +23,44 @@ type Item = {
   degree?: number;
   imageUrl?: string;
   liked: boolean;
+  alcoholIndex?: number; // 북마크 API용 인덱스
 };
 
-/** ===== 로컬 찜 ===== */
-const FAV_KEY = "@fav:alcohol";
-async function getFavIds(): Promise<string[]> {
-  const raw = await AsyncStorage.getItem(FAV_KEY);
-  if (!raw) return [];
-  try { return JSON.parse(raw) as string[]; } catch { return []; }
-}
-async function setFavIds(ids: string[]) {
-  await AsyncStorage.setItem(FAV_KEY, JSON.stringify([...new Set(ids)]));
-}
-async function toggleFav(id: string): Promise<boolean> {
-  const list = await getFavIds();
-  const has = list.includes(id);
-  const next = has ? list.filter(x => x !== id) : [...list, id];
-  await setFavIds(next);
-  return !has;
+/** ===== 북마크 API (서버) ===== */
+async function fetchBookmarks(): Promise<Set<number>> {
+  const res = await authedFetch(`${API_BASE}/bookmark`, { method: "GET" });
+  const raw = await res.text();
+  if (!res.ok) throw new Error(`GET /bookmark 실패(${res.status}) ${raw}`);
+  const arr = JSON.parse(raw) as { alcoholIndex: number }[];
+  return new Set((arr || []).map(x => Number(x.alcoholIndex)));
 }
 
-/** ===== 카드 (PriceRecommend와 동일 레이아웃) ===== */
+async function addBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  console.log(JSON.stringify({ alcoholIndex }));
+  const raw = await res.text();
+  console.log("addBookmark response:", raw);
+  if (!res.ok) throw new Error(`POST /bookmark 실패(${res.status}) ${raw}`);
+}
+
+async function removeBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  console.log(JSON.stringify({ alcoholIndex }));
+
+  const raw = await res.text();
+  console.log("deleteBookmark response:", raw);
+  if (!res.ok) throw new Error(`DELETE /bookmark 실패(${res.status}) ${raw}`);
+}
+
+/** ===== 카드  ===== */
 function Card({ item, onToggle, onOpen }: { item: Item; onToggle: () => void; onOpen: () => void }) {
   return (
     <View style={styles.card}>
@@ -101,28 +118,30 @@ export default function WeatherRecommend({
         const temperature = toNum(tRaw) ?? 15;   // ← fallback 15
         const pty         = toNum(pRaw) ?? 1;    // ← fallback 1
 
-        // 3) URL 구성 (서버 명세: temperature / precipitationType)
+        // 추천 데이터 호출
         const qs = new URLSearchParams();
         qs.set("temperature", String(temperature));
         qs.set("precipitationType", String(pty));
         const url = `${API_BASE}/recommend/weather?${qs.toString()}`;
-        //console.log("[weather-url]", url);
-
         const res = await authedFetch(url, { method: "GET" });
         const raw = await res.text();
         if (!res.ok) throw new Error(`GET /recommend/weather 실패(${res.status}) ${raw}`);
-
         const data = JSON.parse(raw) as ApiItem[];
-        const favs = await getFavIds();
 
+        // 3) 서버 북마크 목록 읽기 → Set<number>
+        const bookmarked = await fetchBookmarks();
+
+        // 4) 매핑
         const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
-          const id = String(r.alcoholId ?? r.name);
+          const alcoholIndex = Number(r.alcoholId);
+
           return {
-            id,
+            id: String(r.alcoholId ?? r.name),
             name: r.name,
             degree: r.degree,
             imageUrl: r.imageUrl,
-            liked: favs.includes(id),
+            liked: alcoholIndex != null ? bookmarked.has(alcoholIndex) : false,
+            alcoholIndex,
           };
         });
 
@@ -157,14 +176,39 @@ export default function WeatherRecommend({
           keyExtractor={(it) => it.id}
           renderItem={({ item, index }) => {
             const onToggle = async () => {
-              const next = await toggleFav(item.id);
-              setItems(prev => prev.map((x, i) => (i === index ? { ...x, liked: next } : x)));
+              if (item.alcoholIndex == null) {
+                // 추천 응답에 index가 없으면 토글 불가(명세상 POST/DELETE가 index를 요구)
+                // 필요하면 여기서 index 조회 API를 추가로 호출하도록 확장
+                return;
+              }
+          
+              const ai = item.alcoholIndex;
+              const willLike = !item.liked;
+          
+              try {
+                if (willLike) {
+                  await addBookmark(ai);
+                } else {
+                  await removeBookmark(ai);
+                }
+          
+                setItems(prev =>
+                  prev.map((x, i) => (i === index ? { ...x, liked: willLike } : x))
+                );
+              } catch (e) {
+                // 실패 시 UI 되돌림/알림 등 추가 가능
+                console.log("bookmark toggle failed:", e);
+              }
             };
+          
             return (
               <Card
                 item={item}
                 onToggle={onToggle}
-                onOpen={() => router.push({ pathname: "/(tabs)/(home)/[id]", params: { id: item.id, alcoholName: item.name } })}
+                onOpen={() => router.push({
+                  pathname: "/(tabs)/(home)/[id]",
+                  params: { id: item.id, alcoholName: item.name }
+                })}
               />
             );
           }}
@@ -175,7 +219,6 @@ export default function WeatherRecommend({
   );
 }
 
-/* ===== PriceRecommend와 동일한 스타일 ===== */
 const styles = StyleSheet.create({
   headerRow: { paddingHorizontal: 16, marginBottom: 6, flexDirection: "row", alignItems: "center" },
   sectionTitle: { fontSize: 18, fontWeight: "800", color: "#111827" },

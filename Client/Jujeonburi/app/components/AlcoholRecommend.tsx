@@ -1,51 +1,63 @@
 // app/components/AlcoholRecommend.tsx
 import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-const API_BASE = process.env.EXPO_PUBLIC_API_URL;
+const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 
-/* ====== API 타입 (변경된 스펙) ====== */
+/* ====== API 타입 ====== */
 type ApiRec = {
-  alcoholId: string | number;  
+  alcoholId: string | number;
   name: string;
   degree?: number;
-  imageUrl: string;           
+  imageUrl: string;
 };
-// 이제 응답은 배열 그대로 내려옴
 type ApiRes = ApiRec[];
 
 /* ====== 화면 아이템 ====== */
 type RecItem = {
-  id: string;
+  id: string;             // 상세 페이지 파라미터로 사용할 문자열화된 ID
   name: string;
   degree?: number;
   imageUrl?: string;
-  liked: boolean;
+  liked: boolean;         // 서버 북마크 기준
+  alcoholIndex?: number;  // 북마크 API용 숫자 인덱스(없으면 토글 불가)
 };
 
-/* ====== 로컬 찜 저장 ====== */
-const FAV_KEY = "@fav:alcohol";
-async function getFavIds(): Promise<string[]> {
-  const raw = await AsyncStorage.getItem(FAV_KEY);
-  if (!raw) return [];
-  try { return JSON.parse(raw) as string[]; } catch { return []; }
-}
-async function setFavIds(ids: string[]) {
-  await AsyncStorage.setItem(FAV_KEY, JSON.stringify([...new Set(ids)]));
-}
-async function toggleFav(id: string): Promise<boolean> {
-  const list = await getFavIds();
-  const has = list.includes(id);
-  const next = has ? list.filter(x => x !== id) : [...list, id];
-  await setFavIds(next);
-  return !has;
+/* ====== 북마크 API ====== */
+async function fetchBookmarks(): Promise<Set<number>> {
+  const res = await authedFetch(`${API_BASE}/bookmark`, { method: "GET" });
+  const raw = await res.text();
+  if (!res.ok) throw new Error(`GET /bookmark 실패(${res.status}) ${raw}`);
+  const arr = JSON.parse(raw) as { alcoholIndex: number }[];
+  return new Set((arr || []).map(x => Number(x.alcoholIndex)));
 }
 
-/* ====== 추천 카드 ====== */
+async function addBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  const raw = await res.text();
+  console.log("[POST /bookmark]", { alcoholIndex }, raw);
+  if (!res.ok) throw new Error(`POST /bookmark 실패(${res.status}) ${raw}`);
+}
+
+async function removeBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  const raw = await res.text();
+  console.log("[DELETE /bookmark]", { alcoholIndex }, raw);
+  if (!res.ok) throw new Error(`DELETE /bookmark 실패(${res.status}) ${raw}`);
+}
+
+/* ====== 카드 ====== */
 function RecCard({ item, onToggle, onOpen }: {
   item: RecItem; onToggle: () => void; onOpen: () => void;
 }) {
@@ -56,9 +68,18 @@ function RecCard({ item, onToggle, onOpen }: {
         style={styles.thumb}
         resizeMode="cover"
       />
-      <Pressable onPress={onToggle} hitSlop={12} style={styles.heart} accessibilityLabel={item.liked ? "찜 취소" : "찜하기"}>
-        <Ionicons name={item.liked ? "heart" : "heart-outline"} size={23} style={{ marginTop: 2 }}
-          color={item.liked ? "#F59E0B" : "#9CA3AF"} />
+      <Pressable
+        onPress={onToggle}
+        hitSlop={12}
+        style={styles.heart}
+        accessibilityLabel={item.liked ? "찜 취소" : "찜하기"}
+      >
+        <Ionicons
+          name={item.liked ? "heart" : "heart-outline"}
+          size={23}
+          style={{ marginTop: 2 }}
+          color={item.liked ? "#F59E0B" : "#9CA3AF"}
+        />
       </Pressable>
 
       <Pressable onPress={onOpen} android_ripple={{ color: "#F3F4F6" }}>
@@ -76,45 +97,52 @@ export default function AlcoholRecommend({ limit = 5 }: { limit?: number }) {
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
+    let alive = true;
     (async () => {
       try {
         setLoading(true);
+        setErr(null);
+
+        // 1) 추천 목록
         const res = await authedFetch(`${API_BASE}/recommend/`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
-
         const raw = await res.text();
-        // 개발 중 로그 확인 원하면 활성화
-        // console.log("[recommend] status:", res.status);
-        // console.log("[recommend] raw:", raw);
+        if (!res.ok) throw new Error(`GET /recommend 실패(${res.status}) ${raw}`);
+        const data = JSON.parse(raw) as ApiRes;
 
-        if (!res.ok) throw new Error(`GET /recommend/실패(${res.status}) ${raw}`);
+        // 2) 서버 북마크 세트
+        const bookmarked = await fetchBookmarks();
 
-        const data = JSON.parse(raw) as ApiRes;  // ← 배열로 파싱
-        const localFavs = await getFavIds();
-
+        // 3) 매핑 + liked 채우기
         const mapped: RecItem[] = (data ?? []).slice(0, limit).map((r, i) => {
-          const id = String(r?.alcoholId ?? r?.name ?? `idx-${i}`); // 안전한 키
+          const idStr = String(r?.alcoholId ?? r?.name ?? `idx-${i}`);
+          const idx = Number(r.alcoholId);
+          const alcoholIndex = Number.isFinite(idx) ? idx : undefined;
+          const liked = alcoholIndex != null ? bookmarked.has(alcoholIndex) : false;
+
           return {
-            id,
+            id: idStr,
             degree: r.degree,
             name: r.name,
             imageUrl: r.imageUrl,
-            liked: localFavs.includes(id), // 서버 is_bookmarked 없어져서 로컬만 사용
+            liked,
+            alcoholIndex,
           };
         });
 
-        // 혹시 중복 키가 있으면 유일화
+        // 중복 제거
         const uniq = Array.from(new Map(mapped.map(m => [m.id, m])).values());
 
-        setItems(uniq);
+        if (alive) setItems(uniq);
       } catch (e: any) {
-        setErr(e?.message || "추천을 불러오는 중 오류가 발생했습니다.");
+        if (alive) setErr(e?.message || "추천을 불러오는 중 오류가 발생했습니다.");
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
     })();
+    return () => { alive = false; };
   }, [limit]);
 
   if (loading) return <Text style={{ margin: 16, color: "#6B7280" }}>추천을 준비 중…</Text>;
@@ -131,9 +159,22 @@ export default function AlcoholRecommend({ limit = 5 }: { limit?: number }) {
         keyExtractor={(it, i) => it.id || `idx-${i}`}
         renderItem={({ item, index }) => {
           const onToggle = async () => {
-            const next = await toggleFav(item.id);
-            setItems(prev => prev.map((x, i) => (i === index ? { ...x, liked: next } : x)));
+            // 숫자 index 없으면(문자형 id만 있을 때) 서버 명세상 토글 불가
+            if (item.alcoholIndex == null) {
+              console.log("bookmark toggle skipped: alcoholIndex is not numeric", item.id);
+              return;
+            }
+            const willLike = !item.liked;
+            try {
+              if (willLike) await addBookmark(item.alcoholIndex);
+              else         await removeBookmark(item.alcoholIndex);
+
+              setItems(prev => prev.map((x, i) => (i === index ? { ...x, liked: willLike } : x)));
+            } catch (e) {
+              console.log("bookmark toggle failed:", e);
+            }
           };
+
           return (
             <RecCard
               item={item}
@@ -147,8 +188,7 @@ export default function AlcoholRecommend({ limit = 5 }: { limit?: number }) {
   );
 }
 
-
-/* ===== PriceRecommend와 동일한 스타일 ===== */
+/* ===== 스타일 ===== */
 const styles = StyleSheet.create({
   headerRow: { paddingHorizontal: 16, marginBottom: 6, flexDirection: "row", alignItems: "center" },
   sectionTitle: { fontSize: 18, fontWeight: "800", color: "#111827" },

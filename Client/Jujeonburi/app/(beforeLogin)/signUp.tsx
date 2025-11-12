@@ -1,5 +1,5 @@
 // app/(beforeLogin)/signUp.tsx
-import { initializeKakaoSDK } from "@react-native-kakao/core";
+import { getKeyHashAndroid, initializeKakaoSDK } from "@react-native-kakao/core";
 import { login as kakaoLogin } from "@react-native-kakao/user";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -24,6 +24,7 @@ export default function SignUpScreen() {
 
   // 2) 카카오 로그인 핸들러
   const onKakao = async () => {
+    console.log("Kakao KeyHash (Android):", await getKeyHashAndroid());
     if (loading) return;
     try {
       setLoading(true);

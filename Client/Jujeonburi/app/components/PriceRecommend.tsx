@@ -1,44 +1,59 @@
+// components/PriceRecommend.tsx
 import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useFocusEffect } from "expo-router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 
 /** ===== 서버 응답 ===== */
 type ApiItem = {
-  alcoholId: string | number;
+  alcoholId: string | number; // ← 서버가 주는 식별자(숫자 index 또는 문자열)
   name: string;
   degree?: number;
   imageUrl?: string;
 };
 
+/** ===== 화면 아이템 ===== */
 type Item = {
-  id: string;
+  id: string;               // 상세페이지 이동용(문자열화)
   name: string;
   degree?: number;
   imageUrl?: string;
-  liked: boolean;
+  liked: boolean;           // 서버 북마크 기준
+  alcoholIndex?: number;    // 서버 북마크 API용 index(숫자) — 없으면 토글 불가
 };
 
-/** ===== 로컬 찜 ===== */
-const FAV_KEY = "@fav:alcohol";
-async function getFavIds(): Promise<string[]> {
-  const raw = await AsyncStorage.getItem(FAV_KEY);
-  if (!raw) return [];
-  try { return JSON.parse(raw) as string[]; } catch { return []; }
+/** ===== 서버 북마크 API ===== */
+async function fetchBookmarks(): Promise<Set<number>> {
+  const res = await authedFetch(`${API_BASE}/bookmark`, { method: "GET" });
+  const raw = await res.text();
+  if (!res.ok) throw new Error(`GET /bookmark 실패(${res.status}) ${raw}`);
+  const arr = JSON.parse(raw) as { alcoholIndex: number }[];
+  return new Set((arr || []).map(x => Number(x.alcoholIndex)));
 }
-async function setFavIds(ids: string[]) {
-  await AsyncStorage.setItem(FAV_KEY, JSON.stringify([...new Set(ids)]));
+
+async function addBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  const raw = await res.text();
+  console.log("[POST /bookmark]", { alcoholIndex }, raw);
+  if (!res.ok) throw new Error(`POST /bookmark 실패(${res.status}) ${raw}`);
 }
-async function toggleFav(id: string): Promise<boolean> {
-  const list = await getFavIds();
-  const has = list.includes(id);
-  const next = has ? list.filter(x => x !== id) : [...list, id];
-  await setFavIds(next);
-  return !has;
+
+async function removeBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  const raw = await res.text();
+  console.log("[DELETE /bookmark]", { alcoholIndex }, raw);
+  if (!res.ok) throw new Error(`DELETE /bookmark 실패(${res.status}) ${raw}`);
 }
 
 /** ===== 카드 ===== */
@@ -77,29 +92,41 @@ export default function PriceRecommend({
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
+  // 현재 북마크 상태를 들고 있는 ref (토글 직후 일관성 유지용)
+  const bookmarkedRef = useRef<Set<number>>(new Set());
+
   useFocusEffect(
     React.useCallback(() => {
       let alive = true;
       (async () => {
         try {
           setLoading(true);
-          const url = `${API_BASE}/recommend/price?price=${maxPrice}`;
-          //console.log("[price-url]", url);
+          setErr(null);
 
+          // 1) 가격 추천 가져오기
+          const url = `${API_BASE}/recommend/price?price=${maxPrice}`;
           const res = await authedFetch(url, { method: "GET" });
           const raw = await res.text();
           if (!res.ok) throw new Error(`GET /recommend/price 실패(${res.status}) ${raw}`);
           const data = JSON.parse(raw) as ApiItem[];
-          const favs = await getFavIds();
 
+          // 2) 서버 북마크 목록(Set) 가져와 ref에 저장
+          const bookmarked = await fetchBookmarks();
+          bookmarkedRef.current = bookmarked;
+
+          // 3) 추천 → 화면 아이템으로 매핑 (liked는 ref 기준)
           const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
-            const id = String(r.alcoholId);
+            const idx = Number(r.alcoholId);
+            const alcoholIndex = Number.isFinite(idx) ? idx : undefined;
+            const liked = alcoholIndex != null ? bookmarkedRef.current.has(alcoholIndex) : false;
+
             return {
-              id,
+              id: String(r.alcoholId ?? r.name),
               name: r.name,
               degree: r.degree,
               imageUrl: r.imageUrl,
-              liked: favs.includes(id),
+              liked,
+              alcoholIndex,
             };
           });
 
@@ -111,7 +138,7 @@ export default function PriceRecommend({
         }
       })();
       return () => { alive = false; };
-    }, [limit])
+    }, [limit, maxPrice]) // ← maxPrice 바뀌면 다시 로드
   );
 
   return (
@@ -133,14 +160,33 @@ export default function PriceRecommend({
           keyExtractor={(it) => it.id}
           renderItem={({ item, index }) => {
             const onToggle = async () => {
-              const next = await toggleFav(item.id);
-              setItems((prev) => prev.map((x, i) => (i === index ? { ...x, liked: next } : x)));
+              if (item.alcoholIndex == null) return; // index 없으면 명세상 토글 불가
+              const idx = item.alcoholIndex;
+              const willLike = !item.liked;
+
+              try {
+                if (willLike) {
+                  await addBookmark(idx);
+                  bookmarkedRef.current.add(idx);     // ref 동기화
+                } else {
+                  await removeBookmark(idx);
+                  bookmarkedRef.current.delete(idx);  // ref 동기화
+                }
+
+                // 화면 갱신
+                setItems(prev => prev.map((x, i) => (i === index ? { ...x, liked: willLike } : x)));
+              } catch (e) {
+                console.log("bookmark toggle failed:", e);
+              }
             };
+
             return (
               <Card
                 item={item}
                 onToggle={onToggle}
-                onOpen={() => router.push({ pathname: "/(tabs)/(home)/[id]", params: { id: item.id } })}
+                onOpen={() =>
+                  router.push({ pathname: "/(tabs)/(home)/[id]", params: { id: item.id } })
+                }
               />
             );
           }}
@@ -159,7 +205,6 @@ const styles = StyleSheet.create({
 
   card: {
     width: 140,
-
     borderWidth: 1, borderColor: "#E5E7EB",
     borderRadius: 10, padding: 8, backgroundColor: "#fff",
     position: "relative",

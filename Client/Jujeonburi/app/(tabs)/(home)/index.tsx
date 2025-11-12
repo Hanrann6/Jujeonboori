@@ -20,10 +20,11 @@ type Filters = {
     minPrice?: number;
     maxPrice?: number;
     categories: string[];
+    keywords: string[];
 };
 
 const CATEGORIES = ["탁주", "약주청주", "과실주", "증류주", "기타 주류"];
-
+const KEYWORDS = ["가성비", "가을", "겨울", "고문헌", "과일류", "기념일", "꿀", "드라이", "명절", "무감미료", "베리류", "삼(蔘)류", "선물", "소용량", "이색전통주", "저도수", "집들이", "진한맛", "탄산", "파티", "혼술", "홈술"];
 const BORDER = "#E5E7EB";
 const BLACK = "#111827";
 const MUTED = "#6B7280";
@@ -32,7 +33,7 @@ export default function HomeScreen() {
     const insets = useSafeAreaInsets();
 
     const [query, setQuery] = useState("");
-    const [filters, setFilters] = useState<Filters>({ query: "", categories: [] });
+    const [filters, setFilters] = useState<Filters>({ query: "", categories: [], keywords: [] });
 
     //필터 적용 패널 드롭다운 state + 애니메이션
     const [open, setOpen] = useState(false);
@@ -64,7 +65,7 @@ export default function HomeScreen() {
 
     const toggle = () => {
         // 필터 적용 패널 높이 (열릴 때는 350, 닫힐 때는 0)
-        const to = open ? 0 : 350;
+        const to = open ? 0 : 680;
         setOpen(!open);
         Animated.timing(animH, {
             toValue: to, // 애니메이션 높이(animH)를 0에서 350으로, 또는 350에서 0으로
@@ -97,6 +98,7 @@ export default function HomeScreen() {
                 max: next.maxPrice != null ? String(next.maxPrice) : "",
                 // 배열은 JSON 문자열로 넘기면 안전
                 cats: JSON.stringify(next.categories || []),
+                kws: JSON.stringify(next.keywords || []),
             },
         });
     };
@@ -215,9 +217,13 @@ function FilterContent({
     const [min, setMin] = useState(initial.minPrice != null ? String(initial.minPrice) : "");
     const [max, setMax] = useState(initial.maxPrice != null ? String(initial.maxPrice) : "");
     const [cats, setCats] = useState<string[]>(initial.categories);
+    const [kws,setKws]=useState<string[]>(initial.keywords);
 
     const toggleCat = (c: string) =>
         setCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+    const toggleKws = (k: string) =>
+        setKws((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]));
+
     const num = (s: string) => {
         const n = Number(s.replace(/[^\d]/g, ""));
         return Number.isFinite(n) ? n : undefined;
@@ -264,10 +270,24 @@ function FilterContent({
                     ))}
                 </View>
             </View>
-
+            <View style={s.formRow}>
+                <Text style={s.formLabel}>키워드</Text>
+                <View style={s.chipsWrap}>
+                    {KEYWORDS.map((k, i) => (
+                        <React.Fragment key={k}>
+                            <Pressable
+                                onPress={() => toggleKws(k)}
+                                style={[s.catChip, kws.includes(k) && s.catChipOn]}
+                            >
+                                <Text style={[s.catChipText, kws.includes(k) && s.catChipTextOn]}>{k}</Text>
+                            </Pressable>
+                        </React.Fragment>
+                    ))}
+                </View>
+            </View>
             <Pressable
                 style={s.applyBtn}
-                onPress={() => onApply({ minPrice: num(min), maxPrice: num(max), categories: cats })}
+                onPress={() => onApply({ minPrice: num(min), maxPrice: num(max), categories: cats, keywords: kws })}
             >
                 <Text style={s.applyBtnText}>적용하기</Text>
             </Pressable>

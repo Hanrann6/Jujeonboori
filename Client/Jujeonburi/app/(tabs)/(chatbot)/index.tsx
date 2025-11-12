@@ -1,30 +1,18 @@
-import { authedFetch, getUserId } from "@/app/lib/auth";
+import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { ActivityIndicator, FlatList, Image, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View, } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-
+const API_BASE = process.env.EXPO_PUBLIC_API_URL;
 
 // --- API 타입 ---
 type BotResultItem = {
   name: string;
   description?: string;
   reason?: string;
-  imageURL?: string;
+  imageUrl?: string;
   alcoholId: string;
 };
 
@@ -43,65 +31,8 @@ type ChatbotResponse = {
     result?: BotResultItem[];
   };
 };
-// --- 로그 API 타입 ---
-type ChatLog = {
-  _id: string;
-  userId: string;
-  question: string;
-  answer?: {
-    name: string;
-    summary?: string;
-    reason?: string;
-    image?: string;
-    detailPage?: string; // 있을 수도 있음
-  }[];
-  createdAt: string; // ISO
-};
-type ChatLogResp = { logs: ChatLog[] };
-
-// 상세 URL에서 id를 뽑아낼 수 있으면 뽑아오기(없으면 빈 문자열)
-function extractIdFromDetail(url?: string): string {
-  if (!url) return "";
-  try {
-    const u = new URL(url);
-    return u.searchParams.get("id") || u.pathname.split("/").filter(Boolean).pop() || "";
-  } catch { return ""; }
-}
-
-// 서버 로그 1건 -> 우리 메시지 2건(질문/답변)으로 변환
-function mapLogToMsgs(log: ChatLog): Msg[] {
-  const ts = new Date(log.createdAt).getTime() || Date.now();
-  const related: RelatedAlcohol[] = (log.answer || []).map(a => ({
-    name: a.name,
-    image_url: a.image,
-    description: a.summary,
-    reason: a.reason,
-    alcoholId: extractIdFromDetail(a.detailPage),
-  }));
-
-  const userMsg: Msg = {
-    id: `${log._id}-q`,
-    role: "user",
-    text: log.question,
-    createdAt: ts,
-  };
-
-  const botText = related.length > 0 ? "아래 추천을 참고해보세요!" : "추천 결과가 없어요.";
-  const botMsg: Msg = {
-    id: `${log._id}-a`,
-    role: "assistant",
-    text: botText,
-    createdAt: ts + 1,
-    related,
-  };
-
-  return [userMsg, botMsg];
-}
-
-const API_BASE = process.env.EXPO_PUBLIC_API_URL;
 
 async function askChatbot(question: string) {
-
   const res = await authedFetch(`${API_BASE}/chatbot/recommend`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -127,7 +58,7 @@ async function askChatbot(question: string) {
 
   const related: RelatedAlcohol[] = list.map((r) => ({
     name: r.name,
-    image_url: r.imageURL,
+    image_url: r.imageUrl,
     description: r.description,
     alcoholId: r.alcoholId,
     reason: r.reason,
@@ -241,12 +172,53 @@ const CARD_BG = "#FFF7EB";
 
 export default function ChatBot() {
   const insets = useSafeAreaInsets();
-  const [messages, setMessages] = useState<Msg[]>(SEED);
+  const [messages, setMessages] = useState<Msg[]>([ {
+    ...SEED[0],
+    id: "seed-initial",          
+    createdAt: Date.now(),
+  },
+]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const listRef = useRef<FlatList<Msg>>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      setMessages((prev) => {
+        // 1️⃣ 메시지가 전혀 없으면 SEED 하나만 추가
+        if (prev.length === 0) {
+          return [
+            {
+              ...SEED[0],
+              id: "seed-initial",
+              createdAt: Date.now(),
+            },
+          ];
+        }
+  
+        const lastMsg = prev[prev.length - 1];
+  
+        // 2️⃣ "직전 메시지"가 이미 SEED 인삿말이라면 그대로 사용
+        //    → id가 아니라 role + text 기준으로 판단
+        if (
+          lastMsg.role === "assistant" &&
+          lastMsg.text === SEED[0].text
+        ) {
+          return prev;
+        }
+  
+        // 3️⃣ 마지막이 SEED가 아니면, 새로운 id를 가진 SEED를 맨 아래에 한 번만 추가
+        const newSeed: Msg = {
+          ...SEED[0],
+          id: `seed-${Date.now()}`, // 매번 다른 id
+          createdAt: Date.now(),
+        };
+  
+        return [...prev, newSeed];
+      });
+    }, [])
+  );
+  
   const dayLabel = useMemo(() => {
     const d = new Date(messages[0]?.createdAt ?? Date.now());
     //날짜 객체 d를 한국어(Korea) 로케일 규칙에 맞춰 문자열로 포맷
@@ -300,7 +272,6 @@ export default function ChatBot() {
     }
   };
 
-
   const renderItem = ({ item }: { item: Msg }) => (
     <Bubble
       role={item.role}
@@ -319,42 +290,6 @@ export default function ChatBot() {
     </View>
   );
 
-  useFocusEffect(
-    React.useCallback(() => {
-      let cancelled = false;
-      (async () => {
-        try {
-          setInitialLoading(true);
-          const userId = await getUserId();
-          if (!userId) { setInitialLoading(false); return; }
-
-          const url = `${API_BASE}/chatbot/logs`;
-          const res = await authedFetch(url, { method: "GET" });
-          console.log("[챗봇 로그] 요청 URL:", url);
-          console.log("[챗봇 로그] 응답 상태:", res.status);
-          if (!res.ok) {
-            const t = await res.text().catch(() => "");
-            throw new Error(`GET /chatbot/logs 실패(${res.status}) ${t}`);
-          }
-          const data = (await res.json()) as ChatLogResp;
-          console.log("[챗봇 로그] 응답 데이터:", data);
-
-          // 오래된 것부터 정렬 후 변환
-          const histMsgs = (data.logs || [])
-            .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-            .flatMap(mapLogToMsgs);
-
-          if (!cancelled) {
-            // seed(안내문) + 히스토리로 초기화
-            setMessages([SEED[0], ...histMsgs]);
-          }
-        } finally {
-          if (!cancelled) setInitialLoading(false);
-        }
-      })();
-      return () => { cancelled = true; };
-    }, [])
-  );
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView
@@ -362,14 +297,6 @@ export default function ChatBot() {
         behavior={Platform.select({ ios: "padding", android: undefined })}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
-        {/* 초기 히스토리 로딩 표시: seed만 있을 때 + 서버 로딩 중*/} 
-        {/*
-        {initialLoading && messages.length <= 1 ? (
-          <View style={{ padding: 16, alignItems: "center" }}>
-            <ActivityIndicator />
-          </View>
-        ) : null}
-        */}
         {/* 메시지 영역 */}
         <FlatList
           ref={listRef}
