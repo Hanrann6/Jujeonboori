@@ -4,37 +4,27 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import Papa from "papaparse";
-import React, { useEffect, useRef, useState } from "react";
-import {
-    Animated,
-    Easing,
-    Image,
-    Keyboard,
-    Platform,
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-} from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Animated, Easing, Image, Keyboard, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import csvAsset from "../../../assets/data/trad_alcohol.csv";
 import AlcoholRecommend from "../../components/AlcoholRecommend";
+import PriceRecommend from "../../components/PriceRecommend";
 import Weathercard from "../../components/Weathercard";
+import WeatherRecommend from "../../components/WeatherRecommend";
 
 type Filters = {
     query: string;
     minPrice?: number;
     maxPrice?: number;
     categories: string[];
+    keywords: string[];
 };
 
-const CATEGORIES = ["탁주", "약주/청주", "과실주", "증류주", "기타 주류"];
-//자주쓰는 색상 정의
+const CATEGORIES = ["탁주", "약주청주", "과실주", "증류주", "기타 주류"];
+const KEYWORDS = ["가성비", "가을", "겨울", "고문헌", "과일류", "기념일", "꿀", "드라이", "명절", "무감미료", "베리류", "삼(蔘)류", "선물", "소용량", "이색전통주", "저도수", "집들이", "진한맛", "탄산", "파티", "혼술", "홈술"];
 const BORDER = "#E5E7EB";
 const BLACK = "#111827";
 const MUTED = "#6B7280";
@@ -43,7 +33,7 @@ export default function HomeScreen() {
     const insets = useSafeAreaInsets();
 
     const [query, setQuery] = useState("");
-    const [filters, setFilters] = useState<Filters>({ query: "", categories: [] });
+    const [filters, setFilters] = useState<Filters>({ query: "", categories: [], keywords: [] });
 
     //필터 적용 패널 드롭다운 state + 애니메이션
     const [open, setOpen] = useState(false);
@@ -75,7 +65,7 @@ export default function HomeScreen() {
 
     const toggle = () => {
         // 필터 적용 패널 높이 (열릴 때는 350, 닫힐 때는 0)
-        const to = open ? 0 : 350;
+        const to = open ? 0 : 680;
         setOpen(!open);
         Animated.timing(animH, {
             toValue: to, // 애니메이션 높이(animH)를 0에서 350으로, 또는 350에서 0으로
@@ -108,6 +98,7 @@ export default function HomeScreen() {
                 max: next.maxPrice != null ? String(next.maxPrice) : "",
                 // 배열은 JSON 문자열로 넘기면 안전
                 cats: JSON.stringify(next.categories || []),
+                kws: JSON.stringify(next.keywords || []),
             },
         });
     };
@@ -118,12 +109,17 @@ export default function HomeScreen() {
     }, [query]);
     const [nickname, setNickname] = useState<string>("");
 
-    useEffect(() => {
-        (async () => {
-            const nick = (await AsyncStorage.getItem("nickname")) ?? "";
-            setNickname(nick);
-        })();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+          let alive = true;
+          (async () => {
+            const v = await AsyncStorage.getItem("nickname");
+            if (alive) setNickname(v ?? "");
+          })();
+          return () => { alive = false; }; 
+        }, [])
+      );
+
     return (
         <SafeAreaView style={s.safe}>
             <ScrollView style={s.container}>
@@ -176,14 +172,18 @@ export default function HomeScreen() {
                 <Weathercard />
                 <View style={s.recContainer}>
                     <View style={s.pricedRec}>
-                        <Text style={s.recTitle}><Text style={s.nick}>오늘 날씨에 어울리는</Text> 추천 전통주</Text>
+                        <Text style={s.recTitle}><Text style={s.nick}>오늘 날씨에 어울리는</Text> 추천 전통주</Text>  
+                        <Text style={s.recsub}>오늘은 이 전통주를 마셔보는 게 어떨까요?</Text>          
+                        <WeatherRecommend/> 
                     </View>
                     <View style={s.personalRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
+                        <Text style={s.recsub}>주류 취향을 반영해 AI가 피드백하여 전통주를 추천해드려요.</Text>          
                         <AlcoholRecommend limit={5} />
                     </View>
                     <View style={s.pricedRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>3만원 이하</Text> 추천 전통주</Text>
+                        <PriceRecommend maxPrice={30000} />
                     </View>
                 </View>
             </ScrollView>
@@ -194,7 +194,7 @@ export default function HomeScreen() {
             {/* OCR 버튼*/}
             <Pressable
                 onPress={() => router.push("/ocr")}
-                style={[s.fab, { bottom: 24 + insets.bottom }]}>
+                style={[s.fab, { bottom: 10 + insets.bottom }]}>
                 <Image
                     source={require("../../../assets/images/ocr_img.png")}
                     style={s.fabIcon}/>
@@ -217,9 +217,13 @@ function FilterContent({
     const [min, setMin] = useState(initial.minPrice != null ? String(initial.minPrice) : "");
     const [max, setMax] = useState(initial.maxPrice != null ? String(initial.maxPrice) : "");
     const [cats, setCats] = useState<string[]>(initial.categories);
+    const [kws,setKws]=useState<string[]>(initial.keywords);
 
     const toggleCat = (c: string) =>
         setCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+    const toggleKws = (k: string) =>
+        setKws((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]));
+
     const num = (s: string) => {
         const n = Number(s.replace(/[^\d]/g, ""));
         return Number.isFinite(n) ? n : undefined;
@@ -266,10 +270,24 @@ function FilterContent({
                     ))}
                 </View>
             </View>
-
+            <View style={s.formRow}>
+                <Text style={s.formLabel}>키워드</Text>
+                <View style={s.chipsWrap}>
+                    {KEYWORDS.map((k, i) => (
+                        <React.Fragment key={k}>
+                            <Pressable
+                                onPress={() => toggleKws(k)}
+                                style={[s.catChip, kws.includes(k) && s.catChipOn]}
+                            >
+                                <Text style={[s.catChipText, kws.includes(k) && s.catChipTextOn]}>{k}</Text>
+                            </Pressable>
+                        </React.Fragment>
+                    ))}
+                </View>
+            </View>
             <Pressable
                 style={s.applyBtn}
-                onPress={() => onApply({ minPrice: num(min), maxPrice: num(max), categories: cats })}
+                onPress={() => onApply({ minPrice: num(min), maxPrice: num(max), categories: cats, keywords: kws })}
             >
                 <Text style={s.applyBtnText}>적용하기</Text>
             </Pressable>
@@ -280,21 +298,7 @@ function FilterContent({
 const s = StyleSheet.create({
     safe: { flex: 1, backgroundColor: "#fff" },
     container: { flex: 1, paddingBottom: 24 },
-    header: {
-        height: 48,
-        paddingHorizontal: 12,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: BORDER,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: "900",
-        color: BLACK,
-        ...(Platform.OS === "android" ? { includeFontPadding: false } : null),
-    },
+    // 검색창
     searchRow: { flexDirection: "row", alignItems: "center", gap: 8, padding: 20, paddingBottom: 8 },
     searchBox: {
         flex: 1,
@@ -324,13 +328,15 @@ const s = StyleSheet.create({
 
     recContainer: {
         flex: 1,
+        paddingBottom:20,
+        
     },
     personalRec: {
         padding: 20,
         gap: 8,
     },
     pricedRec: {
-        padding: 20,
+        padding: 18,
         gap: 8,
     },
     recTitle: {
@@ -338,6 +344,11 @@ const s = StyleSheet.create({
         fontWeight: "800",
         color: "#111827",
         margin: 10,
+    },
+    recsub:{
+        marginTop:-15,
+        margin:10, 
+        fontSize:14
     },
     nick: {
         color: "#F59E0B"
@@ -442,7 +453,7 @@ const s = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 999,
-        backgroundColor: "#F6B300",
+        backgroundColor: "#283353",
         alignItems: "center",
         justifyContent: "center",
         shadowColor: "#000",
@@ -453,9 +464,11 @@ const s = StyleSheet.create({
         width: 26, 
         height: 26, 
         resizeMode: "contain", 
+        backgroundColor:"#FFF", 
         marginBottom: 2 },
 
     fabLabel: { 
-        fontSize: 11, 
+        fontSize: 11,
+        color:"#FFF", 
         fontWeight: "700" },
 });

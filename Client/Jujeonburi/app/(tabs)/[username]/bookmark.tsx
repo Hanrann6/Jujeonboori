@@ -1,11 +1,9 @@
 // app/(tabs)/[username]/bookmark.tsx
+import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Asset } from "expo-asset";
-import * as FileSystem from "expo-file-system";
 import { useFocusEffect, useRouter } from "expo-router";
-import Papa from "papaparse";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -16,54 +14,120 @@ import {
   Text,
   View,
 } from "react-native";
-import csvAsset from "../../../assets/data/trad_alcohol.csv";
 
-const FAV_KEY = "@fav:alcohol";
+const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 
-type AlcoholRow = {
-  "제품명": string;
-  "주종"?: string;
-  "도수%": number;
-  "사진URL"?: string;
-  "docId"?: string | number;
+/** ===== API 타입 ===== */
+type BookmarkRow = { alcoholIndex: number };
+type ApiAlcohol = {
+  alcohol_id: number | string;
+  name: string;
+  image_url?: string;
+  degree?: number;
 };
-type Meta = { id: string; name: string; imageUrl?: string };
+type ApiAlcoholListResp = { alcohols: ApiAlcohol[] };
 
-async function getFavIds(): Promise<string[]> {
-  const raw = await AsyncStorage.getItem(FAV_KEY);
-  if (!raw) return [];
-  try { return JSON.parse(raw) as string[]; } catch { return []; }
+/** ===== 북마크 api ===== */
+async function fetchBookmarks(): Promise<number[]> {
+  const res = await authedFetch(`${API_BASE}/bookmark`, { method: "GET" });
+  const raw = await res.text();
+  if (!res.ok) throw new Error(`GET /bookmark 실패(${res.status}) ${raw}`);
+  const rows = JSON.parse(raw) as BookmarkRow[];
+  return (rows || []).map(r => Number(r.alcoholIndex)).filter(n => Number.isFinite(n));
 }
-async function setFavIds(ids: string[]) {
-  await AsyncStorage.setItem(FAV_KEY, JSON.stringify([...new Set(ids)]));
+
+async function deleteBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  const raw = await res.text();
+  if (!res.ok) throw new Error(`DELETE /bookmark 실패(${res.status}) ${raw}`);
 }
-async function removeFav(id: string) {
-  const now = await getFavIds();
-  await setFavIds(now.filter(x => x !== id));
-}
-async function loadMetaMap(): Promise<Map<string, Meta>> {
-  const map = new Map<string, Meta>();
-  const asset = Asset.fromModule(csvAsset);
-  await asset.downloadAsync();
-  const csv = await FileSystem.readAsStringAsync(asset.localUri!);
-  const parsed = Papa.parse<AlcoholRow>(csv, { header: true, dynamicTyping: true, skipEmptyLines: true });
-  for (const row of parsed.data) {
-    const id = row["docId"] != null ? String(row["docId"]) : undefined;
-    const name = row["제품명"] ? String(row["제품명"]).trim() : "";
-    const rawImg = (row["사진URL"] ?? "").toString().trim();
-    const imageUrl = /^https?:\/\//i.test(rawImg) ? rawImg : undefined;
-    if (id && name) map.set(id, { id, name, imageUrl });
+
+/** 메타 일괄 조회 시도 → 폴백(개별 조회) */
+async function fetchAlcoholMeta(ids: number[]): Promise<Map<number, ApiAlcohol>> {
+  const map = new Map<number, ApiAlcohol>();
+  if (ids.length === 0) return map;
+
+  // 1) bulk 시도: /alcohols?ids=1,2,3
+  try {
+    const qs = new URLSearchParams();
+    qs.set("ids", ids.join(","));
+    const url = `${API_BASE}/alcohols?${qs.toString()}`;
+    const res = await authedFetch(url, { method: "GET" });
+    const raw = await res.text();
+    if (res.ok) {
+      const data = JSON.parse(raw) as ApiAlcoholListResp;
+      for (const a of data.alcohols || []) {
+        const key = Number(a.alcohol_id);
+        if (Number.isFinite(key)) map.set(key, a);
+      }
+      // bulk로 다 못 받았으면 폴백으로 나머지만 채움
+      const missing = ids.filter(id => !map.has(id));
+      if (missing.length === 0) return map;
+      // 아래 폴백으로 이어짐
+      ids = missing;
+    } else {
+      // 실패 → 폴백
+      throw new Error(raw);
+    }
+  } catch {
+    // bulk 미지원/오류 시 개별로 진행
   }
+
+  // 2) 개별 조회 폴백: /alcohols/:id 와 /alcohols?id= 형태 모두 시도
+  await Promise.all(
+    ids.map(async (id) => {
+      if (map.has(id)) return;
+      // 우선 RESTful 경로 시도
+      const tryUrls = [
+        `${API_BASE}/alcohols/${id}`,
+        `${API_BASE}/alcohols?id=${id}`,
+      ];
+      for (const url of tryUrls) {
+        try {
+          const res = await authedFetch(url, { method: "GET" });
+          const raw = await res.text();
+          if (!res.ok) continue;
+          // 단건 또는 { alcohols:[...] } 모두 처리
+          const parsed = JSON.parse(raw);
+          const a: ApiAlcohol | undefined =
+            Array.isArray(parsed?.alcohols)
+              ? parsed.alcohols[0]
+              : parsed;
+          if (a && (a.alcohol_id ?? a.name)) {
+            map.set(id, a);
+            break;
+          }
+        } catch {
+          // 다음 시도
+        }
+      }
+    })
+  );
+
   return map;
 }
 
+/** ===== 화면 아이템 ===== */
+type Item = {
+  alcoholIndex: number;        // 서버 북마크 토글에 사용
+  idForRoute: string;          // 상세 페이지 파라미터
+  name: string;
+  imageUrl?: string;
+  degree?: number;
+};
+
+/** ===== 컴포넌트 ===== */
 export default function BookmarkScreen() {
   const router = useRouter();
-
   const [nickname, setNickname] = useState<string>("");
-  const [metaMap, setMetaMap] = useState<Map<string, Meta>>(new Map());
-  const [ids, setIds] = useState<string[] | null>(null);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [items, setItems] = useState<Item[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   // 닉네임
   useEffect(() => {
@@ -72,33 +136,47 @@ export default function BookmarkScreen() {
     })();
   }, []);
 
-  // CSV 메타 로드(최초 1회)
-  useEffect(() => {
-    (async () => setMetaMap(await loadMetaMap()))();
+  const load = useCallback(async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      // 1) 북마크 인덱스 목록
+      const ids = await fetchBookmarks();
+
+      // 2) 메타 조회
+      const metaMap = await fetchAlcoholMeta(ids);
+
+      // 3) 화면 데이터 구성
+      const list: Item[] = ids.map((alcoholIndex) => {
+        const meta = metaMap.get(alcoholIndex);
+        return {
+          alcoholIndex,
+          idForRoute: String(alcoholIndex),                 // 상세 페이지로 넘길 id
+          name: meta?.name ?? `#${alcoholIndex}`,
+          imageUrl: meta?.image_url,
+          degree: meta?.degree,
+        };
+      });
+
+      setItems(list);
+    } catch (e: any) {
+      setError(e?.message ?? "북마크를 불러오지 못했어요.");
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const loadFavs = useCallback(async () => {
-    setIds(await getFavIds());
-  }, []);
-
-  useEffect(() => { loadFavs(); }, [loadFavs]);
-  useFocusEffect(useCallback(() => { loadFavs(); }, [loadFavs]));
+  useEffect(() => { load(); }, [load]);
+  useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await loadFavs();
+    await load();
     setRefreshing(false);
-  }, [loadFavs]);
+  }, [load]);
 
-  // 메타 매핑
-  const data = useMemo(() => {
-    if (!ids) return [];                // ids === null, undefined 대비
-    return ids
-      .map(id => metaMap.get(id))
-      .filter((m): m is Meta => !!m);
-  }, [ids, metaMap]);
-
-  if (ids === null) {
+  if (loading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator />
@@ -114,28 +192,33 @@ export default function BookmarkScreen() {
           <Text style={styles.nick}>{nickname || "익명"}</Text>님이 찜한 전통주
         </Text>
       </View>
+
+      {!!error && (
+        <Text style={{ color: "red", marginHorizontal: 20, marginBottom: 8 }}>{error}</Text>
+      )}
+
       <View style={{ flex: 1, paddingTop: 8 }}>
-        {data.length === 0 ? (
-          <View style={styles.center}><Text style={{ textAlign:"center", color: "#6B7280" }}>아직 찜한 전통주가 없어요.{"\n"}마셔보고 싶은 전통주를 찜해보세요.</Text></View>
+        {items.length === 0 ? (
+          <View style={styles.center}>
+            <Text style={{ textAlign: "center", color: "#6B7280" }}>
+              아직 찜한 전통주가 없어요.{"\n"}마셔보고 싶은 전통주를 찜해보세요.
+            </Text>
+          </View>
         ) : (
           <FlatList
-            data={data}
-            keyExtractor={(m) => m.id}
+            data={items}
+            keyExtractor={(m) => String(m.alcoholIndex)}
             numColumns={2}
             columnWrapperStyle={{ paddingHorizontal: 45, justifyContent: "space-between", marginBottom: 12 }}
-            contentContainerStyle={{ paddingBottom: 24, gap: 8 }}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            contentContainerStyle={{ paddingBottom: 24, gap: 8 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             renderItem={({ item }) => (
               <View style={styles.card}>
                 <Pressable
                   onPress={() =>
                     router.push({
                       pathname: "/(tabs)/(home)/[id]",
-                      params: {
-                        id: item.id, alcoholName: item.name
-                      }
+                      params: { id: item.idForRoute, alcoholName: item.name }
                     })}
-                  style={{ alignItems: "center" }}
                 >
                   <Image
                     source={
@@ -146,11 +229,22 @@ export default function BookmarkScreen() {
                     style={styles.thumb}
                   />
                   <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
+                  <Text numberOfLines={2} style={styles.meta}>{item.degree}%</Text>
+
                 </Pressable>
 
-                {/* 찜 하트 */}
+                {/* 찜 해제 */}
                 <Pressable
-                  onPress={async () => { await removeFav(item.id); await loadFavs(); }}
+                  onPress={async () => {
+                    try {
+                      await deleteBookmark(item.alcoholIndex);
+                      // UI 즉시 반영
+                      setItems(prev => prev.filter(x => x.alcoholIndex !== item.alcoholIndex));
+                    } catch (e) {
+                      // 실패 시 필요하면 토스트/알림
+                      console.log("unbookmark failed:", e);
+                    }
+                  }}
                   style={styles.heart}
                   hitSlop={12}
                   accessibilityLabel="찜 해제"
@@ -166,56 +260,37 @@ export default function BookmarkScreen() {
   );
 }
 
+/** ===== 스타일 ===== */
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
-
   headerContainer: {
-    margin: 20,
-    flexDirection: "row",
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 4
+    margin: 20, flexDirection: "row",
+    paddingHorizontal: 16, paddingTop: 16, paddingBottom: 4
   },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: "#111827",
-  },
-  nick: {
-    color: "#F59E0B",
-    fontWeight: "800"
-  },
-  card:{        
+  headerTitle: { fontSize: 22, fontWeight: "800", color: "#111827" },
+  nick: { color: "#F59E0B", fontWeight: "800" },
+  card: {
     backgroundColor: '#fff',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E5E7EB',
-    flexBasis: '48%',  
-    flexGrow: 0,  
+    flexBasis: '48%',
+    maxWidth: '48%',
+    flexGrow: 0,
     padding: 10,
     alignItems: 'center',
-    minHeight: 200,     
-  },
-  thumb: {
-    width: 90,
-    height: 130,
-    resizeMode: "contain",
-    marginTop: 4
-  },
-
-  name: {
-    textAlign: "center",
-    marginTop: 8,
-    color: "#111827",
-    fontWeight: "700"
-  },
-
-  heart: {
+    minHeight: 200,
+    position: 'relative',
+},
+heart: {
     position: "absolute",
-    top: 8, right: 8,
-    width: 26, height: 26, borderRadius: 13,
+    top: 6, right: 6,
+    width: 28, height: 28, borderRadius: 14,
     backgroundColor: "white",
     alignItems: "center", justifyContent: "center",
     elevation: 2,
-  },
+},
+thumb: { width: 120, height: 160, resizeMode:"cover", borderRadius: 8, backgroundColor: "#F3F4F6" },
+name: { marginTop: 6, fontWeight: "700", color: "#111827" },
+meta: { color: "#6B7280", fontSize: 12, marginTop: 2 },
 });

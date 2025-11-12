@@ -1,9 +1,10 @@
 //app\components\Weathercard.tsx
 
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 /** ====== 스타일 공통 ====== */
 const CARD_BG = "#FFF7EB";
@@ -36,7 +37,6 @@ function isInKorea(lat: number, lon: number) {
 
 // 서울시청 좌표(폴백용)
 const SEOUL = { lat: 37.5665, lon: 126.9780 };
-
 
 type Grid = { nx: number; ny: number };
 
@@ -196,8 +196,10 @@ async function fetchUltraShortTemperature(lat: number, lon: number) {
     const pty = items.find((it: any) => it.category === "PTY" && it.fcstDate === fcstDate && it.fcstTime === fcstTime)?.fcstValue;
 
     const skyDesc = sky === "1" ? "맑음" : sky === "3" ? "구름많음" : sky === "4" ? "흐림" : "";
-    const ptyDesc = pty === "0" ? "" : pty === "1" ? "비" : pty === "2" ? "비/눈" : pty === "3" ? "눈"
+    const ptyDesc = pty === "0" ? "맑음" : pty === "1" ? "비" : pty === "2" ? "비/눈" : pty === "3" ? "눈"
         : pty === "5" ? "빗방울" : pty === "6" ? "빗방울/눈날림" : pty === "7" ? "눈날림" : "";
+    await AsyncStorage.setItem("@weather:temperature", String(temperature,));
+    await AsyncStorage.setItem("@weather:pty",String(pty) );
 
     return { temperature, skyDesc, ptyDesc };
 }
@@ -226,32 +228,38 @@ export default function Weathercard() {
     const run = useCallback(async () => {
         setLoading(true);
         try {
-            const { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== "granted") {
-                Alert.alert("위치 권한 필요", "날씨/위치 기반 추천을 위해 권한이 필요해요.");
-                setPlace("권한 없음"); setTemp(null); 
-                 return;
-            }
-
-            const loc = await Location.getCurrentPositionAsync({});
-            const rawLat = loc.coords.latitude;
-            const rawLon = loc.coords.longitude;
-
-            // 한국 외면 서울 좌표로 통일
-            const target = isInKorea(rawLat, rawLon) ? { lat: rawLat, lon: rawLon } : SEOUL;
-
-            setPlace(await resolveAreaName(target.lat, target.lon)); // ← 서울로 폴백된 좌표로 표시
-            const { temperature, skyDesc, ptyDesc } =
-                await fetchUltraShortTemperature(target.lat, target.lon); // ← 동일 좌표로 날씨
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== "granted") {
+            // 권한 거부 시에도 서울 폴백
+            setPlace(await resolveAreaName(SEOUL.lat, SEOUL.lon));
+            const { temperature } = await fetchUltraShortTemperature(SEOUL.lat, SEOUL.lon);
             setTemp(temperature);
-
-        } catch (e: any) {
-            console.log("[KMA]", e?.message || e);
-            setPlace("날씨 불러오기 실패"); setTemp(null);
+            return;
+          }
+      
+          // 좌표 시도
+          const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+          const { latitude, longitude } = loc.coords;
+          const target = isInKorea(latitude, longitude) ? { lat: latitude, lon: longitude } : SEOUL;
+      
+          setPlace(await resolveAreaName(target.lat, target.lon));
+          const { temperature } = await fetchUltraShortTemperature(target.lat, target.lon);
+          setTemp(temperature);
+      
+        } catch (e) {
+          // ★ 좌표 실패 등 모든 예외에서 서울 폴백
+          setPlace(await resolveAreaName(SEOUL.lat, SEOUL.lon));
+          try {
+            const { temperature } = await fetchUltraShortTemperature(SEOUL.lat, SEOUL.lon);
+            setTemp(temperature);
+          } catch {
+            setTemp(null);
+          }
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    }, [resolveAreaName]);
+      }, [resolveAreaName]);
+      
 
     useEffect(() => { run(); }, [run]);
 
@@ -268,9 +276,7 @@ export default function Weathercard() {
             <View style={styles.card}>
                 <View style={styles.header}>
                     <Text style={styles.place} numberOfLines={1}>{place}</Text>
-                    
                 </View>
-
                 <Text style={styles.temp}>
                     {loading ? "…" : temp != null ? `${temp}℃` : "--"}
                 </Text>
@@ -279,9 +285,9 @@ export default function Weathercard() {
                 </Text>
             </View>
             <View style={styles.refreshContainer}>
-            <Pressable onPress={run} style={styles.refresh} hitSlop={10}>
-                        <Ionicons name="locate" size={30} color={BLACK} />
-                    </Pressable>
+                <Pressable onPress={run} style={styles.refresh} hitSlop={10}>
+                    <Ionicons name="locate" size={30} color={BLACK} />
+                </Pressable>
             </View>
         </View>
     );
@@ -301,24 +307,26 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         padding: 5,
     },
-    header: { 
-        flexDirection: "row", 
-        alignItems: "center", 
-        justifyContent: "space-between" },
-    place: { 
-        color: MUTED, 
-        fontSize: 16, 
-        fontWeight: "600", 
-        maxWidth: "85%" 
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between"
     },
-    refreshContainer:{
+    place: {
+        color: MUTED,
+        fontSize: 16,
+        fontWeight: "600",
+        maxWidth: "85%"
+    },
+    refreshContainer: {
         marginBottom: 70,
     },
     refresh: {
         width: 45, height: 45, borderRadius: 999,
         alignItems: "center",
-        justifyContent: "center", 
-        backgroundColor: "#FFFFFFAA",    },
+        justifyContent: "center",
+        backgroundColor: "#FFFFFFAA",
+    },
     temp: { fontSize: 36, fontWeight: "900", color: BLACK },
     desc: { marginTop: 6, fontSize: 16, fontWeight: "500", color: BLACK },
 });

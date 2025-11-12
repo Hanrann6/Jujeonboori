@@ -21,7 +21,7 @@ export default function UserProfileLayout() {
         options={{
           headerShown: true,
           title: "마이 페이지",
-          headerTitleStyle: { fontSize: 18, fontWeight: "700" },
+          headerTitleStyle: { fontFamily:"BagelFatOne",fontSize: 22},
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,
           headerShadowVisible: true,
@@ -65,6 +65,17 @@ export default function UserProfileLayout() {
         options={{
           headerShown: true,
           title: "설정",
+          headerTitleStyle: { fontSize: 18, fontWeight: "700" },
+          headerTitleAlign: "center",
+          headerLeft: () => <BackBtn />,
+          headerShadowVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="changeNick"
+        options={{
+          headerShown: true,
+          title: "닉네임 변경",
           headerTitleStyle: { fontSize: 18, fontWeight: "700" },
           headerTitleAlign: "center",
           headerLeft: () => <BackBtn />,

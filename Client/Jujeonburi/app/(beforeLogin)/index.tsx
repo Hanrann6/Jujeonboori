@@ -23,6 +23,7 @@ export default function IntroScreen() {
         loadFonts();
     }, []);
 
+
     if (!fontsLoaded) {
         // 폰트 로딩이 완료될 때까지 로딩 화면을 표시
         return null;
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
         fontSize: 85,
         textAlign: "center",
         lineHeight: 100,
+        color: "black",
     },
     bottomContainer:{
         flex: 2,

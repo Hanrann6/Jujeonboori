@@ -1,5 +1,5 @@
 // app/delete/index.tsx
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { deleteAccount } from "@/app/lib/auth";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -14,8 +14,8 @@ import {
 export default function DeleteAccount() {
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const onSubmit = () => {
+  
+  const onSubmit = async () => {
     Alert.alert(
       "정말 탈퇴하시겠어요?",
       "탈퇴 즉시 모든 정보와 활동 내역이 삭제되며, 복구가 불가능합니다.",
@@ -27,28 +27,20 @@ export default function DeleteAccount() {
   };
 
   const handleDelete = async () => {
+    if (loading) return;
     try {
       setLoading(true);
-
-      // TODO: 실제 탈퇴 API 호출
-      // await api.delete("/users/me");
-
-      // 세션/토큰/로컬 데이터 정리
-      await AsyncStorage.multiRemove([
-        "accessToken",
-        "refreshToken",
-        "nickname",
-        // 필요 키 더 추가
-      ]);
-
-      // 스택 초기화 후 로그인 전 그룹으로
+      await deleteAccount();
+      console.log("회원탈퇴 성공");
       router.dismissAll();
       router.replace("/(beforeLogin)");
+    } catch (e: any) {
+      Alert.alert("탈퇴 실패", e?.message ?? "잠시 후 다시 시도해 주세요.");
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.noticeTitle}>탈퇴하기 전,{"\n"}꼭 확인해주세요.</Text>

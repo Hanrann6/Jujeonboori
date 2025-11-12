@@ -1,6 +1,7 @@
 // app/(tabs)/(festival)/index.tsx
+import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   Image,
@@ -13,21 +14,35 @@ import {
   Text,
   View,
 } from "react-native";
-import festivalsJson from "./festival_dummy.json";
 
 /** ---------- 타입 ---------- */
 type Festival = {
   festival_id: number;
   name: string;
-  description: string;
+  description?: string;
   location: string;
-  start_date: string | Date;
-  end_date: string | Date;
+  start_date: Date;
+  end_date: Date;
   official_url?: string;
   image_url?: string;
 };
 
-/** ---------- 유틸 (파일 내부 유지) ---------- */
+type ApiFestival = {
+  festival_id: number;
+  name: string;
+  location: string;
+  start_date: string; // "YYYY-MM-DD"
+  end_date: string;   // "YYYY-MM-DD"
+  image_url?: string;
+  description?: string;
+  official_url?: string;
+};
+
+type ApiResponse = { festivals: ApiFestival[] };
+
+/** ---------- 유틸 ---------- */
+const API_BASE = process.env.EXPO_PUBLIC_API_URL;
+
 function toDate(v: string | Date) {
   return v instanceof Date ? v : new Date(v);
 }
@@ -57,17 +72,33 @@ function statusOf(s: string | Date, e: string | Date) {
   return { label: "진행중", color: "#19BB55" };
 }
 function statusRank(s: string | Date, e: string | Date) {
-    const { label } = statusOf(s, e);
-    // 진행중(0) → 예정(1) → 종료(2)
-    return label === "진행중" ? 0 : label === "예정" ? 1 : 2;
+  const { label } = statusOf(s, e);
+  return label === "진행중" ? 0 : label === "예정" ? 1 : 2;
+}
+
+/** ---------- API ---------- */
+async function fetchFestivals(year: number): Promise<Festival[]> {
+  const url = `${API_BASE}/festivals?year=${year}`;
+  //console.log("→ GET", url);
+  const res = await authedFetch(url, { 
+    method: "GET" 
+  });
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    throw new Error(`GET /festivals 실패(${res.status}) ${txt}`);
   }
-  
-/** ---------- 원본 더미 → Date 통일 ---------- */
-const festivalsPrepared: Festival[] = festivalsJson.map((f) => ({
-  ...f,
-  start_date: toDate(f.start_date as any),
-  end_date: toDate(f.end_date as any),
-}));
+  const json: ApiResponse = await res.json();
+  return (json.festivals ?? []).map((f) => ({
+    festival_id: f.festival_id,
+    name: f.name,
+    description: f.description ?? "",
+    location: f.location,
+    start_date: new Date(f.start_date),
+    end_date: new Date(f.end_date),
+    official_url: f.official_url,
+    image_url: f.image_url,
+  }));
+}
 
 /** ---------- 색상 ---------- */
 const CARD_BG = "#FFFFFF";
@@ -75,51 +106,52 @@ const BORDER = "#E5E7EB";
 const TITLE = "#111827";
 const MUTED = "#6B7280";
 
+/** ---------- 메인 스크린 ---------- */
 export default function FestivalScreen() {
-  /** 연도 목록 만들기 (더미에서 추출) */
-  const years = useMemo(() => {
-    const set = new Set<number>();
-    for (const f of festivalsPrepared) {
-      set.add(toDate(f.start_date).getFullYear());
-    }
-    return Array.from(set).sort((a, b) => a - b);
-  }, []);
+  // 연도 바(현재연도 기준)
+  const nowY = new Date().getFullYear();
+  const years = useMemo(() => [nowY, nowY + 1], [nowY]);
+  const [year, setYear] = useState<number>(nowY);
 
-  /** 기본 연도: 현재 연도가 목록에 있으면 현재, 없으면 최댓값 */
-  const defaultYear = useMemo(() => {
-    const nowY = new Date().getFullYear();
-    if (years.includes(nowY)) return nowY;
-    return years.length ? years[years.length - 1] : nowY;
-  }, [years]);
+  // 데이터 상태
+  const [items, setItems] = useState<Festival[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [year, setYear] = useState<number>(defaultYear);
+  // 연도 변경 시 API 호출
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const list = await fetchFestivals(year);
+        setItems(list);
+      } catch (e: any) {
+        setError(e?.message ?? "축제 목록을 불러오지 못했어요.");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [year]);
 
-  /** 선택 연도별 필터링 */
+  // 정렬(진행중 → 예정 → 종료)
   const data = useMemo(() => {
-    const list = festivalsPrepared.filter(
-      (f) => toDate(f.start_date).getFullYear() === year
-    );
-  
+    const list = items.slice();
     return list.sort((a, b) => {
       const ra = statusRank(a.start_date, a.end_date);
       const rb = statusRank(b.start_date, b.end_date);
-      if (ra !== rb) return ra - rb; // 진행중/예정 먼저, 종료는 아래로
-  
-      // 같은 상태끼리의 세부 정렬
+      if (ra !== rb) return ra - rb;
+
       const sa = statusOf(a.start_date, a.end_date).label;
       if (sa === "진행중") {
-        // 진행중: 곧 끝나는 순으로
         return +new Date(a.end_date as any) - +new Date(b.end_date as any);
       }
       if (sa === "예정") {
-        // 예정: 가까운 시작일 순
         return +new Date(a.start_date as any) - +new Date(b.start_date as any);
       }
-      // 종료: 최근에 끝난 것 먼저 보고 싶으면 내림차순, 아니면 오름차순
       return +new Date(b.end_date as any) - +new Date(a.end_date as any);
     });
-  }, [year]);
-  
+  }, [items]);
 
   const changeYear = useCallback((y: number) => setYear(y), []);
 
@@ -138,10 +170,7 @@ export default function FestivalScreen() {
               <Pressable
                 key={y}
                 onPress={() => changeYear(y)}
-                style={[
-                  s.yearChip,
-                  selected && { backgroundColor: "#FFBF60"},
-                ]}
+                style={[s.yearChip, selected && { backgroundColor: "#FFBF60" }]}
                 android_ripple={{ color: "#F3F4F6" }}
               >
                 <Text
@@ -166,9 +195,13 @@ export default function FestivalScreen() {
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         ListEmptyComponent={
           <View style={s.empty}>
-            <Text style={{ color: MUTED }}>
-              {year}년에는 등록된 축제가 없어요.
-            </Text>
+            {loading ? (
+              <Text style={{ color: MUTED }}>불러오는 중…</Text>
+            ) : error ? (
+              <Text style={{ color: "red" }}>오류: {error}</Text>
+            ) : (
+              <Text style={{ color: MUTED }}>{year}년에는 등록된 축제가 없어요.</Text>
+            )}
           </View>
         }
       />
@@ -176,6 +209,7 @@ export default function FestivalScreen() {
   );
 }
 
+/** ---------- 카드 ---------- */
 function FestivalCard({ item }: { item: Festival }) {
   const badge = statusOf(item.start_date, item.end_date);
   const range = formatRange(item.start_date, item.end_date);
@@ -265,7 +299,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: BORDER,
     borderRadius: 12,
-    overflow: "hidden",
+    overflow: "scroll",
   },
 
   thumbWrap: {

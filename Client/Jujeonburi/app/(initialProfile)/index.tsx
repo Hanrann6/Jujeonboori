@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         paddingTop: 70
     },
     nickname: { fontWeight: "bold", fontSize: 24, color: "#EE8F00" },
-    title: { fontWeight: "bold", fontSize: 24 },
+    title: { color:"black",fontWeight: "bold", fontSize: 24 },
     hintText: { fontSize: 12, color: "#828282" },
     // 화면 중앙 영역
     testContainer: {
@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
         padding: 20,
         marginTop: 30
     },
-    testTitle: { fontSize: 24, textAlign: "left", fontWeight: "bold", paddingLeft: 20 },
-    testText: { fontSize: 20, textAlign: "left", fontWeight: "bold", paddingLeft: 20 },
+    testTitle: {color:"black", fontSize: 24, textAlign: "left", fontWeight: "bold", paddingLeft: 20 },
+    testText: { color:"black",fontSize: 20, textAlign: "left", fontWeight: "bold", paddingLeft: 20 },
     testBox: {
         flex: 4,
         margin: 10,

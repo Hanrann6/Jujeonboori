@@ -1,8 +1,9 @@
 //app/(beforeLogin)/setNick.tsx
 
+import { authedFetch } from "@/app/lib/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import {
     Keyboard,
     Platform,
@@ -14,49 +15,57 @@ import {
     TouchableWithoutFeedback,
     View
 } from "react-native";
-import { authedFetch } from "../lib/auth";
-const API_BASE = process.env.EXPO_PUBLIC_API_URL!;
+const API_BASE = process.env.EXPO_PUBLIC_API_URL!; 
 
-export default function NicknameScreen() {
+export default function ChangeNick() {
     const router = useRouter();
-    const { suggested = "" } = useLocalSearchParams<{ suggested?: string }>();
+    const {suggested = "" } = useLocalSearchParams<{ suggested?: string }>();
     const [name, setName] = useState(String(suggested ?? ""));
-    const [submitting, setSubmitting] = useState(false);
+    const [submitting, setSubmitting] = useState(false); 
     // 2~12자, 한/영/숫자만 허용 (Android용)
     const valid = useMemo(() => /^[A-Za-z0-9가-힣]{2,12}$/.test(name), [name]);
+    const [nickname, setNickname] = useState<string>("");
+
+    useFocusEffect(
+        useCallback(() => {
+          let alive = true;
+          (async () => {
+            const v = await AsyncStorage.getItem("nickname");
+            if (alive) setNickname(v ?? "");
+          })();
+          return () => { alive = false; };
+        }, [])
+      );
 
     const onContinue = async () => {
         if (!valid || submitting) return;
         setSubmitting(true);
         try {
-            const nickname = name.trim();
-
-            const res = await authedFetch(`${API_BASE}/users/me`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nickname }),
-            });
-
-            const raw = await res.text();
-            if (!res.ok) {
-                throw new Error(raw || `닉네임 저장 실패 (${res.status})`);
-            }
-            // 성공 응답 예: { "user_id": 1, "nickname": "새로운닉네임" }
-            const json = (() => { try { return JSON.parse(raw); } catch { return {}; } })();
-            console.log("닉네임 저장 성공", json);
-            await AsyncStorage.setItem("nickname", json?.nickname ?? nickname);
-
-            router.back();
+          const nickname = name.trim();
+    
+          const res = await authedFetch(`${API_BASE}/users/me`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nickname }),
+          });
+    
+          const raw = await res.text();
+          if (!res.ok) {
+            throw new Error(raw || `닉네임 저장 실패 (${res.status})`);
+          }
+          // 성공 응답 예: { "user_id": 1, "nickname": "새로운닉네임" }
+          const json = (() => { try { return JSON.parse(raw); } catch { return {}; } })();
+          console.log("닉네임 변경 성공", json);
+          await AsyncStorage.setItem("nickname", json?.nickname ?? nickname);
+          
+          router.back();
         } catch (e: any) {
-            alert(e?.message ?? "닉네임 저장 중 문제가 발생했습니다.");
+          alert(e?.message ?? "닉네임 변경 중 문제가 발생했습니다.");
         } finally {
-            setSubmitting(false);
-            router.replace({
-                pathname: "/(initialProfile)",
-                params: { nickname: name },
-            });
+          setSubmitting(false);
+          router.back();
         }
-    };
+      };
 
     return (
         <SafeAreaView style={styles.safe}>
@@ -64,7 +73,7 @@ export default function NicknameScreen() {
                 <View style={styles.container}>
                     <View style={styles.titleContainer}>
                         <Text style={styles.title}>
-                            주전부리에서 사용할{'\n'}닉네임을 입력해주세요.
+                            <Text style={styles.nick}>{nickname}</Text>님의{'\n'}새로운 닉네임을 입력해주세요.
                         </Text>
                     </View>
                     {/* 입력창 */}
@@ -80,7 +89,6 @@ export default function NicknameScreen() {
                             maxLength={12}
                             returnKeyType="done"
                             onSubmitEditing={() => valid && onContinue()}
-                            // Android에서 조합형 한글 입력 시 깜빡임 완화
                             importantForAutofill="no"
                             textContentType="none"
                         />
@@ -95,7 +103,7 @@ export default function NicknameScreen() {
                             onPress={onContinue}
                             activeOpacity={0.8}
                         >
-                            <Text style={styles.continueBtnText}>계속</Text>
+                            <Text style={styles.continueBtnText}>변경</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -119,17 +127,20 @@ const styles = StyleSheet.create({
     },
     title: {
         paddingHorizontal: 10,
-        fontSize: 24,
+        fontSize: 22,
         lineHeight: 30,
         fontWeight: "800",
         color: "#111",
         ...(Platform.OS === "android" ? { includeFontPadding: false } : null),
     },
-    formContainer: {
+    formContainer:{
         paddingHorizontal: 10,
         gap: 6,
         paddingTop: 4
     },
+    nick: {
+        color: "#F59E0B" 
+     },
     input: {
         height: 44,
         borderRadius: 10,

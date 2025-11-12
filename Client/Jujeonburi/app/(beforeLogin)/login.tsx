@@ -1,16 +1,51 @@
 // app/(beforeLogin)/login.tsx
+import { initializeKakaoSDK } from "@react-native-kakao/core";
+import { login as kakaoLogin } from "@react-native-kakao/user";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Alert, Image, Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { router } from "expo-router";
-import { Image, Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { loginWithKakaoIdToken } from "@/app/lib/auth";
+const KAKAO_NATIVE_KEY = process.env.EXPO_PUBLIC_KAKAO_NATIVE_KEY!;
 
 export default function LoginScreen() {
-    // TODO: Kakao SDK 연결 함수
-    //
-    const onKakao = () => {
-        const suggested = ""; // 우선 ''(공백)으로로 설정. 연동 후 위 주석으로 교체
-         router.push({ pathname: "/(beforeLogin)/setNick", params: { suggested } });
-     
-     };
+      const router = useRouter();
+      const [loading, setLoading] = useState(false);
+    
+      // 1) Kakao SDK 초기화
+      useEffect(() => {
+        try {
+          initializeKakaoSDK(KAKAO_NATIVE_KEY);
+        } catch (e) {
+          console.warn("KakaoSDK init failed:", e);
+        }
+      }, []);
+    
+      // 2) 카카오 로그인 핸들러
+      const onKakao = async () => {
+        if (loading) return;
+        try {
+          setLoading(true);
+    
+          // 카카오 로그인 → idToken 획득
+          const { idToken } = await kakaoLogin();
+          if (!idToken) throw new Error("카카오 로그인 토큰을 받지 못했습니다.");
+    
+          // 서버 로그인(신규/기존 통합) → 토큰·user_id 저장은 auth.ts에서 처리
+          const { isNewUser} = await loginWithKakaoIdToken(idToken);
+    
+          // 분기: 신규 → 온보딩, 그 외 → 홈
+          if (isNewUser) {
+            router.replace("/(beforeLogin)/setNick");
+          } else {
+            router.push("../(tabs)/(home)")
+          }
+        } catch (err: any) {
+          Alert.alert("로그인 오류", err?.message ?? "로그인 중 문제가 발생했습니다.");
+        } finally {
+          setLoading(false);
+        }
+      };
 
     return (
         <SafeAreaView style={styles.safe}>
@@ -26,9 +61,12 @@ export default function LoginScreen() {
                 {/* 버튼 영역 */}
                 <View style={styles.buttonContainer}>
                     {/* 카카오 로그인 */}
-                    <TouchableOpacity onPress={onKakao} activeOpacity={0.8}>
-                        <Image source={require("../../assets/images/kakao_login_medium_wide.png")} style={styles.kakaoBtn}
-                            resizeMode="contain" />
+                    <TouchableOpacity onPress={onKakao} activeOpacity={0.8} disabled={loading}>
+                                <Image
+                                  source={require("../../assets/images/kakao_signUp_medium_wide.png")}
+                                  style={[styles.kakaoBtn, loading && { opacity: 0.6 }]}
+                                  resizeMode="contain"
+                                />
                     </TouchableOpacity>
                 </View>
             </View>

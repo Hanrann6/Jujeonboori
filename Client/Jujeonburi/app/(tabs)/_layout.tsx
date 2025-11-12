@@ -6,7 +6,7 @@ import { Tabs } from "expo-router";
 export default function TabLayout() {
 
     return (
-        <Tabs screenOptions={{ headerShown: false, }}>
+        <Tabs initialRouteName="(home)" screenOptions={{ headerShown: false, }}>
             <Tabs.Screen name="(home)"
                 options={{
                     tabBarLabel: () => null,
@@ -18,7 +18,7 @@ export default function TabLayout() {
                         />
                     )
                 }} />
-             <Tabs.Screen name="(activity)"
+            <Tabs.Screen name="(activity)"
                 options={{
                     tabBarLabel: () => null,
                     tabBarIcon: ({ focused }) => (

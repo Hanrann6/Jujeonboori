@@ -19,7 +19,7 @@ export default function ActivityLayout() {
                 options={{
                     headerShown: true,
                     title: "우리 전통주 이야기 ",
-                    headerTitleStyle: { fontSize: 18, fontWeight: "700" },
+                    headerTitleStyle: { fontFamily:"BagelFatOne",fontSize: 22},
                     headerTitleAlign: "center",
                     headerLeft: () => <BackBtn />,
                     headerShadowVisible: true,

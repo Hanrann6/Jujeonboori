@@ -1,136 +1,203 @@
+// app/(tabs)/(home)/search.tsx
+import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Asset } from "expo-asset";
-import * as FileSystem from "expo-file-system";
 import { router, useLocalSearchParams } from "expo-router";
-import Papa from "papaparse";
-import React, { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import csvAsset from "../../../assets/data/trad_alcohol.csv";
+import React, { useEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+} from "react-native";
 
-type Row = {
-    "alcoholName": string;
-    "alcoholType"?: string;
-    "degree": number;
-    "imageURL"?: string;
-    "price"?: string | number;
-    "alcohol_id"?: string;
+/** ===== API ===== */
+const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
+
+type ApiAlcohol = {
+    alcohol_id: number | string;
+    name: string;
+    category?: string;
+    image_url?: string;
 };
+type ApiAlcoholListResp = { alcohols: ApiAlcohol[] };
+
+/** ===== 화면 아이템 ===== */
 type Item = {
-    id: string;
+    id: string;        // alcohol_id 
     name: string;
     nameL: string;
     imageUrl?: string;
-    abv?: number;
-    category?: string
-    priceN?: number;
+    category?: string;
+    liked: boolean;
+    alcoholIndex?: number;
 };
 
-// 전통주 찜 저장키 
-const FAV_KEY = "@fav:alcohol";
+/** ===== 서버 북마크 API ===== */
+async function fetchBookmarks(): Promise<Set<number>> {
+    const res = await authedFetch(`${API_BASE}/bookmark`, { method: "GET" });
+    const raw = await res.text();
+    if (!res.ok) throw new Error(`GET /bookmark 실패(${res.status}) ${raw}`);
+    const arr = JSON.parse(raw) as { alcoholIndex: number }[];
+    return new Set((arr || []).map(x => Number(x.alcoholIndex)));
+}
 
-// 현재 찜 id[] 읽기
-async function getFavIds(): Promise<string[]> {
-    const raw = await AsyncStorage.getItem(FAV_KEY);
+async function addBookmark(alcoholIndex: number) {
+    const res = await authedFetch(`${API_BASE}/bookmark`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ alcoholIndex }),
+    });
+    const raw = await res.text();
+    console.log("[POST /bookmark]", { alcoholIndex }, raw);
+    if (!res.ok) throw new Error(`POST /bookmark 실패(${res.status}) ${raw}`);
+}
+
+async function removeBookmark(alcoholIndex: number) {
+    const res = await authedFetch(`${API_BASE}/bookmark`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ alcoholIndex }),
+    });
+    const raw = await res.text();
+    console.log("[DELETE /bookmark]", { alcoholIndex }, raw);
+    if (!res.ok) throw new Error(`DELETE /bookmark 실패(${res.status}) ${raw}`);
+}
+
+// helpers
+function encodeKeepSlashComma(v: string) {
+    return encodeURIComponent(v).replace(/%2F/gi, "/").replace(/%2C/gi, ",");
+}
+
+function parseCatsParam(v?: string | string[]): string[] {
+    if (!v) return [];
+    const raw = Array.isArray(v) ? v.join(",") : String(v).trim();
     if (!raw) return [];
-    try { return JSON.parse(raw) as string[]; } catch { return []; }
+    // JSON 배열 형태면 그대로 파싱
+    if (raw.startsWith("[") && raw.endsWith("]")) {
+        try {
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr.map(String) : [];
+        } catch { return []; }
+    }
+    // 콤마/공백 분리도 허용
+    return raw.split(/[,\s]+/).map(s => s.trim()).filter(Boolean);
 }
 
-// 찜 토글
-async function toggleFav(id: string): Promise<boolean> {
-    const raw = await AsyncStorage.getItem(FAV_KEY);
-    let list: string[] = [];
-    try { list = raw ? JSON.parse(raw) : []; } catch { }
-    const has = list.includes(id);
-    const next = has ? list.filter(x => x !== id) : [...list, id];
-    await AsyncStorage.setItem(FAV_KEY, JSON.stringify(next));
-    return !has;
-}
-// 초기 찜 확인
-async function isFav(id: string): Promise<boolean> {
-    return (await getFavIds()).includes(id);
-}
-
-function validHttp(u?: string) { return !!u && /^https?:\/\//i.test(u); }
-
-const toPrice = (v: any): number | undefined => {
-    if (v == null) return undefined;
-    const n = Number(String(v).replace(/[^\d]/g, ""));
-    return Number.isFinite(n) ? n : undefined;
-};
-
+/** ===== 컴포넌트 ===== */
 export default function SearchScreen() {
-    //URL 파라미터에서 초기 필터 읽기
-    const { q, min, max, cats } = useLocalSearchParams<{ q?: string; min?: string; max?: string; cats?: string }>();
-    const initCats: string[] = (() => { try { return cats ? JSON.parse(String(cats)) : []; } catch { return []; } })();
-    const [query, setQuery] = useState(q ? String(q) : "");
+    const { q, min, max, cats, kws } = useLocalSearchParams<{ q?: string; min?: string; max?: string; cats?: string, kws?: string }>();
+
     const [minPrice, setMinPrice] = useState<number | undefined>(min ? Number(min) : undefined);
     const [maxPrice, setMaxPrice] = useState<number | undefined>(max ? Number(max) : undefined);
-    const [selCats, setSelCats] = useState<string[]>(initCats);
+    const [selCats, setSelCats] = useState<string[]>(parseCatsParam(cats));
+    const [selKws, setSelKws] = useState<string[]>(parseCatsParam(kws));
+    const [query, setQuery] = useState(q ? String(q) : "");
     const [loading, setLoading] = useState(true);
     const [list, setList] = useState<Item[]>([]);
+    const [error, setError] = useState<string | null>(null);
 
-    // CSV 로딩
+    async function fetchListFromServer(
+        { q, selCats, selKws, minPrice, maxPrice }:
+            { q?: string; selCats: string[]; selKws: string[]; minPrice?: number; maxPrice?: number }
+    ) {
+        const hasQ = !!(q && q.trim());
+        const hasCat = selCats && selCats.length > 0;
+        const hasKws = selKws && selKws.length > 0;
+        const hasMin = typeof minPrice === "number" && Number.isFinite(minPrice) && minPrice > 0;
+        const hasMax = typeof maxPrice === "number" && Number.isFinite(maxPrice) && maxPrice > 0;
+
+        if (!hasQ && !hasCat && !hasKws && !hasMin && !hasMax) {
+            throw new Error("적어도 하나의 검색 조건이 필요합니다. (검색어/카테고리/가격)");
+        }
+
+        const params = new URLSearchParams();
+
+        if (hasQ) params.append("search", q!.trim());
+        if (hasCat) selCats.forEach(c => params.append("category", c));
+        if (hasKws) selKws.forEach(k => params.append("keywords", k));
+        if (hasMin) params.append("price_min", String(minPrice));
+        if (hasMax) params.append("price_max", String(maxPrice));
+
+        const url = `${API_BASE}/alcohols?${params.toString()}`;
+        console.log("[GET]", url);
+
+        const res = await authedFetch(url, { method: "GET" });
+        const raw = await res.text();
+        if (!res.ok) throw new Error(`GET /alcohols 실패(${res.status}) ${raw}`);
+
+        const data = JSON.parse(raw) as ApiAlcoholListResp;
+        console.log("필터링 응답", data);
+        return (data.alcohols || []).map(a => ({
+            id: String(a.alcohol_id),
+            name: a.name,
+            nameL: a.name.toLowerCase(),
+            imageUrl: a.image_url,
+            category: a.category,
+        })) as Item[];
+    }
+
+    // 검색어 초기화
     useEffect(() => {
+        setQuery(q ? String(q) : "");
+        setMinPrice(min !== undefined && min !== "" ? Number(min) : undefined);
+        setMaxPrice(max !== undefined && max !== "" ? Number(max) : undefined);
+        setSelCats(parseCatsParam(cats));
+        setSelKws(parseCatsParam(kws));
+    }, [q, min, max, cats, kws]);
+
+    // 목록 로딩 (API)
+    useEffect(() => {
+        let alive = true;
         (async () => {
-            setLoading(true);
-            const asset = Asset.fromModule(csvAsset);
-            await asset.downloadAsync();
-            const csv = await FileSystem.readAsStringAsync(asset.localUri!);
-            const parsed = Papa.parse<Row>(csv, { header: true, dynamicTyping: true, skipEmptyLines: true });
+            try {
+                setLoading(true);
+                setError(null);
 
-            const items: Item[] = [];
-            for (const r of parsed.data) {
-                const raw = r?.["alcoholName"];
-                if (!raw) continue;
-                const name = String(raw).trim();
-                const id = r?.["alcohol_id"] != null ? String(r["alcohol_id"]) : encodeURIComponent(name);
-                const img = (r["imageURL"] ?? "").toString().trim();
-                items.push({
-                    id,
-                    name,
-                    nameL: name.toLowerCase(),
-                    imageUrl: validHttp(img) ? img : undefined,
-                    abv: Number(r["degree"]) || undefined,
-                    category: r["alcoholType"] || undefined,
-                    priceN: toPrice(r["price"]),
+                // 1) 검색 결과 호출
+                const items = await fetchListFromServer({
+                    q: q ? String(q) : "",
+                    selCats: parseCatsParam(cats),
+                    selKws: parseCatsParam(kws),
+                    minPrice: min !== undefined && min !== "" ? Number(min) : undefined,
+                    maxPrice: max !== undefined && max !== "" ? Number(max) : undefined,
                 });
+
+                // 2) 서버 북마크 Set
+                const bookmarked = await fetchBookmarks();
+
+                // 3) 검색 결과 ↔ 북마크 매핑 (alcohol_id를 index로 변환해 비교)
+                const joined: Item[] = items.map((a) => {
+                    const idx = Number(a.id); // a.id는 alcohol_id를 string으로 저장했음
+                    const alcoholIndex = Number.isFinite(idx) ? idx : undefined;
+                    const liked = alcoholIndex != null ? bookmarked.has(alcoholIndex) : false;
+                    return { ...a, liked, alcoholIndex };
+                });
+
+                if (alive) setList(joined);
+            } catch (e: any) {
+                if (alive) setError(e?.message ?? "전통주 목록을 불러오지 못했어요.");
+            } finally {
+                if (alive) setLoading(false);
             }
-            setList(items);
-            setLoading(false);
         })();
-    }, []);
+        return () => { alive = false; };
+    }, [q, min, max, cats, kws]);
 
-    // 필터링 검색 
-    const results = useMemo(() => {
-        const ql = (query || "").trim().toLowerCase();
 
-        return list.filter(it => {
-            //1) 이름으로 검색
-            if (ql && !it.nameL.includes(ql)) return false;
-            // 2) 주종으로 검색: 선택된 주종이 있을 때만
-            if (selCats.length > 0) {
-                if (!it.category || !selCats.includes(it.category)) return false;
-            }
-            // 3) 가격 필터: min/max 중 하나라도 설정됐을 때만 체크
-            if (minPrice != null || maxPrice != null) {
-                const p = it.priceN ?? null;          // CSV에서 숫자 가격을 파싱해 둔 필드 (없으면 null)
-                if (p == null) return false;          // 가격 없는 항목은 제외하고 싶다면
-                if (minPrice != null && p < minPrice) return false;
-                if (maxPrice != null && p > maxPrice) return false;
-            }
-            return true;
-        });
-    }, [list, query, selCats, minPrice, maxPrice]);
+    // 클라이언트 필터링 (이름, 카테고리)
+    const results = list;
 
     const submit = () => {
-        const qTrim = query.trim();
-        // 파라미터 동기화(뒤로 가기 시 상태 보존)
         router.setParams({
-            q: qTrim,
-            min: minPrice != null ? String(minPrice) : "",
-            max: maxPrice != null ? String(maxPrice) : "",
+            q: (query || "").trim(),
+            min: typeof minPrice === "number" && minPrice > 0 ? String(minPrice) : "",
+            max: typeof maxPrice === "number" && maxPrice > 0 ? String(maxPrice) : "",
             cats: JSON.stringify(selCats),
+            kws: JSON.stringify(selKws),
         });
     };
 
@@ -142,10 +209,17 @@ export default function SearchScreen() {
             </View>
         );
     }
+    if (error) {
+        return (
+            <View style={styles.center}>
+                <Text style={{ color: "red", paddingHorizontal: 16, textAlign: "center" }}>{error}</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
-            {/* 상단 검색/필터 입력줄: 간단 버전 */}
+            {/* 검색 입력 */}
             <View style={styles.searchRow}>
                 <View style={styles.searchBox}>
                     <Ionicons name="search" size={20} color="#6B7280" />
@@ -158,10 +232,9 @@ export default function SearchScreen() {
                         returnKeyType="search"
                         onSubmitEditing={submit}
                     />
-                    <Ionicons name="close-circle-outline"
-                        size={20}
-                        color="#6B7280"
-                        onPress={() => setQuery("")} />
+                    {!!query && (
+                        <Ionicons name="close-circle-outline" size={20} color="#6B7280" onPress={() => setQuery("")} />
+                    )}
                 </View>
             </View>
 
@@ -171,7 +244,6 @@ export default function SearchScreen() {
                 </Text>
             </View>
 
-            {/* 결과 목록 */}
             {results.length === 0 ? (
                 <View style={styles.center}><Text style={{ color: "#6B7280" }}>검색 결과가 없어요.</Text></View>
             ) : (
@@ -181,67 +253,65 @@ export default function SearchScreen() {
                     numColumns={2}
                     columnWrapperStyle={{ paddingHorizontal: 45, justifyContent: "space-between", marginBottom: 12 }}
                     contentContainerStyle={{ paddingBottom: 24, gap: 8 }}
-                    renderItem={({ item }) => <ResultCard item={item} />}
+                    renderItem={({ item, index }) => {
+                        const onToggle = async () => {
+                            if (item.alcoholIndex == null) return; // index 없는 항목은 토글 불가(명세 기준)
+
+                            const willLike = !item.liked;
+                            try {
+                                if (willLike) {
+                                    await addBookmark(item.alcoholIndex);
+                                } else {
+                                    await removeBookmark(item.alcoholIndex);
+                                }
+                                // 화면 반영
+                                setList(prev =>
+                                    prev.map((x, i) => (i === index ? { ...x, liked: willLike } : x))
+                                );
+                            } catch (e) {
+                                console.log("bookmark toggle failed:", e);
+                            }
+                        };
+
+                        return <ResultCard item={item} onToggle={onToggle} />;
+                    }}
                 />
             )}
         </View>
     );
 }
 
-// --- 파일 하단에 추가 ---
-function ResultCard({ item }: { item: Item }) {
-    const [liked, setLiked] = React.useState(false);
-
-    // 마운트 시 초기 찜 여부 로드
-    React.useEffect(() => {
-        let alive = true;
-        (async () => {
-            const v = await isFav(item.id);
-            if (alive) setLiked(v);
-        })();
-        return () => { alive = false; };
-    }, [item.id]);
-
+/** ===== 카드 ===== */
+function ResultCard({ item, onToggle }: { item: Item; onToggle: () => void }) {
     return (
         <Pressable
             style={styles.card}
-            onPress={() => router.push({ pathname: "/(tabs)/(home)/[id]", params: { id: item.id, alcoholName: item.name } })}
+            onPress={() => router.push({ pathname: "/(tabs)/(home)/[id]", params: { id: item.id } })}
             android_ripple={{ color: "#F3F4F6" }}
         >
             <Image
                 source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/images/bottle_placeholder.png")}
                 style={styles.thumb}
-                resizeMode="contain"
+                resizeMode="cover"
             />
 
-            {/* 우상단 하트 */}
             <Pressable
-                onPress={async () => {
-                    const next = await toggleFav(item.id);
-                    setLiked(next);
-                }}
+                onPress={onToggle}
                 hitSlop={12}
                 style={styles.heart}
-                accessibilityLabel={liked ? "찜 취소" : "찜하기"}
+                accessibilityLabel={item.liked ? "찜 취소" : "찜하기"}
             >
-                <Ionicons
-                    name={liked ? "heart" : "heart-outline"}
-                    size={20}
-                    color={liked ? "#F59E0B" : "#9CA3AF"}
-                />
+                <Ionicons name={item.liked ? "heart" : "heart-outline"} size={20} color={item.liked ? "#F59E0B" : "#9CA3AF"} />
             </Pressable>
 
             <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
-            {(item.category || item.abv) && (
-                <Text style={styles.meta}>
-                    {item.category ?? ""}{item.category && item.abv ? " · " : ""}{item.abv ? `${item.abv}%` : ""}
-                </Text>
-            )}
+            {!!item.category && <Text style={styles.meta}>{item.category}</Text>}
         </Pressable>
     );
 }
 
 
+/** ===== 스타일 ===== */
 const styles = StyleSheet.create({
     center: { flex: 1, alignItems: "center", justifyContent: "center" },
     searchRow: { flexDirection: "row", alignItems: "center", marginHorizontal: 8, padding: 20, paddingBottom: 8 },
@@ -274,7 +344,7 @@ const styles = StyleSheet.create({
         alignItems: "center", justifyContent: "center",
         elevation: 2,
     },
-    thumb: { width: 90, height: 130, marginTop: 4 },
+    thumb: { width: 120, height: 160, borderRadius: 8, backgroundColor: "#F3F4F6" },
     name: { textAlign: "center", marginTop: 8, color: "#111827", fontWeight: "700" },
     meta: { color: "#6B7280", fontSize: 12, marginTop: 2 },
 });
