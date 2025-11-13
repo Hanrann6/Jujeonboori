@@ -2,6 +2,7 @@ import fs from "fs";
 import csv from "csv-parser";
 import path from "path";
 import { fileURLToPath } from "url";
+import { attachBookmarkStatus } from "../../../bookmark/service/bookmark.service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,22 +33,30 @@ export function loadAlcoholData() {
 }
 
 // 조건에 맞는 전통주 랜덤 10개 반환
-export function getAlcoholsUnderPrice(limitPrice = 30000, count = 10) {
+export async function getAlcoholsUnderPrice(userId, limitPrice = 30000, count = 10) {
   const filtered = alcohols.filter((a) => a.priceValue <= limitPrice);
-
   // Fisher-Yates shuffle 후 count 개수 추출
   for (let i = filtered.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
   }
 
-  return filtered.slice(0, count).map((a) => ({
+  // DB 조회 전 기본 정보만 맵핑 (isBookmarked 없음)
+  const randomAlcohols = filtered.slice(0, count).map((a) => ({
     alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
     alcoholType: a.alcoholType,
     imageUrl: a.imageUrl,
   }));
+
+  // 북마크 서비스 호출 -> isBookmarked
+  const resultsWithBookmarks = await attachBookmarkStatus(
+    userId,
+    randomAlcohols
+  );
+
+  return resultsWithBookmarks;
 }
 
 export function getAlcoholsData() {

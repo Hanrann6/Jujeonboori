@@ -89,3 +89,59 @@ export const removeBookmark = async (userId, alcoholIndex) => {
   // 성공
   return deleted;
 };
+
+
+// 특정 전통주의 북마크 여부 반환
+export const attachBookmarkStatus = async (userId, alcoholList) => {
+  // 주류 리스트가 비어있으면 DB 조회 없이 빈 배열 반환
+  if (!userId || !alcoholList || alcoholList.length === 0) {
+    return alcoholList || [];
+  }
+
+  // 주류 리스트에서 index값 목록을 추출
+  const alcoholIndexes = alcoholList.map((a) => a.alcoholId);
+
+  // index로 DB에서 Alcohol의 실제 '_id' 조회
+  const alcoholDocs = await Alcohol.find({
+    index: { $in: alcoholIndexes },
+  })
+    .select("_id index")
+    .lean();
+
+  // index -> MongoDB _id 맵 생성
+  const indexToMongoIdMap = new Map(
+    alcoholDocs.map((doc) => [doc.index, doc._id.toString()])
+  );
+
+  // MongoDB _id 목록으로 Bookmark 조회
+  const alcoholMongoIds = Array.from(indexToMongoIdMap.values());
+
+  // userId가 있는 경우에만 북마크 조회
+  let bookmarkedIdSet = new Set(); // 기본값
+  if (userId) {
+    const userBookmarks = await Bookmark.find({
+      userId: userId,
+      alcoholId: { $in: alcoholMongoIds },
+    })
+      .select("alcoholId")
+      .lean();
+
+
+    // 북마크된 MongoDB _id 목록을 Set으로 생성
+    bookmarkedIdSet = new Set(userBookmarks.map((b) => b.alcoholId.toString()));
+  }
+
+  // 원본 리스트(alcoholList)에 isBookmarked 필드 추가
+  return alcoholList.map((alcohol) => {
+    // 현재 alcohol의 index(alcoholId)로 MongoDB _id 찾기
+    const mongoId = indexToMongoIdMap.get(alcohol.alcoholId);
+
+    // 해당 _id가 북마크 Set에 있는지 확인
+    const isBookmarked = mongoId ? bookmarkedIdSet.has(mongoId) : false;
+
+    return {
+      ...alcohol, // 원본 alcohol 객체
+      isBookmarked: isBookmarked,
+    };
+  });
+};

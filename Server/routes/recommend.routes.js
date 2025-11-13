@@ -6,8 +6,12 @@ import authMiddleware from "../auth/middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.use("/price", priceRecommendRoutes);
-router.use("/weather", weatherRecommendRouter);
+router.use("/price", authMiddleware.verifyAccessToken, priceRecommendRoutes);
+router.use(
+  "/weather",
+  authMiddleware.verifyAccessToken,
+  weatherRecommendRouter
+);
 router.get("/",  authMiddleware.verifyAccessToken, recommendController);
 
 export default router;
