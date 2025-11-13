@@ -8,14 +8,11 @@ import ocrRoutes from "./routes/ocr.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import alcoholRoutes from "./routes/alcohol.routes.js";
-import priceRecommendRoutes from "./routes/price-recommend.routes.js"
-import weatherRecommendRouter from "./routes/weather-recommend.routes.js";
 import { loadAlcoholData } from "./recommend/price-recommend/service/price-recommend.service.js"
 import festivalRoutes from "./routes/festival.routes.js";
 import { getWeatherData } from './weather-api/weatherService.js';
 import preferencesRouter from "./routes/preference.routes.js";
 import chatbotRouter from "./routes/chatbot.routes.js"
-//import { recommendItemsBasedOnWeather } from './recommend/recombee/recombeeWeatherTest.js';
 import { askGPT, loadCSVData } from "./chatbot/chat.js";
 
 const app = express();

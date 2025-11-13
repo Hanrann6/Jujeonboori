@@ -3,6 +3,7 @@ import Bookmark from '../../bookmark/model/bookmark.model.js';
 import Review from '../../review/model/review.model.js';
 import RefreshToken from '../../auth/model/refreshToken.model.js';
 import ChatLog from '../../chatbot/model/chatbot.model.js';
+import { deletePreferenceCsv } from "../../pref-test/service/s3.service.js";
 import { S3Client, DeleteObjectCommand} from '@aws-sdk/client-s3';
 
 // 내 프로필 조회
@@ -219,20 +220,24 @@ const extractS3KeyFromUrl = (s3Url) => {
 // 사용자 관련 데이터 정리
 const cleanupUserData = async (userId) => {
     try {
-        // 북마크 데이터 정리
-        const deletedBookmarks = await Bookmark.deleteMany({ userId });
+      // 북마크 데이터 정리
+      const deletedBookmarks = await Bookmark.deleteMany({ userId });
 
-        // 챗봇 로그 데이터 정리
-        const deletedChatLogs = await ChatLog.deleteMany({ userId });
+      // 챗봇 로그 데이터 정리
+      const deletedChatLogs = await ChatLog.deleteMany({ userId });
 
-        // 리뷰 데이터 정리
-        const deletedReviews = await Review.deleteMany({ userId });
+      // 리뷰 데이터 정리
+      const deletedReviews = await Review.deleteMany({ userId });
 
-        // Refresh Token 정리
-        const deletedTokens = await RefreshToken.deleteMany({ user_id: userId });
-        
-        // S3에 업로드된 사용자 이미지 삭제
-        await deleteUserImagesFromS3(userId);        
+      // Refresh Token 정리
+      const deletedTokens = await RefreshToken.deleteMany({ user_id: userId });
+
+      // S3에 업로드된 사용자 이미지 삭제
+      await deleteUserImagesFromS3(userId);
+
+      // S3 선호도 CSV에서 해당 유저 row 삭제
+      await deletePreferenceCsv(userId);
+      
     } catch (error) {
         console.error('사용자 데이터 정리 중 오류:', error);
         // 데이터 정리 실패해도 회원탈퇴는 진행
