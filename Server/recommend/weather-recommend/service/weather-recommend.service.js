@@ -1,9 +1,8 @@
 // price-recommend.service.js 에서 로드된 alcohols 배열을 import
 import { getAlcoholsData } from "../../price-recommend/service/price-recommend.service.js";
-
+import { attachBookmarkStatus } from "../../../bookmark/service/bookmark.service.js";
 // 날씨 기반 추천 함수
-export async function getAlcoholsByWeather(temperature, precipitationType, count = 10) {
-
+export async function getAlcoholsByWeather(userId, temperature, precipitationType, count = 10) {
   const alcohols = getAlcoholsData(); // 공용 alcohols 배열 가져오기
 
   let adjusted = alcohols.map((a) => ({
@@ -53,11 +52,20 @@ export async function getAlcoholsByWeather(temperature, precipitationType, count
     [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
   }
 
-  return filtered.slice(0, count).map((a) => ({
+  // DB 조회 전 기본 정보만 맵핑 (isBookmarked 없음)
+  const randomAlcohols = filtered.slice(0, count).map((a) => ({
     alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
     alcoholType: a.alcoholType,
     imageUrl: a.imageUrl,
   }));
+
+  // 북마크 서비스 호출 -> isBookmarked
+  const resultsWithBookmarks = await attachBookmarkStatus(
+    userId,
+    randomAlcohols
+  );
+
+  return resultsWithBookmarks;
 }

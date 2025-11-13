@@ -5,6 +5,7 @@ export async function recommendByWeather(req, res) {
   try {
     // temperature, precipitationType을 받음
     const { temperature, precipitationType } = req.query;
+    const { userId } = req.user;
 
     // 파라미터 유효성 검사
     if (temperature === undefined || precipitationType === undefined) {
@@ -25,7 +26,7 @@ export async function recommendByWeather(req, res) {
     }
 
     // precipitationType은 문자열 0 또는 1로 그대로 전달
-    const result = await getAlcoholsByWeather(temp, precipitationType);
+    const result = await getAlcoholsByWeather(userId, temp, precipitationType);
 
     return res.json(result);
   } catch (error) {

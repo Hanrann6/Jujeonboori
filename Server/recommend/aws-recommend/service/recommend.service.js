@@ -1,6 +1,7 @@
 import { GetRecommendationsCommand } from "@aws-sdk/client-personalize-runtime";
 import { personalizeClient } from "../../../config/personalize.js";
 import Alcohol from "../../../alcohol/model/alcohol.model.js"
+import { attachBookmarkStatus } from "../../../bookmark/service/bookmark.service.js";
 
 export const getRecommendations = async (userId, numResults = 10) => {
   const command = new GetRecommendationsCommand({
@@ -25,7 +26,7 @@ export const getRecommendations = async (userId, numResults = 10) => {
     );
     const indexIds = [];
     const objectIds = [];
-    console.log(recommendedItemIds)
+    console.log(recommendedItemIds);
 
     recommendedItemIds.forEach((id) => {
       // ID가 숫자 형태인지 확인 (예: "1", "123")
@@ -62,7 +63,15 @@ export const getRecommendations = async (userId, numResults = 10) => {
         };
       })
       .filter((item) => item !== null); // null인 경우 최종 결과에서 제외
-    return orderedAndFormattedResults;
+
+    // 북마크 서비스 호출
+    const resultsWithBookmarks = await attachBookmarkStatus(
+      userId,
+      orderedAndFormattedResults
+    );
+
+    return resultsWithBookmarks;
+    
   } catch (error) {
     console.error("추천을 받아오는 중 에러가 발생", error);
     throw error;
