@@ -45,6 +45,7 @@ export function getAlcoholsUnderPrice(limitPrice = 30000, count = 6) {
     alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
+    alcoholType: a.alcoholType,
     imageUrl: a.imageUrl,
   }));
 }
