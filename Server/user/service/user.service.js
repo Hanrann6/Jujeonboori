@@ -2,6 +2,7 @@ import User from '../model/user.model.js';
 import Bookmark from '../../bookmark/model/bookmark.model.js';
 import Review from '../../review/model/review.model.js';
 import RefreshToken from '../../auth/model/refreshToken.model.js';
+import ChatLog from '../../chatbot/model/chatbot.model.js';
 import { S3Client, DeleteObjectCommand} from '@aws-sdk/client-s3';
 
 // 내 프로필 조회
@@ -220,6 +221,9 @@ const cleanupUserData = async (userId) => {
     try {
         // 북마크 데이터 정리
         const deletedBookmarks = await Bookmark.deleteMany({ userId });
+
+        // 챗봇 로그 데이터 정리
+        const deletedChatLogs = await ChatLog.deleteMany({ userId });
 
         // 리뷰 데이터 정리
         const deletedReviews = await Review.deleteMany({ userId });
