@@ -8,4 +8,5 @@ const chatLogSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model("ChatLog", chatLogSchema);
+const ChatLog = mongoose.model("ChatLog", chatLogSchema);
+export default ChatLog;
