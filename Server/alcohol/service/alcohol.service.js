@@ -171,8 +171,8 @@ const buildSearchQuery = (filters) => {
 
     // 3. 키워드 목록 중 선택해서 검색 (다중 선택)
     if (filters.keywords && Array.isArray(filters.keywords) && filters.keywords.length > 0) {
-        // query.keywords = { $in: [filters.keywords] };
-        query.keywords = { $all: filters.keywords };
+        query.keywords = { $in: filters.keywords };
+        // query.keywords = { $all: filters.keywords };
     }
 
     return query;

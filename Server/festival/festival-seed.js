@@ -5,6 +5,8 @@ import Festival from './model/festival.model.js';
 
 dotenv.config();
 
+const DEFAULT_IMAGE = "https://i.imgur.com/wlm1YyS.jpeg";
+
 const festivalData = [
     // 3월 (2개)
     {
@@ -186,7 +188,10 @@ const festivalData = [
         official_url: "https://busan.siwse.com",
         image_url: "https://busan.siwse.com/img/en/busan_landing_visual_2025_m01.jpg"
     }
-];
+].map(festival => ({
+    ...festival,
+    image_url: festival.image_url || DEFAULT_IMAGE
+}));
 
 // DB 연결 & 삽입
 async function seedFestivals() {
