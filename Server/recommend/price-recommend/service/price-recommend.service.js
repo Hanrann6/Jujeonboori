@@ -31,8 +31,8 @@ export function loadAlcoholData() {
   });
 }
 
-// 조건에 맞는 전통주 랜덤 6개 반환
-export function getAlcoholsUnderPrice(limitPrice = 30000, count = 6) {
+// 조건에 맞는 전통주 랜덤 10개 반환
+export function getAlcoholsUnderPrice(limitPrice = 30000, count = 10) {
   const filtered = alcohols.filter((a) => a.priceValue <= limitPrice);
 
   // Fisher-Yates shuffle 후 count 개수 추출
@@ -45,6 +45,7 @@ export function getAlcoholsUnderPrice(limitPrice = 30000, count = 6) {
     alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
+    alcoholType: a.alcoholType,
     imageUrl: a.imageUrl,
   }));
 }

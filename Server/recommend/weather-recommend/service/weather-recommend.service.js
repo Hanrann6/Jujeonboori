@@ -2,7 +2,7 @@
 import { getAlcoholsData } from "../../price-recommend/service/price-recommend.service.js";
 
 // 날씨 기반 추천 함수
-export async function getAlcoholsByWeather(temperature, precipitationType, count = 6) {
+export async function getAlcoholsByWeather(temperature, precipitationType, count = 10) {
 
   const alcohols = getAlcoholsData(); // 공용 alcohols 배열 가져오기
 
@@ -57,6 +57,7 @@ export async function getAlcoholsByWeather(temperature, precipitationType, count
     alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
+    alcoholType: a.alcoholType,
     imageUrl: a.imageUrl,
   }));
 }
