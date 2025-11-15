@@ -49,9 +49,10 @@ router.get('/',
     alcoholController.getAlcoholList
 );
 
-router.get('/:alcohol_id',
+// 특정 전통주 리뷰 목록 조회
+router.get('/:alcohol_id/reviews',
     authMiddleware.verifyAccessToken,
-    alcoholController.getAlcoholDetail
+    reviewController.getAlcoholReviews
 );
 
 // 리뷰 작성
@@ -61,10 +62,9 @@ router.post('/:alcohol_id/reviews',
     reviewController.createReview
 );
 
-// 특정 전통주 리뷰 목록 조회
-router.get('/:alcohol_id/reviews',
+router.get('/:alcohol_id',
     authMiddleware.verifyAccessToken,
-    reviewController.getAlcoholReviews
+    alcoholController.getAlcoholDetail
 );
 
 router.use((error, req, res, next) => {
@@ -102,12 +102,5 @@ router.use((error, req, res, next) => {
 
     next(error);
 });
-
-// alcoholId 파라미터 유효성 검사
-router.get(
-    '/:alcoholId', 
-    validateObjectId('alcoholId'),
-    alcoholController.getAlcoholDetail
-);
 
 export default router;
