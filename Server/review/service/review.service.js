@@ -96,7 +96,6 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
             throw error;
         }
 
-        console.error('리뷰 작성 서비스 오류:', error);
         const serviceError = new Error('리뷰 작성 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -104,7 +103,7 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
 };
 
 // 특정 전통주 리뷰 목록 조회 서비스
-const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
+const getAlcoholReviews = async (alcoholId) => {
     try {
         if (!isValidObjectId(alcoholId)) {
             const error = new Error('유효하지 않은 전통주 ID입니다.');
@@ -119,21 +118,10 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
             throw error;
         }
 
-        const pageNumber = Math.max(1, parseInt(page));
-        const pageSize = Math.max(1, Math.min(50, parseInt(size)));
-        const skip = (pageNumber - 1) * pageSize;
-
-        const [reviews, totalElements] = await Promise.all([
-            Review.find({ alcohol: alcoholId })
-                .populate('author', 'nickname')
-                .sort({ createdAt: -1 }) // 최신순
-                .skip(skip)
-                .limit(pageSize)
-                .lean(),
-            Review.countDocuments({ alcohol: alcoholId })
-        ]);
-
-        const totalPages = Math.ceil(totalElements / pageSize);
+        const reviews = await Review.find({ alcohol: alcoholId })
+            .populate('author', 'nickname')
+            .sort({ createdAt: -1 })
+            .lean();
 
         const reviewList = reviews.map(review => ({
             review_id: review._id,
@@ -149,12 +137,7 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
 
         return {
             reviews: reviewList,
-            pageInfo: {
-                page: pageNumber,
-                size: pageSize,
-                totalElements,
-                totalPages
-            }
+            total: reviewList.length
         };
 
     } catch (error) {
@@ -162,7 +145,6 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
             throw error;
         }
 
-        console.error('전통주 리뷰 목록 조회 오류:', error);
         const serviceError = new Error('리뷰 목록 조회 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -170,7 +152,7 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
 };
 
 // 내 리뷰 목록 조회 서비스
-const getMyReviews = async (userInfo, page = 1, size = 10) => {
+const getMyReviews = async (userInfo) => {
     try {
         const user = await User.findOne({
             provider: userInfo.provider,
@@ -182,21 +164,10 @@ const getMyReviews = async (userInfo, page = 1, size = 10) => {
             throw error;
         }
 
-        const pageNumber = Math.max(1, parseInt(page));
-        const pageSize = Math.max(1, Math.min(50, parseInt(size)));
-        const skip = (pageNumber - 1) * pageSize;
-
-        const [reviews, totalElements] = await Promise.all([
-            Review.find({ author: user._id })
-                .populate('alcohol', 'name')
-                .sort({ createdAt: -1 }) // 최신순
-                .skip(skip)
-                .limit(pageSize)
-                .lean(),
-            Review.countDocuments({ author: user._id })
-        ]);
-
-        const totalPages = Math.ceil(totalElements / pageSize);
+        const reviews = await Review.find({ author: user._id })
+            .populate('alcohol', 'name')
+            .sort({ createdAt: -1 })
+            .lean();
 
         const reviewList = reviews.map(review => ({
             review_id: review._id,
@@ -212,20 +183,13 @@ const getMyReviews = async (userInfo, page = 1, size = 10) => {
 
         return {
             reviews: reviewList,
-            page_info: {
-                page: pageNumber,
-                size: pageSize,
-                total_elements: totalElements,
-                total_pages: totalPages
-            }
+            total: reviewList.length
         };
 
     } catch (error) {
         if (error.statusCode) {
             throw error;
         }
-
-        console.error('내 리뷰 목록 조회 오류:', error);
         const serviceError = new Error('리뷰 목록 조회 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -300,8 +264,6 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
         if (error.statusCode) {
             throw error;
         }
-
-        console.error('리뷰 수정 서비스 오류:', error);
         const serviceError = new Error('리뷰 수정 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -321,8 +283,6 @@ const deleteReview = async (userInfo, reviewId) => {
         if (error.statusCode) {
             throw error;
         }
-
-        console.error('리뷰 삭제 서비스 오류:', error);
         const serviceError = new Error('리뷰 삭제 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -368,7 +328,6 @@ const processImageUpload = async (file) => {
 
         return file.location;
     } catch (error) {
-        console.error('S3 업로드 오류:', error);
         const uploadError = new Error('이미지 업로드에 실패했습니다.');
         uploadError.statusCode = 500;
         throw uploadError;

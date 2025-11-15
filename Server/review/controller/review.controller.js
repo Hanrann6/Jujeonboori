@@ -19,18 +19,11 @@ const createReview = async (req, res) => {
             const rating = parseInt(req.body.rating);
             
             await sendReviewEvent(userId, alcohol_id.toString(), rating);
-            
-            console.log(`Personalize 리뷰 이벤트 전송 완료: 사용자 ${userId}, 전통주 ${alcohol_id}, 평점 ${rating}`);
-        } catch (personalizeError) {
-            // Personalize 이벤트 실패해도 리뷰 작성은 정상 처리
-            console.error('Personalize 리뷰 이벤트 전송 실패:', personalizeError);
-        }
+        } catch (personalizeError) {}
 
         res.status(200).json(newReview);
 
     } catch (error) {
-        console.error('리뷰 작성 오류:', error);
-
         if (error.statusCode) {
             let errorType;
             if (error.statusCode === 404) {
@@ -74,15 +67,11 @@ const createReview = async (req, res) => {
 const getAlcoholReviews = async (req, res) => {
     try {
         const { alcohol_id } = req.params;
-        const { page, size } = req.query;
-
-        const reviewList = await reviewService.getAlcoholReviews(alcohol_id, page, size);
+        const reviewList = await reviewService.getAlcoholReviews(alcohol_id);
 
         res.status(200).json(reviewList);
 
     } catch (error) {
-        console.error('전통주 리뷰 목록 조회 오류:', error);
-
         if (error.statusCode) {
             let errorType;
             if (error.statusCode === 404) {
@@ -116,15 +105,11 @@ const getAlcoholReviews = async (req, res) => {
 // 내 리뷰 목록 조회
 const getMyReviews = async (req, res) => {
     try {
-        const { page, size } = req.query;
-
-        const reviewList = await reviewService.getMyReviews(req.user, page, size);
+        const reviewList = await reviewService.getMyReviews(req.user);
 
         res.status(200).json(reviewList);
 
     } catch (error) {
-        console.error('내 리뷰 목록 조회 오류:', error);
-
         if (error.statusCode) {
             let errorType;
             if (error.statusCode === 404) {
@@ -170,8 +155,6 @@ const updateReview = async (req, res) => {
         res.status(200).json(updatedReview);
 
     } catch (error) {
-        console.error('리뷰 수정 오류:', error);
-
         if (error.statusCode) {
             let errorType;
             if (error.statusCode === 404) {
@@ -214,8 +197,6 @@ const deleteReview = async (req, res) => {
         res.status(204).send();
 
     } catch (error) {
-        console.error('리뷰 삭제 오류:', error);
-
         if (error.statusCode) {
             let errorType;
             if (error.statusCode === 404) {
