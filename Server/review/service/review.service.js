@@ -4,12 +4,6 @@ import Alcohol from '../../alcohol/model/alcohol.model.js';
 
 const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
     try {
-        if (!isValidObjectId(alcoholId)) {
-            const error = new Error('유효하지 않은 전통주 ID입니다.');
-            error.statusCode = 400;
-            throw error;
-        }
-
         const alcohol = await Alcohol.findById(alcoholId);
         if (!alcohol) {
             const error = new Error('해당 ID의 전통주를 찾을 수 없습니다.');
@@ -105,12 +99,6 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
 // 특정 전통주 리뷰 목록 조회 서비스
 const getAlcoholReviews = async (alcoholId) => {
     try {
-        if (!isValidObjectId(alcoholId)) {
-            const error = new Error('유효하지 않은 전통주 ID입니다.');
-            error.statusCode = 400;
-            throw error;
-        }
-
         const alcohol = await Alcohol.findById(alcoholId);
         if (!alcohol) {
             const error = new Error('해당 ID의 전통주를 찾을 수 없습니다.');
@@ -291,12 +279,6 @@ const deleteReview = async (userInfo, reviewId) => {
 
 // 리뷰 존재 및 권한 확인
 const getReviewWithPermissionCheck = async (userInfo, reviewId) => {
-    if (!isValidObjectId(reviewId)) {
-        const error = new Error('유효하지 않은 리뷰 ID입니다.');
-        error.statusCode = 400;
-        throw error;
-    }
-
     const review = await Review.findById(reviewId).populate('author');
     if (!review) {
         const error = new Error('해당 ID의 리뷰를 찾을 수 없습니다.');
@@ -332,10 +314,6 @@ const processImageUpload = async (file) => {
         uploadError.statusCode = 500;
         throw uploadError;
     }
-};
-
-const isValidObjectId = (id) => {
-    return /^[0-9a-fA-F]{24}$/.test(id);
 };
 
 export default {
