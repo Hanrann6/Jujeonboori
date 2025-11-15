@@ -41,16 +41,10 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
         }
 
         // 필수 필드 검증
-        const { rating, title, content } = reviewData;
+        const { rating, content } = reviewData;
         
         if (!rating || rating < 1 || rating > 5) {
             const error = new Error('별점(rating)은 1-5 사이의 값이어야 합니다.');
-            error.statusCode = 400;
-            throw error;
-        }
-
-        if (!title || title.trim().length === 0) {
-            const error = new Error('제목은 필수 입력 항목입니다.');
             error.statusCode = 400;
             throw error;
         }
@@ -65,7 +59,6 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
             author: user._id,
             alcohol: alcohol._id,
             rating: parseInt(rating),
-            title: title.trim(),
             content: content.trim()
         };
 
@@ -93,7 +86,6 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
                 name: populatedReview.alcohol.name
             },
             rating: populatedReview.rating,
-            title: populatedReview.title,
             content: populatedReview.content,
             image_url: populatedReview.imageUrl,
             created_at: populatedReview.createdAt.toISOString()
@@ -150,7 +142,6 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
                 nickname: review.author.nickname
             },
             rating: review.rating,
-            title: review.title,
             content: review.content,
             image_url: review.imageUrl,
             created_at: review.createdAt.toISOString()
@@ -214,7 +205,6 @@ const getMyReviews = async (userInfo, page = 1, size = 10) => {
                 name: review.alcohol.name
             },
             rating: review.rating,
-            title: review.title,
             content: review.content,
             image_url: review.imageUrl,
             created_at: review.createdAt.toISOString()
@@ -259,16 +249,6 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
             fieldsToUpdate.rating = rating;
         }
 
-        if (updateData.title !== undefined) {
-            const title = updateData.title.trim();
-            if (title.length === 0) {
-                const error = new Error('제목은 비워둘 수 없습니다.');
-                error.statusCode = 400;
-                throw error;
-            }
-            fieldsToUpdate.title = title;
-        }
-
         if (updateData.content !== undefined) {
             const content = updateData.content.trim();
             if (content.length === 0) {
@@ -310,7 +290,6 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
                 name: updatedReview.alcohol.name
             },
             rating: updatedReview.rating,
-            title: updatedReview.title,
             content: updatedReview.content,
             image_url: updatedReview.imageUrl,
             created_at: updatedReview.createdAt.toISOString(),

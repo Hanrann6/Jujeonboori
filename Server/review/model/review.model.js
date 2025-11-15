@@ -18,12 +18,6 @@ const reviewSchema = new mongoose.Schema({
     min: 1,
     max: 5
   },
-  title: { 
-    type: String, 
-    required: true,
-    trim: true,
-    maxlength: 100 // 제목 길이 제한
-  },
   content: { 
     type: String, 
     required: true,
