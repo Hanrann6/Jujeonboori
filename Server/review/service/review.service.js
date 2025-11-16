@@ -11,10 +11,7 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
             throw error;
         }
 
-        const user = await User.findOne({
-            provider: userInfo.provider,
-            providerId: userInfo.userId
-        });
+        const user = await User.findById(userInfo.userId);
         if (!user) {
             const error = new Error('사용자를 찾을 수 없습니다.');
             error.statusCode = 404;
@@ -142,10 +139,7 @@ const getAlcoholReviews = async (alcoholId) => {
 // 내 리뷰 목록 조회 서비스
 const getMyReviews = async (userInfo) => {
     try {
-        const user = await User.findOne({
-            provider: userInfo.provider,
-            providerId: userInfo.userId
-        });
+        const user = await User.findById(userInfo.userId);
         if (!user) {
             const error = new Error('사용자를 찾을 수 없습니다.');
             error.statusCode = 404;
@@ -286,13 +280,14 @@ const getReviewWithPermissionCheck = async (userInfo, reviewId) => {
         throw error;
     }
 
-    // 권한 확인: 리뷰 작성자만 수정/삭제 가능
-    const user = await User.findOne({
-        provider: userInfo.provider,
-        providerId: userInfo.userId
-    });
+    const user = await User.findById(userInfo.userId);
+    if (!user) {
+        const error = new Error('사용자를 찾을 수 없습니다.');
+        error.statusCode = 404;
+        throw error;
+    }
 
-    if (!user || !review.author._id.equals(user._id)) {
+    if (!review.author._id.equals(user._id)) {
         const error = new Error('이 리뷰를 수정/삭제할 권한이 없습니다.');
         error.statusCode = 403;
         throw error;
