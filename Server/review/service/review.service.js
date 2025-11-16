@@ -4,7 +4,7 @@ import Alcohol from '../../alcohol/model/alcohol.model.js';
 
 const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
     try {
-        const alcohol = await Alcohol.findById(alcoholId);
+        const alcohol = await Alcohol.findOne({ index: parseInt(alcoholId) });
         if (!alcohol) {
             const error = new Error('해당 ID의 전통주를 찾을 수 없습니다.');
             error.statusCode = 404;
@@ -66,7 +66,7 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
         // 생성된 리뷰 정보 조회
         const populatedReview = await Review.findById(review._id)
             .populate('author', 'nickname')
-            .populate('alcohol', 'name')
+            .populate('alcohol', 'alcoholName index')
             .lean();
 
         return {
@@ -76,8 +76,8 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
                 nickname: populatedReview.author.nickname
             },
             alcohol: {
-                alcohol_id: populatedReview.alcohol._id,
-                name: populatedReview.alcohol.name
+                alcohol_id: populatedReview.alcohol.index,
+                name: populatedReview.alcohol.alcoholName
             },
             rating: populatedReview.rating,
             content: populatedReview.content,
@@ -99,14 +99,14 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
 // 특정 전통주 리뷰 목록 조회 서비스
 const getAlcoholReviews = async (alcoholId) => {
     try {
-        const alcohol = await Alcohol.findById(alcoholId);
+        const alcohol = await Alcohol.findOne({ index: parseInt(alcoholId) });
         if (!alcohol) {
             const error = new Error('해당 ID의 전통주를 찾을 수 없습니다.');
             error.statusCode = 404;
             throw error;
         }
 
-        const reviews = await Review.find({ alcohol: alcoholId })
+        const reviews = await Review.find({ alcohol: alcohol._id })
             .populate('author', 'nickname')
             .sort({ createdAt: -1 })
             .lean();
@@ -153,15 +153,15 @@ const getMyReviews = async (userInfo) => {
         }
 
         const reviews = await Review.find({ author: user._id })
-            .populate('alcohol', 'name')
+            .populate('alcohol', 'alcoholName index')
             .sort({ createdAt: -1 })
             .lean();
 
         const reviewList = reviews.map(review => ({
             review_id: review._id,
             alcohol: {
-                alcohol_id: review.alcohol._id,
-                name: review.alcohol.name
+                alcohol_id: review.alcohol.index,
+                name: review.alcohol.alcoholName
             },
             rating: review.rating,
             content: review.content,
@@ -228,7 +228,7 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
             { new: true }
         )
         .populate('author', 'nickname')
-        .populate('alcohol', 'name')
+        .populate('alcohol', 'alcoholName index')
         .lean();
 
         return {
@@ -238,8 +238,8 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
                 nickname: updatedReview.author.nickname
             },
             alcohol: {
-                alcohol_id: updatedReview.alcohol._id,
-                name: updatedReview.alcohol.name
+                alcohol_id: updatedReview.alcohol.index,
+                name: updatedReview.alcohol.alcoholName
             },
             rating: updatedReview.rating,
             content: updatedReview.content,

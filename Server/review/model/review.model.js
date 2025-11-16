@@ -9,7 +9,7 @@ const reviewSchema = new mongoose.Schema({
   alcohol: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Alcohol', 
-    required: true 
+    required: true
   },
   
   rating: { 
