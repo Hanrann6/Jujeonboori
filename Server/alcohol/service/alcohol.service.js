@@ -52,7 +52,7 @@ const getAlcoholDetail = async (alcoholId) => {
             {
                 $lookup: {
                     from: 'reviews',
-                    localField: 'index',
+                    localField: '_id',
                     foreignField: 'alcohol',
                     as: 'reviews'
                 }
