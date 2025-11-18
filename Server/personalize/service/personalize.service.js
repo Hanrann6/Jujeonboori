@@ -70,7 +70,7 @@ export const sendReviewEvent = async (userId, itemId, rating) => {
         eventType: "review",
         sentAt: new Date(),
         itemId,
-        properties: JSON.stringify({ rating }), // 점수 같은 부가정보
+        eventValue: rating, // 점수 가중치. 3점 이상부터만 선호도 반영
       },
     ],
   });
