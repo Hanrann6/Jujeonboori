@@ -21,7 +21,8 @@ const getAlcoholList = async (filters = {}) => {
             name: alcohol.alcoholName,
             category: alcohol.alcoholType,
             degree: alcohol.degree,
-            image_url: alcohol.imageUrl
+            image_url: alcohol.imageUrl,
+            price_value: alcohol.priceValue
         }));
 
         return {
