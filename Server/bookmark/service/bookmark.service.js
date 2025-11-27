@@ -37,7 +37,7 @@ export const bookmark = async (userId, alcoholIndex) => {
 export const getBookmarks = async(userId) => {
   const bookmarks = await Bookmark.find({ userId }).populate({
     path: "alcoholId",
-    select: "index alcoholName degree imageUrl priceValue",
+    select: "index alcoholName degree imageUrl priceValue alcoholType priceValue",
   });
 
   // 데이터 가공
