@@ -37,7 +37,7 @@ export const bookmark = async (userId, alcoholIndex) => {
 export const getBookmarks = async(userId) => {
   const bookmarks = await Bookmark.find({ userId }).populate({
     path: "alcoholId",
-    select: "index alcoholName degree imageUrl",
+    select: "index alcoholName degree imageUrl priceValue",
   });
 
   // 데이터 가공
@@ -56,6 +56,7 @@ export const getBookmarks = async(userId) => {
         alcoholName: alcoholId.alcoholName,
         degree: alcoholId.degree,
         imageUrl: alcoholId.imageUrl,
+        priceValue: alcoholId.priceValue
       };
     })
     .filter((item) => item !== null);
