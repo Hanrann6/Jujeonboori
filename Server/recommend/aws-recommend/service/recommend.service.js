@@ -58,6 +58,7 @@ export const getRecommendations = async (userId, numResults = 10) => {
           alcoholId: itemDetail.index,
           name: itemDetail.alcoholName, // DB 필드명 alcoholName -> 출력 필드명 name
           degree: itemDetail.degree,
+          priceValue: itemDetail.priceValue,
           alcoholType: itemDetail.alcoholType,
           imageUrl: itemDetail.imageUrl,
         };

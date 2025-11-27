@@ -57,6 +57,7 @@ export async function getAlcoholsByWeather(userId, temperature, precipitationTyp
     alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
+    priceValue: a.priceValue,
     alcoholType: a.alcoholType,
     imageUrl: a.imageUrl,
   }));

@@ -46,6 +46,7 @@ export async function getAlcoholsUnderPrice(userId, limitPrice = 30000, count = 
     alcoholId: a.index,
     name: a.alcoholName,
     degree: a.degree,
+    priceValue: a.priceValue,
     alcoholType: a.alcoholType,
     imageUrl: a.imageUrl,
   }));
