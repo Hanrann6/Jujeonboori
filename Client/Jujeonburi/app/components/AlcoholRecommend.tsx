@@ -11,17 +11,21 @@ const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 type ApiRec = {
   alcoholId: string | number;
   name: string;
-  degree?: number;
+  alcoholType: string;
+  degree: number;
   imageUrl: string;
+  priceValue: number;
 };
 type ApiRes = ApiRec[];
 
 /* ====== 화면 아이템 ====== */
 type RecItem = {
-  id: string;             // 상세 페이지 파라미터로 사용할 문자열화된 ID
+  id: string;
   name: string;
-  degree?: number;
-  imageUrl?: string;
+  degree: number;
+  priceValue: number;
+  category: string;
+  imageUrl: string;
   liked: boolean;         // 서버 북마크 기준
   alcoholIndex?: number;  // 북마크 API용 숫자 인덱스(없으면 토글 불가)
 };
@@ -84,7 +88,9 @@ function RecCard({ item, onToggle, onOpen }: {
 
       <Pressable onPress={onOpen} android_ripple={{ color: "#F3F4F6" }}>
         <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
-        {!!item.degree && <Text style={styles.meta}>{item.degree}%</Text>}
+        {!!item.category && <Text style={styles.meta}>{item.category} • {!!item.degree && <Text style={styles.meta}>{item.degree}%</Text>}
+        {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue.toLocaleString()}</Text>}
+        </Text>}
       </Pressable>
     </View>
   );
@@ -126,7 +132,9 @@ export default function AlcoholRecommend({ limit = 5 }: { limit?: number }) {
             id: idStr,
             degree: r.degree,
             name: r.name,
+            category: r.alcoholType,
             imageUrl: r.imageUrl,
+            priceValue: r.priceValue,
             liked,
             alcoholIndex,
           };
@@ -167,7 +175,7 @@ export default function AlcoholRecommend({ limit = 5 }: { limit?: number }) {
             const willLike = !item.liked;
             try {
               if (willLike) await addBookmark(item.alcoholIndex);
-              else         await removeBookmark(item.alcoholIndex);
+              else await removeBookmark(item.alcoholIndex);
 
               setItems(prev => prev.map((x, i) => (i === index ? { ...x, liked: willLike } : x)));
             } catch (e) {
@@ -193,18 +201,18 @@ const styles = StyleSheet.create({
   headerRow: { paddingHorizontal: 16, marginBottom: 6, flexDirection: "row", alignItems: "center" },
   sectionTitle: { fontSize: 18, fontWeight: "800", color: "#111827" },
   priceChip: { color: "#F59E0B" },
-
   card: {
-    width: 140,
+    width: 160,
+    minHeight: 200,
     borderWidth: 1, borderColor: "#E5E7EB",
-    borderRadius: 10, padding: 8, backgroundColor: "#fff",
+    borderRadius: 10, padding: 10, backgroundColor: "#fff",
     position: "relative",
   },
   thumb: { width: "100%", height: 150, borderRadius: 8, backgroundColor: "#F3F4F6" },
   name: { marginTop: 6, fontWeight: "700", color: "#111827" },
   meta: { color: "#6B7280", fontSize: 12 },
   heart: {
-    position: "absolute", top: 5, right: 5,
+    position: "absolute", top: 15, right: 15,
     width: 28, height: 28, borderRadius: 999,
     backgroundColor: "white", alignItems: "center", justifyContent: "center", elevation: 1,
   },

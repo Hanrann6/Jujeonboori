@@ -1,7 +1,7 @@
 // app/(tabs)/(home)/search.tsx
 import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -21,7 +21,9 @@ type ApiAlcohol = {
     alcohol_id: number | string;
     name: string;
     category?: string;
+    degree?: number;
     image_url?: string;
+    price_value?: number;
 };
 type ApiAlcoholListResp = { alcohols: ApiAlcohol[] };
 
@@ -31,7 +33,9 @@ type Item = {
     name: string;
     nameL: string;
     imageUrl?: string;
+    price_value?: number;
     category?: string;
+    degree?: number;
     liked: boolean;
     alcoholIndex?: number;
 };
@@ -65,11 +69,6 @@ async function removeBookmark(alcoholIndex: number) {
     const raw = await res.text();
     console.log("[DELETE /bookmark]", { alcoholIndex }, raw);
     if (!res.ok) throw new Error(`DELETE /bookmark 실패(${res.status}) ${raw}`);
-}
-
-// helpers
-function encodeKeepSlashComma(v: string) {
-    return encodeURIComponent(v).replace(/%2F/gi, "/").replace(/%2C/gi, ",");
 }
 
 function parseCatsParam(v?: string | string[]): string[] {
@@ -130,13 +129,14 @@ export default function SearchScreen() {
         if (!res.ok) throw new Error(`GET /alcohols 실패(${res.status}) ${raw}`);
 
         const data = JSON.parse(raw) as ApiAlcoholListResp;
-        console.log("필터링 응답", data);
         return (data.alcohols || []).map(a => ({
             id: String(a.alcohol_id),
             name: a.name,
             nameL: a.name.toLowerCase(),
             imageUrl: a.image_url,
             category: a.category,
+            degree: a.degree,
+            price_value: a.price_value,
         })) as Item[];
     }
 
@@ -150,42 +150,49 @@ export default function SearchScreen() {
     }, [q, min, max, cats, kws]);
 
     // 목록 로딩 (API)
-    useEffect(() => {
-        let alive = true;
-        (async () => {
+    useFocusEffect(
+        React.useCallback(() => {
+          let alive = true;
+      
+          (async () => {
             try {
-                setLoading(true);
-                setError(null);
-
-                // 1) 검색 결과 호출
-                const items = await fetchListFromServer({
-                    q: q ? String(q) : "",
-                    selCats: parseCatsParam(cats),
-                    selKws: parseCatsParam(kws),
-                    minPrice: min !== undefined && min !== "" ? Number(min) : undefined,
-                    maxPrice: max !== undefined && max !== "" ? Number(max) : undefined,
-                });
-
-                // 2) 서버 북마크 Set
-                const bookmarked = await fetchBookmarks();
-
-                // 3) 검색 결과 ↔ 북마크 매핑 (alcohol_id를 index로 변환해 비교)
-                const joined: Item[] = items.map((a) => {
-                    const idx = Number(a.id); // a.id는 alcohol_id를 string으로 저장했음
-                    const alcoholIndex = Number.isFinite(idx) ? idx : undefined;
-                    const liked = alcoholIndex != null ? bookmarked.has(alcoholIndex) : false;
-                    return { ...a, liked, alcoholIndex };
-                });
-
-                if (alive) setList(joined);
+              setLoading(true);
+              setError(null);
+      
+              // 1) 검색 결과 호출
+              const items = await fetchListFromServer({
+                q: q ? String(q) : "",
+                selCats: parseCatsParam(cats),
+                selKws: parseCatsParam(kws),
+                minPrice: min !== undefined && min !== "" ? Number(min) : undefined,
+                maxPrice: max !== undefined && max !== "" ? Number(max) : undefined,
+              });
+      
+              // 2) 북마크 set 가져오기
+              const bookmarked = await fetchBookmarks();
+      
+              // 3) 매핑
+              const joined: Item[] = items.map((a) => {
+                const idx = Number(a.id);
+                const alcoholIndex = Number.isFinite(idx) ? idx : undefined;
+                const liked = alcoholIndex != null ? bookmarked.has(alcoholIndex) : false;
+                return { ...a, liked, alcoholIndex };
+              });
+      
+              if (alive) setList(joined);
             } catch (e: any) {
-                if (alive) setError(e?.message ?? "전통주 목록을 불러오지 못했어요.");
+              if (alive) setError(e?.message ?? "전통주 목록을 불러오지 못했어요.");
             } finally {
-                if (alive) setLoading(false);
+              if (alive) setLoading(false);
             }
-        })();
-        return () => { alive = false; };
-    }, [q, min, max, cats, kws]);
+          })();
+      
+          return () => {
+            alive = false;
+          };
+        }, [q, min, max, cats, kws])
+      );
+      
 
 
     // 클라이언트 필터링 (이름, 카테고리)
@@ -251,7 +258,7 @@ export default function SearchScreen() {
                     data={results}
                     keyExtractor={(it) => it.id}
                     numColumns={2}
-                    columnWrapperStyle={{ paddingHorizontal: 45, justifyContent: "space-between", marginBottom: 12 }}
+                    columnWrapperStyle={{ paddingHorizontal: 40, justifyContent: "space-between", marginBottom: 12 }}
                     contentContainerStyle={{ paddingBottom: 24, gap: 8 }}
                     renderItem={({ item, index }) => {
                         const onToggle = async () => {
@@ -284,8 +291,8 @@ export default function SearchScreen() {
 /** ===== 카드 ===== */
 function ResultCard({ item, onToggle }: { item: Item; onToggle: () => void }) {
     return (
+        <View style={styles.card}>
         <Pressable
-            style={styles.card}
             onPress={() => router.push({ pathname: "/(tabs)/(home)/[id]", params: { id: item.id } })}
             android_ripple={{ color: "#F3F4F6" }}
         >
@@ -305,8 +312,13 @@ function ResultCard({ item, onToggle }: { item: Item; onToggle: () => void }) {
             </Pressable>
 
             <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
-            {!!item.category && <Text style={styles.meta}>{item.category}</Text>}
+            {!!item.category && <Text style={styles.meta}>{item.category} • {typeof item.degree === "number" && !isNaN(item.degree) && (
+                <Text style={styles.meta}>{item.degree}%</Text>)}</Text>}
+            {!!item.price_value && <Text style={styles.meta}>₩ {item.price_value.toLocaleString()}</Text>}
+           
+
         </Pressable>
+        </View>
     );
 }
 
@@ -338,13 +350,13 @@ const styles = StyleSheet.create({
     },
     heart: {
         position: "absolute",
-        top: 6, right: 6,
+        top: 3, right: 3,
         width: 28, height: 28, borderRadius: 14,
         backgroundColor: "white",
         alignItems: "center", justifyContent: "center",
         elevation: 2,
     },
-    thumb: { width: 120, height: 160, borderRadius: 8, backgroundColor: "#F3F4F6" },
-    name: { textAlign: "center", marginTop: 8, color: "#111827", fontWeight: "700" },
-    meta: { color: "#6B7280", fontSize: 12, marginTop: 2 },
+    thumb: { width: 140, height: 150, borderRadius: 8, backgroundColor: "#F3F4F6" },
+    name: { textAlign: "left", marginTop: 8, color: "#111827", fontWeight: "700" },
+    meta: { textAlign: "left", color: "#6B7280", fontSize: 12, marginTop: 2 },
 });

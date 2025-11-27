@@ -18,7 +18,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 type ReviewModalProps = {
   alcoholName: string;
-  onSubmit: (p: { rating: number; content: string; images?: { uri: string }[] }) => void;
+  onSubmit: (p: {
+    rating: number;
+    content: string;
+    images?: { uri: string }[]
+  }) => void | Promise<void>;
   onRequestClose: () => void;
   mode?: "create" | "edit";
   defaultRating?: number;
@@ -28,7 +32,7 @@ type ReviewModalProps = {
 
 const MAX_IMAGES = 5;
 
-export default function ReviewModal({ 
+export default function ReviewModal({
   alcoholName,
   onSubmit,
   onRequestClose,
@@ -40,8 +44,8 @@ export default function ReviewModal({
   const router = useRouter();
   const [images, setImages] = useState(defaultImages);
   const [content, setContent] = useState(defaultContent);
-  const [rating, setRating] = useState(defaultRating); 
-  
+  const [rating, setRating] = useState(defaultRating);
+
   const openPickerSheet = () => {
     const pickFromCamera = async () => {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -65,7 +69,7 @@ export default function ReviewModal({
       }
       const res = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
-        allowsMultipleSelection: true,  
+        allowsMultipleSelection: true,
         selectionLimit: Math.min(MAX_IMAGES - images.length),
         quality: 0.7,
       });
@@ -89,10 +93,25 @@ export default function ReviewModal({
   };
 
   const submit = async () => {
-    const payload = { rating, content: content.trim(), images };
+    if (!rating) {
+      Alert.alert("별점 선택", "만족도를 1점 이상 선택해주세요.");
+      return;
+    }
+    if (!content.trim()) {
+      Alert.alert("내용 입력", "리뷰 내용을 입력해주세요.");
+      return;
+    }
+
+    const payload = {
+      rating,
+      content: content.trim(),
+      images,
+    };
+
     await onSubmit?.(payload);
-    exit(); // 전 화면으로
+    exit();
   };
+
 
   const exit = () => {
     if (onRequestClose) {
@@ -166,8 +185,8 @@ export default function ReviewModal({
 
           {/* 별점 */}
           <View style={styles.ratingBlock}>
-            <Text style={{fontSize:16}}>만족도를 기록해주세요</Text>
-            <View style={{ flexDirection: "row", alignItems: "baseline"}}>
+            <Text style={{ fontSize: 16 }}>만족도를 기록해주세요</Text>
+            <View style={{ flexDirection: "row", alignItems: "baseline" }}>
               {Array.from({ length: 5 }).map((_, i) => {
                 const filled = i < rating;
                 return (
@@ -184,8 +203,7 @@ export default function ReviewModal({
           <TouchableOpacity
             style={[styles.submitBtn, { opacity: content.trim() ? 1 : 0.6 }]}
             onPress={submit}
-            disabled={!content.trim()}
-          >
+            disabled={!content.trim() || !rating}>
             <Text style={{ fontWeight: "700", color: "#111827" }}>등록하기</Text>
           </TouchableOpacity>
         </View>
@@ -252,10 +270,11 @@ const styles = StyleSheet.create({
     padding: 12, color: "#111827", lineHeight: 20,
   },
 
-  ratingBlock: { 
-    borderTopWidth: 1, 
-    borderTopColor: "#F3F4F6", 
-    paddingTop: 12 },
+  ratingBlock: {
+    borderTopWidth: 1,
+    borderTopColor: "#F3F4F6",
+    paddingTop: 12
+  },
 
   star: { fontSize: 35, color: "#D1D5DB" },
   starFilled: { color: "#F59E0B" },

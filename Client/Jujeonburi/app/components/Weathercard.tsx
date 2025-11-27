@@ -1,7 +1,6 @@
 //app\components\Weathercard.tsx
 
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -145,8 +144,6 @@ async function fetchUltraShortTemperature(lat: number, lon: number) {
 
     const encodedKey = normalizeAndEncodeKey(RAW_KEY);
 
-
-    // 2) serviceKey는 수동으로 붙이고, 나머지는 URLSearchParams
     const qs = new URLSearchParams({
         pageNo: "1",
         numOfRows: "1000",
@@ -159,11 +156,9 @@ async function fetchUltraShortTemperature(lat: number, lon: number) {
 
     const url = `${KMA_BASE_URL}?serviceKey=${encodedKey}&${qs}`;
 
-    // 3) 응답을 먼저 text로 받고 JSON 여부 확인 (디버깅 편의)
     const res = await fetch(url);
     const ctype = (res.headers.get("content-type") || "").toLowerCase();
     const raw = await res.text();
-
     const maskedUrl = url.replace(encodedKey, "[KEY]");
     console.log("[KMA] status:", res.status, "ctype:", ctype);
     console.log("[KMA] url:", maskedUrl);
@@ -198,9 +193,7 @@ async function fetchUltraShortTemperature(lat: number, lon: number) {
     const skyDesc = sky === "1" ? "맑음" : sky === "3" ? "구름많음" : sky === "4" ? "흐림" : "";
     const ptyDesc = pty === "0" ? "맑음" : pty === "1" ? "비" : pty === "2" ? "비/눈" : pty === "3" ? "눈"
         : pty === "5" ? "빗방울" : pty === "6" ? "빗방울/눈날림" : pty === "7" ? "눈날림" : "";
-    await AsyncStorage.setItem("@weather:temperature", String(temperature,));
-    await AsyncStorage.setItem("@weather:pty",String(pty) );
-
+    
     return { temperature, skyDesc, ptyDesc };
 }
 
@@ -224,7 +217,7 @@ export default function Weathercard() {
         }
     }, []);
 
-    // 2) 날씨 호출과 표시용 위치에 같은(폴백된) 좌표를 사용
+    // 날씨 호출과 표시용 위치에 같은(폴백된) 좌표를 사용
     const run = useCallback(async () => {
         setLoading(true);
         try {
@@ -247,7 +240,7 @@ export default function Weathercard() {
           setTemp(temperature);
       
         } catch (e) {
-          // ★ 좌표 실패 등 모든 예외에서 서울 폴백
+          // 모든 예외에서 서울 폴백
           setPlace(await resolveAreaName(SEOUL.lat, SEOUL.lon));
           try {
             const { temperature } = await fetchUltraShortTemperature(SEOUL.lat, SEOUL.lon);

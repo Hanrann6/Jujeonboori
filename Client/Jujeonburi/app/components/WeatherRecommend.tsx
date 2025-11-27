@@ -14,13 +14,17 @@ type ApiItem = {
   alcoholId: string | number;
   name: string;
   degree?: number;
+  alcoholType?: string;
   imageUrl?: string;
+  priceValue?: number;
 };
 
 type Item = {
   id: string;
   name: string;
   degree?: number;
+  category?: string;
+  priceValue?: number;
   imageUrl?: string;
   liked: boolean;
   alcoholIndex?: number; // 북마크 API용 인덱스
@@ -61,7 +65,7 @@ async function removeBookmark(alcoholIndex: number) {
 }
 
 /** ===== 카드  ===== */
-function Card({ item, onToggle, onOpen }: { item: Item; onToggle: () => void; onOpen: () => void }) {
+function RecCard({ item, onToggle, onOpen }: { item: Item; onToggle: () => void; onOpen: () => void }) {
   return (
     <View style={styles.card}>
       <Image
@@ -75,7 +79,9 @@ function Card({ item, onToggle, onOpen }: { item: Item; onToggle: () => void; on
 
       <Pressable onPress={onOpen} android_ripple={{ color: "#F3F4F6" }}>
         <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
-        {!!item.degree && <Text style={styles.meta}>{item.degree}%</Text>}
+        {!!item.category && <Text style={styles.meta}>{item.category} • {!!item.degree && <Text style={styles.meta}>{item.degree}%</Text>}
+          {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue.toLocaleString()}</Text>}
+        </Text>}
       </Pressable>
     </View>
   );
@@ -103,59 +109,62 @@ export default function WeatherRecommend({
   useFocusEffect(
     React.useCallback(() => {
       let alive = true;
-    (async () => {
-      try {
-        setLoading(true);
-        setErr(null);
+      (async () => {
+        try {
+          setLoading(true);
+          setErr(null);
 
-        // 1) 저장된 날씨 값 읽기
-        const [tRaw, pRaw] = await Promise.all([
-          AsyncStorage.getItem(KEY_TEMP),
-          AsyncStorage.getItem(KEY_PTY),
-        ]);
+          // 1) 저장된 날씨 값 읽기
+          const [tRaw, pRaw] = await Promise.all([
+            AsyncStorage.getItem(KEY_TEMP),
+            AsyncStorage.getItem(KEY_PTY),
+          ]);
 
-        // 2) 기본값 치환 (fallback)
-        const temperature = toNum(tRaw) ?? 15;   // ← fallback 15
-        const pty         = toNum(pRaw) ?? 1;    // ← fallback 1
+          // 2) 기본값 치환 (fallback)
+          const temperature = toNum(tRaw) ?? 15;   // ← fallback 15
+          const pty = toNum(pRaw) ?? 1;    // ← fallback 1
 
-        // 추천 데이터 호출
-        const qs = new URLSearchParams();
-        qs.set("temperature", String(temperature));
-        qs.set("precipitationType", String(pty));
-        const url = `${API_BASE}/recommend/weather?${qs.toString()}`;
-        const res = await authedFetch(url, { method: "GET" });
-        const raw = await res.text();
-        if (!res.ok) throw new Error(`GET /recommend/weather 실패(${res.status}) ${raw}`);
-        const data = JSON.parse(raw) as ApiItem[];
+          // 추천 데이터 호출
+          const qs = new URLSearchParams();
+          qs.set("temperature", String(temperature));
+          qs.set("precipitationType", String(pty));
+          const url = `${API_BASE}/recommend/weather?${qs.toString()}`;
+          console.log("WeatherRecommend fetch url:", url);
+          const res = await authedFetch(url, { method: "GET" });
+          const raw = await res.text();
+          if (!res.ok) throw new Error(`GET /recommend/weather 실패(${res.status}) ${raw}`);
+          const data = JSON.parse(raw) as ApiItem[];
 
-        // 3) 서버 북마크 목록 읽기 → Set<number>
-        const bookmarked = await fetchBookmarks();
+          // 3) 서버 북마크 목록 읽기 → Set<number>
+          const bookmarked = await fetchBookmarks();
 
-        // 4) 매핑
-        const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
-          const alcoholIndex = Number(r.alcoholId);
+          // 4) 매핑
+          const mapped: Item[] = (data ?? []).slice(0, limit).map((r) => {
+            const alcoholIndex = Number(r.alcoholId);
 
-          return {
-            id: String(r.alcoholId ?? r.name),
-            name: r.name,
-            degree: r.degree,
-            imageUrl: r.imageUrl,
-            liked: alcoholIndex != null ? bookmarked.has(alcoholIndex) : false,
-            alcoholIndex,
-          };
-        });
+            return {
+              id: String(r.alcoholId ?? r.name),
+              name: r.name,
+              degree: r.degree,
+              category: r.alcoholType,
+              priceValue: r.priceValue,
+              imageUrl: r.imageUrl,
+              liked: alcoholIndex != null ? bookmarked.has(alcoholIndex) : false,
+              alcoholIndex,
+            };
+          });
 
-        if (alive) setItems(mapped);
-      } catch (e: any) {
-        if (alive) setErr(e?.message || "날씨 기반 추천을 불러오는 중 오류가 발생했습니다.");
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
+          if (alive) setItems(mapped);
+        } catch (e: any) {
+          if (alive) setErr(e?.message || "날씨 기반 추천을 불러오는 중 오류가 발생했습니다.");
+        } finally {
+          if (alive) setLoading(false);
+        }
+      })();
 
-    return () => { alive = false; };
-  }, [limit]) 
-);
+      return () => { alive = false; };
+    }, [limit])
+  );
 
   return (
     <View style={{ marginTop: 12 }}>
@@ -177,32 +186,29 @@ export default function WeatherRecommend({
           renderItem={({ item, index }) => {
             const onToggle = async () => {
               if (item.alcoholIndex == null) {
-                // 추천 응답에 index가 없으면 토글 불가(명세상 POST/DELETE가 index를 요구)
-                // 필요하면 여기서 index 조회 API를 추가로 호출하도록 확장
                 return;
               }
-          
+
               const ai = item.alcoholIndex;
               const willLike = !item.liked;
-          
+
               try {
                 if (willLike) {
                   await addBookmark(ai);
                 } else {
                   await removeBookmark(ai);
                 }
-          
+
                 setItems(prev =>
                   prev.map((x, i) => (i === index ? { ...x, liked: willLike } : x))
                 );
               } catch (e) {
-                // 실패 시 UI 되돌림/알림 등 추가 가능
                 console.log("bookmark toggle failed:", e);
               }
             };
-          
+
             return (
-              <Card
+              <RecCard
                 item={item}
                 onToggle={onToggle}
                 onOpen={() => router.push({
@@ -225,16 +231,17 @@ const styles = StyleSheet.create({
   priceChip: { color: "#F59E0B" },
 
   card: {
-    width: 140,
+    width: 160,
+    minHeight: 200,
     borderWidth: 1, borderColor: "#E5E7EB",
-    borderRadius: 10, padding: 8, backgroundColor: "#fff",
+    borderRadius: 10, padding: 10, backgroundColor: "#fff",
     position: "relative",
   },
   thumb: { width: "100%", height: 150, borderRadius: 8, backgroundColor: "#F3F4F6" },
   name: { marginTop: 6, fontWeight: "700", color: "#111827" },
-  meta: { color: "#6B7280", fontSize: 12 },
+  meta: { textAlign: "left", color: "#6B7280", fontSize: 12, marginTop: 2 },
   heart: {
-    position: "absolute", top: 5, right: 5,
+    position: "absolute", top: 15, right: 15,
     width: 28, height: 28, borderRadius: 999,
     backgroundColor: "white", alignItems: "center", justifyContent: "center", elevation: 1,
   },
