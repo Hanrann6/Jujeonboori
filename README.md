@@ -23,7 +23,7 @@
 
 ## 📁 폴더 구조
 
-HabitAI/
+Jujeonboori/
 
 ├── Server/ </br>
 │ ├── alcohol # 전통주 엔티티 관련 로직 </br>
