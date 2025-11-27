@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  nickname: { type: String, required: true },
+  nickname: { type: String, required: false },
   email: { type: String, required: true, unique: true },
   provider: { type: String, required: true },
   status: { 
@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 
   providerId: { type: String, required: true },
-  imageUrl: { type: String, default: null },
   refreshToken: { type: String, default: null },
 }, {
   timestamps: true

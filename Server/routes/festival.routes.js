@@ -6,14 +6,8 @@ const router = express.Router();
 
 // 축제 목록 조회
 router.get('/',
-    // authMiddleware.verifyAccessToken,
+    authMiddleware.verifyAccessToken,
     festivalController.getFestivals
-);
-
-// 축제 상세 조회
-router.get('/:festival_id',
-    // authMiddleware.verifyAccessToken,
-    festivalController.getFestivalDetail
 );
 
 export default router;

@@ -7,6 +7,7 @@ import { parse } from 'csv-parse';
 import { stringify } from 'csv-stringify';
 import AWS from 'aws-sdk';
 import { fileURLToPath } from 'url';
+import puppeteer from 'puppeteer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

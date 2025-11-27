@@ -34,8 +34,7 @@ const updateMyProfile = async (req, res) => {
     try {
         const updatedProfile = await userService.updateMyProfile(
             req.user,
-            req.body,
-            req.file
+            req.body
         );
         
         res.status(200).json(updatedProfile);
@@ -65,46 +64,46 @@ const updateMyProfile = async (req, res) => {
     }
 };
 
-const getUserProfile = async (req, res) => {
-    try {
-        const { user_id } = req.params;
+// const getUserProfile = async (req, res) => {
+//     try {
+//         const { user_id } = req.params;
         
-        const profile = await userService.getUserProfile(user_id);
+//         const profile = await userService.getUserProfile(user_id);
         
-        res.status(200).json(profile);
+//         res.status(200).json(profile);
 
-    } catch (error) {
-        console.error('사용자 프로필 조회 오류:', error);
+//     } catch (error) {
+//         console.error('사용자 프로필 조회 오류:', error);
         
-        if (error.statusCode) {
-            let errorType;
-            if (error.statusCode === 404) {
-                errorType = "Not Found";
-            } else if (error.statusCode === 400) {
-                errorType = "Bad Request";
-            } else {
-                errorType = "Error";
-            }
+//         if (error.statusCode) {
+//             let errorType;
+//             if (error.statusCode === 404) {
+//                 errorType = "Not Found";
+//             } else if (error.statusCode === 400) {
+//                 errorType = "Bad Request";
+//             } else {
+//                 errorType = "Error";
+//             }
 
-            const errorResponse = {
-                timestamp: new Date().toISOString(),
-                status: error.statusCode,
-                error: errorType,
-                message: error.message,
-                path: req.path
-            };
-            return res.status(error.statusCode).json(errorResponse);
-        }
+//             const errorResponse = {
+//                 timestamp: new Date().toISOString(),
+//                 status: error.statusCode,
+//                 error: errorType,
+//                 message: error.message,
+//                 path: req.path
+//             };
+//             return res.status(error.statusCode).json(errorResponse);
+//         }
 
-        res.status(500).json({
-            timestamp: new Date().toISOString(),
-            status: 500,
-            error: "Internal Server Error",
-            message: "서버 내부에서 처리 중 예상치 못한 오류가 발생했습니다.",
-            path: req.path
-        });
-    }
-};
+//         res.status(500).json({
+//             timestamp: new Date().toISOString(),
+//             status: 500,
+//             error: "Internal Server Error",
+//             message: "서버 내부에서 처리 중 예상치 못한 오류가 발생했습니다.",
+//             path: req.path
+//         });
+//     }
+// };
 
 const deleteUser = async (req, res) => {
     try {
@@ -160,6 +159,6 @@ const deleteUser = async (req, res) => {
 export default {
     getMyProfile,
     updateMyProfile,
-    getUserProfile,
+    // getUserProfile,
     deleteUser
 };

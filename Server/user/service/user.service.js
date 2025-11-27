@@ -2,15 +2,13 @@ import User from '../model/user.model.js';
 import Bookmark from '../../bookmark/model/bookmark.model.js';
 import Review from '../../review/model/review.model.js';
 import RefreshToken from '../../auth/model/refreshToken.model.js';
+import ChatLog from '../../chatbot/model/chatbot.model.js';
+import { deletePreferenceCsv } from "../../pref-test/service/s3.service.js";
 import { S3Client, DeleteObjectCommand} from '@aws-sdk/client-s3';
 
 // 내 프로필 조회
 const getMyProfile = async (userInfo) => {
-    const user = await User.findOne({ 
-        provider: userInfo.provider, 
-        providerId: userInfo.userId,
-        status: { $ne: 'deleted' }
-    });
+    const user = await User.findById(userInfo.userId);
 
     if (!user) {
         const error = new Error('사용자를 찾을 수 없습니다.');
@@ -27,12 +25,8 @@ const getMyProfile = async (userInfo) => {
 };
 
 // 내 프로필 수정
-const updateMyProfile = async (userInfo, updateData, uploadedFile) => {
-    const user = await User.findOne({ 
-        provider: userInfo.provider, 
-        providerId: userInfo.userId,
-        status: { $ne: 'deleted' }
-    });
+const updateMyProfile = async (userInfo, updateData) => {
+    const user = await User.findById(userInfo.userId);
 
     if (!user) {
         const error = new Error('사용자를 찾을 수 없습니다.');
@@ -40,69 +34,53 @@ const updateMyProfile = async (userInfo, updateData, uploadedFile) => {
         throw error;
     }
 
-    const fieldsToUpdate = {};
-
-    if (updateData.nickname) {
-        await validateNickname(updateData.nickname, user._id);
-        fieldsToUpdate.nickname = updateData.nickname;
-    }
-
-    if (uploadedFile) {
-        fieldsToUpdate.imageUrl = await processImageUpload(uploadedFile);
-    }
-
-    if (Object.keys(fieldsToUpdate).length === 0) {
-        const error = new Error('수정할 정보가 없습니다.');
+    // 닉네임 업데이트
+    if (!updateData.nickname) {
+        const error = new Error('닉네임은 필수입니다.');
         error.statusCode = 400;
         throw error;
     }
 
-    Object.assign(user, fieldsToUpdate);
+    user.nickname = updateData.nickname;
     user.updatedAt = new Date();
     await user.save();
 
     return {
         user_id: user._id,
-        email: user.email,
-        nickname: user.nickname,
-        image_url: user.imageUrl
+        nickname: user.nickname
     };
 };
 
-// 특정 사용자의 프로필 조회
-const getUserProfile = async (userId) => {
-    // MongoDB ObjectId 유효성 검사
-    if (!isValidObjectId(userId)) {
-        const error = new Error('유효하지 않은 사용자 ID입니다.');
-        error.statusCode = 400;
-        throw error;
-    }
+// // 특정 사용자의 프로필 조회
+// const getUserProfile = async (userId) => {
+//     // MongoDB ObjectId 유효성 검사
+//     if (!isValidObjectId(userId)) {
+//         const error = new Error('유효하지 않은 사용자 ID입니다.');
+//         error.statusCode = 400;
+//         throw error;
+//     }
 
-    const user = await User.findOne({
-        _id: userId,
-        status: { $ne: 'deleted' }
-    });
+//     const user = await User.findOne({
+//         _id: userId,
+//         status: { $ne: 'deleted' }
+//     });
 
-    if (!user) {
-        const error = new Error('해당 ID의 사용자를 찾을 수 없습니다.');
-        error.statusCode = 404;
-        throw error;
-    }
+//     if (!user) {
+//         const error = new Error('해당 ID의 사용자를 찾을 수 없습니다.');
+//         error.statusCode = 404;
+//         throw error;
+//     }
 
-    return {
-        user_id: user._id,
-        nickname: user.nickname,
-        image_url: user.imageUrl
-    };
-};
+//     return {
+//         user_id: user._id,
+//         nickname: user.nickname,
+//         image_url: user.imageUrl
+//     };
+// };
 
 // 회원 탈퇴
 const deleteUser = async (userInfo, refreshToken) => {
-    const user = await User.findOne({ 
-        provider: userInfo.provider, 
-        providerId: userInfo.userId,
-        status: { $ne: 'deleted' }
-    });
+    const user = await User.findById(userInfo.userId);
 
     if (!user) {
         const error = new Error('사용자를 찾을 수 없습니다.');
@@ -110,9 +88,15 @@ const deleteUser = async (userInfo, refreshToken) => {
         throw error;
     }
 
+    // 이미 탈퇴한 사용자면 바로 성공 응답 (중복 탈퇴 허용)
+    if (user.status === 'deleted') {
+        return true;
+    }
+
     await cleanupUserData(user._id);
 
     user.status = 'deleted';
+    user.imageUrl = null;
     user.updatedAt = new Date();
     await user.save();
 
@@ -146,7 +130,6 @@ const processImageUpload = async (file) => {
         return file.location;
         
     } catch (error) {
-        console.error('S3 업로드 오류:', error);
         const uploadError = new Error('이미지 업로드에 실패했습니다.');
         uploadError.statusCode = 500;
         throw uploadError;
@@ -194,7 +177,6 @@ const deleteUserImagesFromS3 = async (userId) => {
                 });
 
                 await s3Client.send(deleteCommand);
-                console.log(`S3에서 프로필 이미지 삭제 완료: ${s3Key}`);
             }
         }
 
@@ -210,7 +192,6 @@ const deleteUserImagesFromS3 = async (userId) => {
                     });
 
                     await s3Client.send(deleteCommand);
-                    console.log(`S3에서 리뷰 이미지 삭제 완료: ${s3Key}`);
                 }
             }
         }
@@ -239,23 +220,24 @@ const extractS3KeyFromUrl = (s3Url) => {
 // 사용자 관련 데이터 정리
 const cleanupUserData = async (userId) => {
     try {
-        // 북마크 데이터 정리
-        const deletedBookmarks = await Bookmark.deleteMany({ userId });
-        console.log(`북마크 ${deletedBookmarks.deletedCount}개 삭제 완료`);
+      // 북마크 데이터 정리
+      const deletedBookmarks = await Bookmark.deleteMany({ userId });
 
-        // 리뷰 데이터 정리
-        const deletedReviews = await Review.deleteMany({ userId });
-        console.log(`리뷰 ${deletedReviews.deletedCount}개 삭제 완료`);
+      // 챗봇 로그 데이터 정리
+      const deletedChatLogs = await ChatLog.deleteMany({ userId });
 
-        // Refresh Token 정리
-        const deletedTokens = await RefreshToken.deleteMany({ user_id: userId });
-        console.log(`Refresh Token ${deletedTokens.deletedCount}개 삭제 완료`);
-        
-        // S3에 업로드된 사용자 이미지 삭제
-        await deleteUserImagesFromS3(userId);
-        
-        console.log(`사용자 ${userId}의 관련 데이터 정리 완료`);
-        
+      // 리뷰 데이터 정리
+      const deletedReviews = await Review.deleteMany({ author: userId });
+
+      // Refresh Token 정리
+      const deletedTokens = await RefreshToken.deleteMany({ user_id: userId });
+
+      // S3에 업로드된 사용자 이미지 삭제
+      await deleteUserImagesFromS3(userId);
+
+      // S3 선호도 CSV에서 해당 유저 row 삭제
+      await deletePreferenceCsv(userId);
+      
     } catch (error) {
         console.error('사용자 데이터 정리 중 오류:', error);
         // 데이터 정리 실패해도 회원탈퇴는 진행
@@ -265,6 +247,6 @@ const cleanupUserData = async (userId) => {
 export default {
     getMyProfile,
     updateMyProfile,
-    getUserProfile,
+    // getUserProfile,
     deleteUser
 };

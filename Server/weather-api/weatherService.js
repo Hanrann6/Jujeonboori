@@ -58,7 +58,10 @@ export async function getWeatherData(lat, lon) {
         ny: ny
     }).toString();
 
-    const apiUrl = `${API_BASE_URL}?serviceKey=${SERVICE_KEY}&${queryParams}`;
+    //const apiUrl = `${API_BASE_URL}?serviceKey=${SERVICE_KEY}&${queryParams}`; //디코딩 키 사용 시
+    const apiUrl = `${API_BASE_URL}?serviceKey=${decodeURIComponent(
+      SERVICE_KEY
+    )}&${queryParams}`;
     console.log(`기상청 API 호출: ${apiUrl}`);
 
     try {
@@ -95,7 +98,7 @@ export async function getWeatherData(lat, lon) {
             });
 
             // 7. 파싱된 코드값을 설명으로 변환
-            parsedWeather.precipitationTypeDescription = getPrecipitationTypeDescription(parsedWeather.precipitationType);
+            parsedWeather.pitationTypeDescription = getPrecipitationTypeDescription(parsedWeather.precipitationType);
             parsedWeather.skyStatusDescription = getSkyStatusDescription(parsedWeather.skyStatus);
 
             // 8. 결과 반환

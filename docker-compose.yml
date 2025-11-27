@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  app:
+    build: ./Server
+    container_name: sool-server-container
+    env_file:
+      - ${ENV_FILE_PATH}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - qdrant
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+volumes:
+  qdrant_storage:

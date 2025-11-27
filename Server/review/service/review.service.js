@@ -4,23 +4,14 @@ import Alcohol from '../../alcohol/model/alcohol.model.js';
 
 const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
     try {
-        if (!isValidObjectId(alcoholId)) {
-            const error = new Error('유효하지 않은 전통주 ID입니다.');
-            error.statusCode = 400;
-            throw error;
-        }
-
-        const alcohol = await Alcohol.findById(alcoholId);
+        const alcohol = await Alcohol.findOne({ index: parseInt(alcoholId) });
         if (!alcohol) {
             const error = new Error('해당 ID의 전통주를 찾을 수 없습니다.');
             error.statusCode = 404;
             throw error;
         }
 
-        const user = await User.findOne({
-            provider: userInfo.provider,
-            providerId: userInfo.userId
-        });
+        const user = await User.findById(userInfo.userId);
         if (!user) {
             const error = new Error('사용자를 찾을 수 없습니다.');
             error.statusCode = 404;
@@ -41,16 +32,10 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
         }
 
         // 필수 필드 검증
-        const { rating, title, content } = reviewData;
+        const { rating, content } = reviewData;
         
         if (!rating || rating < 1 || rating > 5) {
             const error = new Error('별점(rating)은 1-5 사이의 값이어야 합니다.');
-            error.statusCode = 400;
-            throw error;
-        }
-
-        if (!title || title.trim().length === 0) {
-            const error = new Error('제목은 필수 입력 항목입니다.');
             error.statusCode = 400;
             throw error;
         }
@@ -65,7 +50,6 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
             author: user._id,
             alcohol: alcohol._id,
             rating: parseInt(rating),
-            title: title.trim(),
             content: content.trim()
         };
 
@@ -79,7 +63,7 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
         // 생성된 리뷰 정보 조회
         const populatedReview = await Review.findById(review._id)
             .populate('author', 'nickname')
-            .populate('alcohol', 'name')
+            .populate('alcohol', 'alcoholName index')
             .lean();
 
         return {
@@ -89,11 +73,10 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
                 nickname: populatedReview.author.nickname
             },
             alcohol: {
-                alcohol_id: populatedReview.alcohol._id,
-                name: populatedReview.alcohol.name
+                alcohol_id: populatedReview.alcohol.index,
+                name: populatedReview.alcohol.alcoholName
             },
             rating: populatedReview.rating,
-            title: populatedReview.title,
             content: populatedReview.content,
             image_url: populatedReview.imageUrl,
             created_at: populatedReview.createdAt.toISOString()
@@ -104,7 +87,6 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
             throw error;
         }
 
-        console.error('리뷰 작성 서비스 오류:', error);
         const serviceError = new Error('리뷰 작성 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -112,36 +94,19 @@ const createReview = async (userInfo, alcoholId, reviewData, uploadedFile) => {
 };
 
 // 특정 전통주 리뷰 목록 조회 서비스
-const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
+const getAlcoholReviews = async (alcoholId) => {
     try {
-        if (!isValidObjectId(alcoholId)) {
-            const error = new Error('유효하지 않은 전통주 ID입니다.');
-            error.statusCode = 400;
-            throw error;
-        }
-
-        const alcohol = await Alcohol.findById(alcoholId);
+        const alcohol = await Alcohol.findOne({ index: parseInt(alcoholId) });
         if (!alcohol) {
             const error = new Error('해당 ID의 전통주를 찾을 수 없습니다.');
             error.statusCode = 404;
             throw error;
         }
 
-        const pageNumber = Math.max(1, parseInt(page));
-        const pageSize = Math.max(1, Math.min(50, parseInt(size)));
-        const skip = (pageNumber - 1) * pageSize;
-
-        const [reviews, totalElements] = await Promise.all([
-            Review.find({ alcohol: alcoholId })
-                .populate('author', 'nickname')
-                .sort({ createdAt: -1 }) // 최신순
-                .skip(skip)
-                .limit(pageSize)
-                .lean(),
-            Review.countDocuments({ alcohol: alcoholId })
-        ]);
-
-        const totalPages = Math.ceil(totalElements / pageSize);
+        const reviews = await Review.find({ alcohol: alcohol._id })
+            .populate('author', 'nickname')
+            .sort({ createdAt: -1 })
+            .lean();
 
         const reviewList = reviews.map(review => ({
             review_id: review._id,
@@ -150,7 +115,6 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
                 nickname: review.author.nickname
             },
             rating: review.rating,
-            title: review.title,
             content: review.content,
             image_url: review.imageUrl,
             created_at: review.createdAt.toISOString()
@@ -158,12 +122,7 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
 
         return {
             reviews: reviewList,
-            pageInfo: {
-                page: pageNumber,
-                size: pageSize,
-                totalElements,
-                totalPages
-            }
+            total: reviewList.length
         };
 
     } catch (error) {
@@ -171,7 +130,6 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
             throw error;
         }
 
-        console.error('전통주 리뷰 목록 조회 오류:', error);
         const serviceError = new Error('리뷰 목록 조회 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -179,42 +137,27 @@ const getAlcoholReviews = async (alcoholId, page = 1, size = 10) => {
 };
 
 // 내 리뷰 목록 조회 서비스
-const getMyReviews = async (userInfo, page = 1, size = 10) => {
+const getMyReviews = async (userInfo) => {
     try {
-        const user = await User.findOne({
-            provider: userInfo.provider,
-            providerId: userInfo.userId
-        });
+        const user = await User.findById(userInfo.userId);
         if (!user) {
             const error = new Error('사용자를 찾을 수 없습니다.');
             error.statusCode = 404;
             throw error;
         }
 
-        const pageNumber = Math.max(1, parseInt(page));
-        const pageSize = Math.max(1, Math.min(50, parseInt(size)));
-        const skip = (pageNumber - 1) * pageSize;
-
-        const [reviews, totalElements] = await Promise.all([
-            Review.find({ author: user._id })
-                .populate('alcohol', 'name')
-                .sort({ createdAt: -1 }) // 최신순
-                .skip(skip)
-                .limit(pageSize)
-                .lean(),
-            Review.countDocuments({ author: user._id })
-        ]);
-
-        const totalPages = Math.ceil(totalElements / pageSize);
+        const reviews = await Review.find({ author: user._id })
+            .populate('alcohol', 'alcoholName index')
+            .sort({ createdAt: -1 })
+            .lean();
 
         const reviewList = reviews.map(review => ({
             review_id: review._id,
             alcohol: {
-                alcohol_id: review.alcohol._id,
-                name: review.alcohol.name
+                alcohol_id: review.alcohol.index,
+                name: review.alcohol.alcoholName
             },
             rating: review.rating,
-            title: review.title,
             content: review.content,
             image_url: review.imageUrl,
             created_at: review.createdAt.toISOString()
@@ -222,20 +165,13 @@ const getMyReviews = async (userInfo, page = 1, size = 10) => {
 
         return {
             reviews: reviewList,
-            page_info: {
-                page: pageNumber,
-                size: pageSize,
-                total_elements: totalElements,
-                total_pages: totalPages
-            }
+            total: reviewList.length
         };
 
     } catch (error) {
         if (error.statusCode) {
             throw error;
         }
-
-        console.error('내 리뷰 목록 조회 오류:', error);
         const serviceError = new Error('리뷰 목록 조회 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -257,16 +193,6 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
                 throw error;
             }
             fieldsToUpdate.rating = rating;
-        }
-
-        if (updateData.title !== undefined) {
-            const title = updateData.title.trim();
-            if (title.length === 0) {
-                const error = new Error('제목은 비워둘 수 없습니다.');
-                error.statusCode = 400;
-                throw error;
-            }
-            fieldsToUpdate.title = title;
         }
 
         if (updateData.content !== undefined) {
@@ -296,7 +222,7 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
             { new: true }
         )
         .populate('author', 'nickname')
-        .populate('alcohol', 'name')
+        .populate('alcohol', 'alcoholName index')
         .lean();
 
         return {
@@ -306,11 +232,10 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
                 nickname: updatedReview.author.nickname
             },
             alcohol: {
-                alcohol_id: updatedReview.alcohol._id,
-                name: updatedReview.alcohol.name
+                alcohol_id: updatedReview.alcohol.index,
+                name: updatedReview.alcohol.alcoholName
             },
             rating: updatedReview.rating,
-            title: updatedReview.title,
             content: updatedReview.content,
             image_url: updatedReview.imageUrl,
             created_at: updatedReview.createdAt.toISOString(),
@@ -321,8 +246,6 @@ const updateReview = async (userInfo, reviewId, updateData, uploadedFile) => {
         if (error.statusCode) {
             throw error;
         }
-
-        console.error('리뷰 수정 서비스 오류:', error);
         const serviceError = new Error('리뷰 수정 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -342,8 +265,6 @@ const deleteReview = async (userInfo, reviewId) => {
         if (error.statusCode) {
             throw error;
         }
-
-        console.error('리뷰 삭제 서비스 오류:', error);
         const serviceError = new Error('리뷰 삭제 중 오류가 발생했습니다.');
         serviceError.statusCode = 500;
         throw serviceError;
@@ -352,12 +273,6 @@ const deleteReview = async (userInfo, reviewId) => {
 
 // 리뷰 존재 및 권한 확인
 const getReviewWithPermissionCheck = async (userInfo, reviewId) => {
-    if (!isValidObjectId(reviewId)) {
-        const error = new Error('유효하지 않은 리뷰 ID입니다.');
-        error.statusCode = 400;
-        throw error;
-    }
-
     const review = await Review.findById(reviewId).populate('author');
     if (!review) {
         const error = new Error('해당 ID의 리뷰를 찾을 수 없습니다.');
@@ -365,13 +280,14 @@ const getReviewWithPermissionCheck = async (userInfo, reviewId) => {
         throw error;
     }
 
-    // 권한 확인: 리뷰 작성자만 수정/삭제 가능
-    const user = await User.findOne({
-        provider: userInfo.provider,
-        providerId: userInfo.userId
-    });
+    const user = await User.findById(userInfo.userId);
+    if (!user) {
+        const error = new Error('사용자를 찾을 수 없습니다.');
+        error.statusCode = 404;
+        throw error;
+    }
 
-    if (!user || !review.author._id.equals(user._id)) {
+    if (!review.author._id.equals(user._id)) {
         const error = new Error('이 리뷰를 수정/삭제할 권한이 없습니다.');
         error.statusCode = 403;
         throw error;
@@ -389,15 +305,10 @@ const processImageUpload = async (file) => {
 
         return file.location;
     } catch (error) {
-        console.error('S3 업로드 오류:', error);
         const uploadError = new Error('이미지 업로드에 실패했습니다.');
         uploadError.statusCode = 500;
         throw uploadError;
     }
-};
-
-const isValidObjectId = (id) => {
-    return /^[0-9a-fA-F]{24}$/.test(id);
 };
 
 export default {

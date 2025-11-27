@@ -9,8 +9,8 @@ dotenv.config();
 const personalizeEventsClient = new PersonalizeEventsClient({
   region: "ap-northeast-2",
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID2,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY2,
   },
 });
 
@@ -70,7 +70,7 @@ export const sendReviewEvent = async (userId, itemId, rating) => {
         eventType: "review",
         sentAt: new Date(),
         itemId,
-        properties: JSON.stringify({ rating }), // 점수 같은 부가정보
+        eventValue: rating, // 점수 가중치. 3점 이상부터만 선호도 반영
       },
     ],
   });

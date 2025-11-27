@@ -1,4 +1,4 @@
-# 🥂 전통주 추천 (Soolmate)
+# 🥂 주전부리
 
 전통주에 관심이 많지만 관련 지식이 부족한 입문자들을 위해, 사용자의 주류 선호도를 학습하고 위치·시간 등의 맥락을 반영하여, 
 개인 맞춤형 전통주를 추천해주는 AI 기반의 전통주 큐레이션 서비스입니다.
@@ -13,10 +13,11 @@
 | 런타임         | Node.js                            |
 | 백엔드 프레임워크 | Express v4.18.2                      |
 | 프론트엔드 프레임워크 | React Navtive, Expo                      |
-| 챗봇 API       | OpenAI GPT-4                       |
-| CSV 파서       | `csv-parser`                       |
+| AI     | OpenAI GPT-4, Gemini, LangChain + Qdrant (RAG)    |
+| 추천 시스템 | AWS Personalize, AWS S3 |
+| 데이터 처리   | `csv-parser`, CLOVA OCR              |
 | HTTP 클라이언트 | `axios`                            |
-| 플랫폼         | GitHub, VSCode, Terminal (CLI 기반)
+| 플랫폼         | GitHub, VSCode, Terminal (CLI 기반), AWS (EC2·S3)|
 
 ---
 

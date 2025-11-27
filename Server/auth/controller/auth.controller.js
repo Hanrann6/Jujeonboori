@@ -1,33 +1,22 @@
 import oauthService from '../service/oauth.service.js'
 import jwt from 'jsonwebtoken';
 
-// GET /oauth/{provider} - OAuth 인증 URL 생성
+// GET /oauth/{provider} - OAuth 인증 URL 생성 (구글only)
 const getOAuthUrl = async (req, res) => {
     try {
         const { provider } = req.params;
-        const { code_challenge, code_challenge_method } = req.query;
-
-        if (!code_challenge) {
+        
+        if (provider !== 'google') {
             return res.status(400).json({
                 timestamp: new Date().toISOString(),
                 status: 400,
                 error: "Bad Request",
-                message: "필수 쿼리 파라미터가 누락되었습니다: code_challenge",
+                message: "이 엔드포인트는 구글 로그인만 지원합니다. 카카오는 SDK를 사용해주세요.",
                 path: req.path
             });
         }
 
-        if (!code_challenge_method) {
-            return res.status(400).json({
-                timestamp: new Date().toISOString(),
-                status: 400,
-                error: "Bad Request",
-                message: "필수 쿼리 파라미터가 누락되었습니다: code_challenge_method",
-                path: req.path
-            });
-        }
-
-        const redirectUrl = await oauthService.generateOAuthUrl(provider, code_challenge, code_challenge_method);
+        const redirectUrl = await oauthService.generateOAuthUrl(provider);
 
         res.status(200).json({
             redirect_url: redirectUrl
@@ -50,49 +39,61 @@ const getOAuthUrl = async (req, res) => {
 const handleOAuthLogin = async (req, res) => {
     try {
         const { provider } = req.params;
-        const { authorization_code, code_verifier, redirect_uri } = req.body;
 
-        if (!authorization_code) {
+        if (provider === 'kakao') {
+            // 카카오: SDK
+            const { id_token } = req.body;
+
+            if (!id_token) {
+                return res.status(400).json({
+                    timestamp: new Date().toISOString(),
+                    status: 400,
+                    error: "Bad Request",
+                    message: "요청 본문에 필수 파라미터가 누락되었습니다: id_token",
+                    path: req.path
+                });
+            }
+
+            const result = await oauthService.processOAuthLogin(provider, id_token);
+            return res.status(200).json(result);
+
+        } else if (provider === 'google') {
+            const { authorization_code, redirect_uri } = req.body;
+
+            if (!authorization_code) {
+                return res.status(400).json({
+                    timestamp: new Date().toISOString(),
+                    status: 400,
+                    error: "Bad Request",
+                    message: "요청 본문에 필수 파라미터가 누락되었습니다: authorization_code",
+                    path: req.path
+                });
+            }
+
+            if (!redirect_uri) {
+                return res.status(400).json({
+                    timestamp: new Date().toISOString(),
+                    status: 400,
+                    error: "Bad Request",
+                    message: "요청 본문에 필수 파라미터가 누락되었습니다: redirect_uri",
+                    path: req.path
+                });
+            }
+
+            const tokenData = await oauthService.exchangeCodeForToken(provider, authorization_code, redirect_uri);
+
+            const result = await oauthService.processOAuthLogin(provider, tokenData.access_token);
+            return res.status(200).json(result);
+
+        } else {
             return res.status(400).json({
                 timestamp: new Date().toISOString(),
                 status: 400,
                 error: "Bad Request",
-                message: "요청 본문에 필수 파라미터가 누락되었습니다: authorization_code",
+                message: "지원하지 않는 OAuth 제공자입니다.",
                 path: req.path
             });
         }
-
-        if (!code_verifier) {
-            return res.status(400).json({
-                timestamp: new Date().toISOString(),
-                status: 400,
-                error: "Bad Request",
-                message: "요청 본문에 필수 파라미터가 누락되었습니다: code_verifier",
-                path: req.path
-            });
-        }
-
-        if (!redirect_uri) {
-            return res.status(400).json({
-                timestamp: new Date().toISOString(),
-                status: 400,
-                error: "Bad Request",
-                message: "요청 본문에 필수 파라미터가 누락되었습니다: redirect_uri",
-                path: req.path
-            });
-        }
-
-        // OAuth 토큰 교환 처리
-        const tokenData = await oauthService.exchangeCodeForToken(provider, authorization_code, code_verifier, redirect_uri);
-        const userInfo = await oauthService.getUserInfo(provider, tokenData.access_token);
-        const appTokens = await oauthService.generateAppTokens(userInfo);
-
-        res.status(200).json({
-            grant_type: "Bearer",
-            access_token: appTokens.accessToken,
-            refresh_token: appTokens.refreshToken,
-            access_token_expires_in: 3600 // 1시간
-        });
 
     } catch (error) {
         console.error('OAuth 로그인 처리 오류:', error);
@@ -109,7 +110,6 @@ const handleOAuthLogin = async (req, res) => {
 // POST /oauth/reissue - 토큰 재발급
 const reissueToken = async (req, res) => {
     try {
-        // Authorization 헤더에서 refresh token 추출
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -134,13 +134,13 @@ const reissueToken = async (req, res) => {
             });
         }
 
-        // 토큰 재발급 처리
         const newTokens = await oauthService.reissueTokens(refreshToken);
 
         res.status(200).json({
             grant_type: "Bearer",
             access_token: newTokens.accessToken,
-            refresh_token: newTokens.refreshToken
+            refresh_token: newTokens.refreshToken,
+            access_token_expires_in: newTokens.accessTokenExpiresIn
         });
     } catch (error) {
         console.error('토큰 재발급 오류:', error);
@@ -172,7 +172,6 @@ const logout = async (req, res) => {
 
         const accessToken = authHeader.split(' ')[1];
 
-        // Request Body에서 refresh token 추출
         const { refreshToken } = req.body;
 
         if (!refreshToken) {
@@ -185,7 +184,6 @@ const logout = async (req, res) => {
             });
         }
 
-        // 로그아웃 처리
         await oauthService.revokeTokens(accessToken, refreshToken);
 
         res.status(200).json({

@@ -9,7 +9,7 @@ const reviewSchema = new mongoose.Schema({
   alcohol: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Alcohol', 
-    required: true 
+    required: true
   },
   
   rating: { 
@@ -17,12 +17,6 @@ const reviewSchema = new mongoose.Schema({
     required: true,
     min: 1,
     max: 5
-  },
-  title: { 
-    type: String, 
-    required: true,
-    trim: true,
-    maxlength: 100 // 제목 길이 제한
   },
   content: { 
     type: String, 
