@@ -96,7 +96,7 @@ HabitAI/
 
 | 이름       | 역할              |
 |------------|-------------------|
-| 육란     | 백엔드 / AI 설계. gpt 챗봇, Recombee 추천 api |
+| 육란     | 백엔드 / AI 설계. gpt 챗봇, AWS Personalize 추천 api |
 | 송연우     | 백엔드. 전통주 세부 정보 크롤링, 위치 기반 날씨 api |
 | 안유경     | 프론트엔드, UI 설계, BE-FE api 연결, 문서 작업 |
 
@@ -113,10 +113,10 @@ HabitAI/
 ---
 
 ## ✅ 주요 기능
-① 전통주 취향 테스트
-② AWS Personalize 기반 취향 기반 추천 + 날씨, 가격 기반 전통주 추천 기능
-③ Gemini 기반 챗봇을 통한 전통주 추천 기능
-④ NAVER Clova OCR 기반 전통주 검색 기능
+① 전통주 취향 테스트<br>
+② AWS Personalize 기반 취향 기반 추천 + 날씨, 가격 기반 전통주 추천 기능<br>
+③ Gemini 기반 챗봇을 통한 전통주 추천 기능<br>
+④ NAVER Clova OCR 기반 전통주 검색 기능<br>
 
 ---
 
