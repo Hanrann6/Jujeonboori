@@ -230,7 +230,7 @@ const cleanupUserData = async (userId) => {
       const deletedReviews = await Review.deleteMany({ userId });
 
       // Refresh Token 정리
-      const deletedTokens = await RefreshToken.deleteMany({ user_id: userId });
+      const deletedTokens = await RefreshToken.deleteMany({ author: userId });
 
       // S3에 업로드된 사용자 이미지 삭제
       await deleteUserImagesFromS3(userId);
