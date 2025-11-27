@@ -227,7 +227,7 @@ const cleanupUserData = async (userId) => {
       const deletedChatLogs = await ChatLog.deleteMany({ userId });
 
       // 리뷰 데이터 정리
-      const deletedReviews = await Review.deleteMany({ userId });
+      const deletedReviews = await Review.deleteMany({ author: userId });
 
       // Refresh Token 정리
       const deletedTokens = await RefreshToken.deleteMany({ user_id: userId });

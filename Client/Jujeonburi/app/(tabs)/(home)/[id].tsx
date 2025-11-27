@@ -9,6 +9,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Linking,
   Modal,
@@ -20,7 +21,7 @@ import {
 } from "react-native";
 import ReviewModal from "../../components/ReviewModal";
 
-/* ---------- API & 화면 타입 ---------- */
+/* ---------- 상세페이지 API 타입 ---------- */
 type ApiAlcoholDetail = {
   alcohol_id: string;
   name: string;
@@ -56,7 +57,7 @@ type AlcoholItem = {
   body: number;
   abv: number;
   category: string;
-  keywords?: string;     // 화면에서는 문자열로 보관
+  keywords?: string;
   imageUrl?: string;
   volume?: string;
   price?: string;
@@ -71,13 +72,46 @@ type AlcoholItem = {
   contact?: string;
   website?: string;
 };
+//---------- 리뷰 작성 API 타입 ----------
+type ReviewSubmitPayload = {
+  rating: number;
+  content: string;
+  images?: { uri: string }[];
+};
+
+// ---------- 리뷰 불러오기 API 타입 ----------
+type ApiReview = {
+  review_id: number;
+  author: {
+    user_id: number;
+    nickname: string;
+  };
+  rating: number;
+  content: string;
+  image_url?: string | null;
+  created_at: string;
+};
+
+type ApiReviewListResponse = {
+  reviews: ApiReview[];
+  total: number;
+};
+
+type Review = {
+  id: string;
+  rating: number;
+  content: string;
+  imageUrl?: string;
+  createdAt: string;
+  authorNickname: string;
+};
 
 const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 const validHttpUrl = (u?: string) => !!u && /^https?:\/\//i.test(u.trim());
 const parseKeywords = (kw?: string) =>
   !kw ? [] : kw.split(/[,\s#]+/).map(s => s.trim()).filter(Boolean);
 
-/* ---------- API 호출 ---------- */
+/* ---------- 상세페이지 API 호출 ---------- */
 async function fetchAlcoholDetailById(id: string): Promise<AlcoholItem | null> {
   const res = await authedFetch(`${API_BASE}/alcohols/${encodeURIComponent(id)}`, {
     method: "GET",
@@ -110,41 +144,30 @@ async function fetchAlcoholDetailById(id: string): Promise<AlcoholItem | null> {
     website: j.website,
   };
 }
+// ---------- 특정 전통주 리뷰 목록 조회 API ----------
+async function fetchReviewsByAlcoholId(alcoholId: string): Promise<Review[]> {
+  const url = `${API_BASE}/alcohols/${encodeURIComponent(alcoholId)}/reviews`;
 
-/* ---------- 리뷰 로컬 저장 ---------- */
-export type Review = {
-  id: string;
-  alcoholId: string;
-  rating: number;
-  content: string;
-  images?: { uri: string }[];
-  createdAt: number;
-  author?: string;
-};
-const keyFor = (alcoholId: string) => `@reviews:${alcoholId}`;
-async function getReviews(alcoholId: string) {
-  const raw = await AsyncStorage.getItem(keyFor(alcoholId));
-  return raw ? JSON.parse(raw) : [];
+  const res = await authedFetch(url, { method: "GET" });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.log("[fetchReviewsByAlcoholId] error", res.status, text);
+    return [];
+  }
+
+  const data = (await res.json()) as ApiReviewListResponse;
+
+  return (data.reviews || []).map((r) => ({
+    id: String(r.review_id),
+    rating: r.rating,
+    content: r.content,
+    imageUrl: r.image_url ?? undefined,
+    createdAt: r.created_at,
+    authorNickname: r.author?.nickname ?? "익명",
+  }));
 }
-async function addReview(review: Review) {
-  const list = await getReviews(review.alcoholId);
-  const next = [review, ...list];
-  await AsyncStorage.setItem(keyFor(review.alcoholId), JSON.stringify(next));
-  return next;
-}
-function pickTopReview(list: Review[]) {
-  if (!list?.length) return null;
-  const toNum = (v: any) => {
-    const n = Number(v);
-    return Number.isNaN(n) ? null : n;
-  };
-  return list.reduce((best, cur) => {
-    const a = toNum(best.id);
-    const b = toNum(cur.id);
-    if (a != null && b != null) return b > a ? cur : best;
-    return (cur.createdAt ?? 0) > (best.createdAt ?? 0) ? cur : best;
-  }, list[0]);
-}
+
 
 /* ---------- 컴포넌트 ---------- */
 export default function AlcoholDetailRoute() {
@@ -184,12 +207,16 @@ export default function AlcoholDetailRoute() {
       const nick = (await AsyncStorage.getItem("nickname")) ?? "";
       setNickname(nick || "익명");
     })();
-  }, []);
+  }, []);  
+
   const loadReviews = useCallback(async () => {
-    if (!item?.alcohol_id) return;
-    const list = await getReviews(String(item.alcohol_id));
+    const targetId = Array.isArray(id) ? id[0] : id;
+    if (!targetId) return;
+  
+    const list = await fetchReviewsByAlcoholId(targetId);
     setReviews(list);
-  }, [item?.alcohol_id]);
+  }, [id]);
+  
   useFocusEffect(React.useCallback(() => { loadReviews(); }, [loadReviews]));
   useEffect(() => { loadReviews(); }, [loadReviews]);
   useEffect(() => { setTopReview(pickTopReview(reviews)); }, [reviews]);
@@ -200,21 +227,53 @@ export default function AlcoholDetailRoute() {
     return sum / reviews.length;
   }, [reviews]);
 
-  const handleSubmitFromModal = async (payload: { rating: number; content: string; images?: { uri: string }[] }) => {
-    if (!item) return;
-    const review: Review = {
-      id: String(Date.now()),
-      alcoholId: String(item.alcohol_id),
-      rating: payload.rating,
-      content: payload.content,
-      images: payload.images,
-      createdAt: Date.now(),
-      author: (await AsyncStorage.getItem("nickname")) || "익명",
-    };
-    await addReview(review);
-    setReviews(prev => [review, ...prev]);
-    setOpenReview(false);
+  const handleSubmitFromModal = async (payload: {
+    rating: number;
+    content: string;
+    images?: { uri: string }[];
+  }) => {
+    const targetId = Array.isArray(id) ? id[0] : id;
+    if (!targetId) return;
+  
+    try {
+      const form = new FormData();
+      form.append("rating", String(payload.rating));
+      form.append("content", payload.content.trim());
+  
+      if (payload.images && payload.images.length > 0) {
+        const first = payload.images[0];
+        form.append("image", {
+          uri: first.uri,
+          name: "review.jpg",
+          type: "image/jpeg",
+        } as any);
+      }  
+      
+      const url = `${API_BASE}/alcohols/${encodeURIComponent(targetId)}/reviews`;
+      const res = await authedFetch(url, {
+        method: "POST",
+        body: form,
+      });
+  
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.log("[handleSubmitFromModal] error", res.status, text);
+        Alert.alert("리뷰 등록 실패", "잠시 후 다시 시도해 주세요.");
+        return;
+      }
+  
+      const data = await res.json();
+      console.log("created review:", data);
+  
+      // 새로 등록된 리뷰까지 포함해서 목록 다시 불러오기
+      await loadReviews();
+      setOpenReview(false);
+    } catch (e) {
+      console.log(e);
+      Alert.alert("리뷰 등록 실패", "네트워크 상태를 확인하고 다시 시도해 주세요.");
+    }
   };
+
   useEffect(() => {
     if (!id || typeof id !== "string") {
       router.replace("/(tabs)/(home)");
@@ -229,13 +288,13 @@ export default function AlcoholDetailRoute() {
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 20, gap: 20 }}>
       <Image
         source={item.imageUrl ? { uri: item.imageUrl } : require("../../../assets/images/bottle_placeholder.png")}
-        style={{ width: 180, height: 220, alignSelf: "center" }}
+        style={{ width: 250, height: 300, alignSelf: "center" }}
         resizeMode="contain"
       />
 
       <Text style={styles.itemName}>{item.name}</Text>
       <View style={styles.divider} />
-
+      
       <Card>
         <Row label="종류" value={item.category ?? ""} />
         <Row label="원재료" value={item.ingredients ?? ""} />
@@ -287,7 +346,7 @@ export default function AlcoholDetailRoute() {
               <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                 <Text style={styles.reviewScore}>{avgRating.toFixed(1)}</Text>
                 <View style={{ flex: 1, marginLeft: 30 }}>
-                  <Text style={styles.author}>{nickname}</Text>
+                  <Text style={styles.author}>{topReview.authorNickname}</Text>
                   <Text style={styles.reviewDate}>
                     {new Date(topReview.createdAt).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" })}
                   </Text>
@@ -300,7 +359,7 @@ export default function AlcoholDetailRoute() {
                     onPress={() =>
                       router.push({
                         pathname: "/(tabs)/(home)/reviewList",
-                        params: { alcoholId: String(item.alcohol_id), alcoholName: item.name },
+                        params: { alcohol_id: String(item.alcohol_id), alcoholName: item.name },
                       })
                     }
                     style={{ marginTop: 6 }}
@@ -328,7 +387,7 @@ export default function AlcoholDetailRoute() {
             alcoholName={item.name}
             onRequestClose={() => setOpenReview(false)}
             onSubmit={handleSubmitFromModal}
-          />
+            />
         </Modal>
       </View>
     </ScrollView>
@@ -336,6 +395,21 @@ export default function AlcoholDetailRoute() {
 }
 
 /* ---------- 보조 컴포넌트 & 스타일 ---------- */
+function pickTopReview(list: Review[]): Review | null {
+  if (!list.length) return null;
+
+  // 평점 높은 순, 같으면 최신 순
+  return list.reduce((best, cur) => {
+    if (!best) return cur;
+    if (cur.rating > best.rating) return cur;
+    if (cur.rating < best.rating) return best;
+
+    const tCur = new Date(cur.createdAt).getTime();
+    const tBest = new Date(best.createdAt).getTime();
+    return tCur > tBest ? cur : best;
+  }, list[0]);
+}
+
 function Center({ children }: { children: React.ReactNode }) {
   return <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>{children}</View>;
 }
@@ -389,11 +463,11 @@ const styles = StyleSheet.create({
   chipsWrap: { flexDirection: "row", flexWrap: "wrap", marginHorizontal: 30, justifyContent: "center" },
   chip: { borderRadius: 999, borderWidth: 2, borderColor: "#FFD8A8", backgroundColor: "#FFD8A8", paddingVertical: 5, paddingHorizontal: 10, marginRight: 8, marginBottom: 8 },
   chipText: { fontSize: 13, fontWeight: "800", color: "#111827" },
-  reviewScore: { fontSize: 36, fontWeight: "800", color: "#111827", lineHeight: 40 },
+  reviewScore: { fontSize: 40, fontWeight: "800", color: "#111827", lineHeight: 50 },
   author: { fontSize: 16, fontWeight: "700", color: "#111827" },
   reviewDate: { marginTop: 2, fontSize: 13, color: "#6B7280" },
   reviewCount: { width: 70, color: "#374151" },
-  reviewBubble: { flex: 1, backgroundColor: "white", borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12 },
+  reviewBubble: { marginLeft:10, width: 180, backgroundColor: "white", borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12 },
   reviewText: { fontSize: 14, color: "#111827" },
   moreLink: { color: "#2563EB", fontSize: 13 },
 });

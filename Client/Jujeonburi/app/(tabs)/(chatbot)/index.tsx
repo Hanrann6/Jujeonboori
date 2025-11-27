@@ -1,3 +1,5 @@
+//app\(tabs)\(chatbot)\index.tsx
+
 import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
@@ -16,15 +18,16 @@ type BotResultItem = {
   alcoholId: string;
 };
 
-// 우리 UI에서 쓰는 통합 타입(기존 카드 렌더링과 호환)
+// 기존의 카드
 type RelatedAlcohol = {
   name: string;
-  image_url?: string;
+  imageUrl?: string;
   description?: string;
   alcoholId: string;
   reason?: string;
 };
 
+// 챗봇 응답 타입
 type ChatbotResponse = {
   result?: {
     answer?: string;
@@ -32,6 +35,91 @@ type ChatbotResponse = {
   };
 };
 
+// 챗봇 로그 응답 타입 ---------------------------------
+type LogResultItem = {
+  name: string;
+  description: string;
+  reason: string;
+  imageUrl: string;
+  alcoholId: number | string;
+};
+
+type LogAnswerBlock = {
+  answer: string;           // "김치전에 어울리는 전통주 3가지를 추천했어요."
+  result: LogResultItem[];  // 카드에 쓸 전통주 리스트
+};
+
+type ChatLog = {
+  _id: string;
+  userId: string;
+  question: string;
+  answer: LogAnswerBlock[]; 
+  createdAt: string;
+};
+
+type LogsResponse = { logs: ChatLog[] };
+
+// ----- 챗봇 로그 API ------
+async function fetchChatLogs(): Promise<ChatLog[]> {
+  const res = await authedFetch(`${API_BASE}/chatbot/logs`, { method: "GET" });
+  const raw = await res.text();
+  if (res.status === 401) throw new Error("로그인이 필요합니다.");
+  if (!res.ok) throw new Error(`GET /chatbot/logs 실패(${res.status}) ${raw}`);
+  const data = JSON.parse(raw) as LogsResponse;
+  return data?.logs ?? [];
+}
+
+// 서버 로그를 화면용 메시지 배열로 변환
+function mapLogsToMessages(logs: ChatLog[]): Msg[] {
+  // 오래된 것부터 정렬
+  const sorted = [...logs].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
+
+  const result: Msg[] = [];
+
+  for (const log of sorted) {
+    const ts = new Date(log.createdAt).getTime() || Date.now();
+
+    // 1) 사용자 질문 메시지
+    result.push({
+      id: `q-${log._id}`,
+      role: "user",
+      text: log.question,
+      createdAt: ts - 1,
+    });
+
+    // 2) 봇 답변 블록(우선 첫 번째 블록만 사용)
+    const block = log.answer?.[0];
+    const items = block?.result ?? [];
+
+    const related: RelatedAlcohol[] = items.map((r) => ({
+      name: r.name,
+      imageUrl: r.imageUrl,
+      description: r.description,
+      reason: r.reason,
+      alcoholId: String(r.alcoholId),
+    }));
+
+    result.push({
+      id: `a-${log._id}`,
+      role: "assistant",
+      // 서버에서 준 자연어 answer를 그대로 사용
+      text:
+        block?.answer ??
+        (related.length > 0 ? "아래 추천을 참고해보세요!" : "추천 결과가 없었어요."),
+      createdAt: ts,
+      related,
+    });
+  }
+
+  return result;
+}
+
+
+
+
+// ---- 챗봇 질문 API -----
 async function askChatbot(question: string) {
   const res = await authedFetch(`${API_BASE}/chatbot/recommend`, {
     method: "POST",
@@ -58,7 +146,7 @@ async function askChatbot(question: string) {
 
   const related: RelatedAlcohol[] = list.map((r) => ({
     name: r.name,
-    image_url: r.imageUrl,
+    imageUrl: r.imageUrl,
     description: r.description,
     alcoholId: r.alcoholId,
     reason: r.reason,
@@ -85,6 +173,8 @@ type Msg = {
   text: string;
   createdAt: number;
   related?: RelatedAlcohol[];
+  isDateDivider?: boolean;
+  dateLabel?: string;
 };
 
 const now = Date.now();
@@ -125,8 +215,8 @@ function Bubble({ role, text, createdAt, related, }: { role: Role; text: string;
           >
             <Image
               source={
-                item.image_url
-                  ? { uri: item.image_url }
+                item.imageUrl
+                  ? { uri: item.imageUrl }
                   : require("../../../assets/images/bottle_placeholder.png")
               }
               style={styles.recThumb}
@@ -172,64 +262,111 @@ const CARD_BG = "#FFF7EB";
 
 export default function ChatBot() {
   const insets = useSafeAreaInsets();
-  const [messages, setMessages] = useState<Msg[]>([ {
-    ...SEED[0],
-    id: "seed-initial",          
-    createdAt: Date.now(),
-  },
-]);
+  const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const listRef = useRef<FlatList<Msg>>(null);
 
+  // 포커스될 때: 서버 로그 로드 → 메시지 세팅 → SEED 검사/추가
   useFocusEffect(
     React.useCallback(() => {
-      setMessages((prev) => {
-        // 1️⃣ 메시지가 전혀 없으면 SEED 하나만 추가
-        if (prev.length === 0) {
-          return [
-            {
-              ...SEED[0],
-              id: "seed-initial",
-              createdAt: Date.now(),
-            },
-          ];
-        }
+      let alive = true;
   
-        const lastMsg = prev[prev.length - 1];
+      (async () => {
+        // 1) 서버 로그 가져와서 화면 메시지로 변환
+        const logs = await fetchChatLogs();
+        const history = mapLogsToMessages(logs); // [user, assistant, user, assistant, ...]
   
-        // 2️⃣ "직전 메시지"가 이미 SEED 인삿말이라면 그대로 사용
-        //    → id가 아니라 role + text 기준으로 판단
-        if (
-          lastMsg.role === "assistant" &&
-          lastMsg.text === SEED[0].text
-        ) {
-          return prev;
-        }
+        // 2) 기존 로컬 메시지(있다면)와 머지(중복 방지)
+        const merged = (() => {
+          const byId = new Map<string, Msg>();
+          for (const m of [...messages, ...history]) byId.set(m.id, m);
+          // 시간 순서대로 정렬
+          return Array.from(byId.values()).sort((a, b) => a.createdAt - b.createdAt);
+        })();
   
-        // 3️⃣ 마지막이 SEED가 아니면, 새로운 id를 가진 SEED를 맨 아래에 한 번만 추가
-        const newSeed: Msg = {
-          ...SEED[0],
-          id: `seed-${Date.now()}`, // 매번 다른 id
-          createdAt: Date.now(),
-        };
+        // 3) 마지막이 SEED인지 검사 후, 아니면 SEED 한 번만 뒤에 추가
+        const needSeed =
+          merged.length === 0 ||
+          !(
+            merged[merged.length - 1].role === "assistant" &&
+            merged[merged.length - 1].text === SEED[0].text
+          );
   
-        return [...prev, newSeed];
+        const finalList = needSeed
+          ? [
+              ...merged,
+              {
+                ...SEED[0],
+                id: `seed-${Date.now()}`,   // 고유 키
+                createdAt: Date.now(),
+              },
+            ]
+          : merged;
+  
+        if (alive) setMessages(finalList);
+      })().catch((e) => {
+        console.log("load logs failed:", e);
+
+        setMessages((prev) => {
+          const hasSeed =
+            prev.length > 0 &&
+            prev[prev.length - 1].role === "assistant" &&
+            prev[prev.length - 1].text === SEED[0].text;
+          return hasSeed
+            ? prev
+            : [
+                ...prev,
+                { ...SEED[0], id: `seed-${Date.now()}`, createdAt: Date.now() },
+              ];
+        });
       });
+  
+      return () => {
+        alive = false;
+      };
     }, [])
   );
-  
-  const dayLabel = useMemo(() => {
-    const d = new Date(messages[0]?.createdAt ?? Date.now());
-    //날짜 객체 d를 한국어(Korea) 로케일 규칙에 맞춰 문자열로 포맷
-    return d.toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  }, [messages]);
+
+// 날짜 라벨 계산
+const rows = useMemo(() => {
+  if (messages.length === 0) return [];
+
+  // 혹시 순서가 틀어질 수 있으니 방어적으로 정렬
+  const sorted = [...messages].sort((a, b) => a.createdAt - b.createdAt);
+
+  const out: Msg[] = [];
+  let lastKey: string | null = null;
+
+  for (const msg of sorted) {
+    const d = new Date(msg.createdAt);
+    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+
+    if (key !== lastKey) {
+      const label = d.toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      out.push({
+        id: `date-${key}`,
+        role: "assistant",  // 의미 없는 값, 렌더링에는 안 씀
+        text: "",
+        createdAt: msg.createdAt - 0.1,
+        isDateDivider: true,
+        dateLabel: label,
+      });
+
+      lastKey = key;
+    }
+
+    out.push(msg);
+  }
+
+  return out;
+}, [messages]);
+
 
   const onSend = async () => {
     const text = input.trim();
@@ -240,7 +377,7 @@ export default function ChatBot() {
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
 
-    // 로딩 버블 추가
+    // 서버로부터 답 받아오는 동안 보여줄 로딩 버블 추가
     setSending(true);
     const thinkingId = String(Date.now() + 1);
     setMessages((prev) => [
@@ -272,13 +409,28 @@ export default function ChatBot() {
     }
   };
 
-  const renderItem = ({ item }: { item: Msg }) => (
-    <Bubble
-      role={item.role}
-      text={item.text}
-      createdAt={item.createdAt}
-      related={item.related} />
-  );
+  const renderItem = ({ item }: { item: Msg }) => {
+    if (item.isDateDivider) {
+      return (
+        <View style={styles.dateDivider}>
+          <View style={styles.dateLine} />
+          <Text style={styles.dateText}>{item.dateLabel}</Text>
+          <View style={styles.dateLine} />
+        </View>
+      );
+    }
+  
+    return (
+      <Bubble
+        role={item.role}
+        text={item.text}
+        createdAt={item.createdAt}
+        related={item.related}
+      />
+    );
+  };
+
+  //상단 헤더 카드 컴포넌트
   const HeaderCard = () => (
     <View style={styles.hero}>
       <View style={styles.heroTexts}>
@@ -300,7 +452,7 @@ export default function ChatBot() {
         {/* 메시지 영역 */}
         <FlatList
           ref={listRef}
-          data={messages}
+          data={rows}
           keyExtractor={(m) => m.id}
           renderItem={renderItem}
           contentContainerStyle={[
@@ -308,10 +460,7 @@ export default function ChatBot() {
             { paddingBottom: insets.bottom + 76 },
           ]}
           ListHeaderComponent={
-            <View style={styles.dayLabelWrap}>
-              <Text style={styles.dayLabel}>{dayLabel}</Text>
-              <HeaderCard />
-            </View>
+            <HeaderCard />
           }
           onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
           onLayout={() => listRef.current?.scrollToEnd({ animated: false })}
@@ -345,6 +494,7 @@ export default function ChatBot() {
   );
 }
 
+//------- 스타일 -------------------------
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#FFFFFF" },
   container: { flex: 1, backgroundColor: "#FFFFFF" },
@@ -356,9 +506,22 @@ const styles = StyleSheet.create({
     rowGap: 10,
     justifyContent: "flex-end",
   },
-  dayLabelWrap: { alignItems: "center", marginBottom: 6 },
-  dayLabel: { fontSize: 12, color: "#9CA3AF" },
-
+  dateDivider: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 8,
+    columnGap: 8,
+  },
+  dateLine: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "#E5E7EB",
+  },
+  dateText: {
+    fontSize: 11,
+    color: "#9CA3AF",
+  },
   // 메시지 행
   row: { width: "100%", flexDirection: "row" },
   rowLeft: { justifyContent: "flex-start", alignItems: "flex-start" }, // ⬅️ 상단 정렬

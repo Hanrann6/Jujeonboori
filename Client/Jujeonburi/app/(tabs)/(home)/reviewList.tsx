@@ -1,95 +1,176 @@
+import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ReviewModal from "../../components/ReviewModal";
 
+/* ---------- API 응답 타입 ---------- */
+type ApiReview = {
+  review_id: number | string;
+  author: {
+    user_id: string;
+    nickname: string;
+  };
+  rating: number;
+  content: string;
+  image_url?: string | null;
+  created_at: string;
+};
+
+type ApiReviewListResponse = {
+  reviews: ApiReview[];
+  total: number;
+};
+
+/* ---------- 화면에서 쓸 리뷰 타입 ---------- */
 type Review = {
   id: string;
   alcoholId: string;
   rating: number;
   content: string;
-  images?: { uri: string }[];
-  createdAt: number;
-  author?: string;
+  imageUrl?: string;
+  createdAt: string;          // 문자열 그대로 두고 포맷할 때 Date로 변환
+  authorNickname: string;
 };
 
-//AsyncStorage에 저장된 리뷰 목록을 가져와서 렌더링 
-const keyFor = (alcoholId: string) => `@reviews:${alcoholId}`;
-async function getReviews(alcoholId: string): Promise<Review[]> {
-  const raw = await AsyncStorage.getItem(keyFor(alcoholId));
-  return raw ? JSON.parse(raw) : [];
-}
-//리뷰를 삭제하는 함수
-async function removeReview(alcoholId: string, reviewId: string): Promise<Review[]> {
-  const list: Review[] = await getReviews(alcoholId);
-  const next = list.filter(r => r.id !== reviewId);
-  await AsyncStorage.setItem(keyFor(alcoholId), JSON.stringify(next));
-  return next;
-}
-//리뷰를 업데이트하는 함수
-type ReviewPatch = Partial<Pick<Review, "rating" | "content" | "images" | "author">>;
+const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 
-async function updateReview(alcoholId: string, reviewId: string, patch: ReviewPatch): Promise<Review[]> {
-  const list: Review[] = await getReviews(alcoholId);
-  const next = list.map(r =>
-    r.id === reviewId ? { ...r, ...patch, updatedAt: Date.now() } : r
-  );
-  await AsyncStorage.setItem(keyFor(alcoholId), JSON.stringify(next));
-  return next;
+/* ---------- 특정 전통주 리뷰 목록 조회 API ---------- */
+async function fetchReviewsByAlcoholId(alcoholId: string): Promise<Review[]> {
+  const url = `${API_BASE}/alcohols/${encodeURIComponent(alcoholId)}/reviews`;
+
+  const res = await authedFetch(url, { method: "GET" });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.log("[ReviewList] fetchReviewsByAlcoholId error", res.status, text);
+    return [];
+  }
+
+  const data = (await res.json()) as ApiReviewListResponse;
+
+  return (data.reviews || []).map((r) => ({
+    id: String(r.review_id),
+    alcoholId,
+    rating: r.rating,
+    content: r.content,
+    imageUrl: r.image_url ?? undefined,
+    createdAt: r.created_at,
+    authorNickname: r.author?.nickname ?? "익명",
+  }));
 }
+/** 리뷰 수정(PATCH /users/me/reviews/{review_id}) */
+async function patchReviewOnServer(
+  reviewId: string,
+  payload: { rating: number; content: string; images?: { uri: string }[] }
+): Promise<boolean> {
+  const form = new FormData();
+  form.append("rating", String(payload.rating));
+  form.append("content", payload.content.trim());
 
-const formatKDate = (ts: number) =>
-  new Date(ts).toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
+  if (payload.images && payload.images.length > 0) {
+    const first = payload.images[0];
+    form.append("image", {
+      uri: first.uri,
+      name: "review.jpg",
+      type: "image/jpeg",
+    } as any);
+  }
 
-function sortReviews(list: Review[]) {
-  const toNum = (v: any) => {
-    const n = Number(v);
-    return Number.isNaN(n) ? null : n;
-  };
-  return [...list].sort((a, b) => {
-    const an = toNum(a.id), bn = toNum(b.id);
-    if (an != null && bn != null) return bn - an;              // id 숫자면 id 내림차순
-    return (b.createdAt ?? 0) - (a.createdAt ?? 0);            // 아니면 작성일 내림차순
+  const url = `${API_BASE}/users/me/reviews/${encodeURIComponent(reviewId)}`;
+  const res = await authedFetch(url, {
+    method: "PATCH",
+    body: form,
   });
+
+  const text = await res.text().catch(() => "");
+  console.log("[patchReviewOnServer]", res.status, text);
+
+  if (!res.ok) {
+    Alert.alert("리뷰 수정 실패", "잠시 후 다시 시도해 주세요.");
+    return false;
+  }
+  return true;
 }
+
+/** 리뷰 삭제(DELETE /users/me/reviews/{review_id}) */
+async function deleteReviewOnServer(reviewId: string): Promise<boolean> {
+  const url = `${API_BASE}/users/me/reviews/${encodeURIComponent(reviewId)}`;
+
+  const res = await authedFetch(url, { method: "DELETE" });
+  const text = await res.text().catch(() => "");
+  console.log("[deleteReviewOnServer]", res.status, text);
+
+  if (!res.ok) {
+    Alert.alert("리뷰 삭제 실패", "잠시 후 다시 시도해 주세요.");
+    return false;
+  }
+  return true;
+}
+const formatKDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
 export default function ReviewList() {
-  const router = useRouter();
-  const { alcoholId, alcoholName } = useLocalSearchParams<{ alcoholId: string; alcoholName?: string }>();
-
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<Review | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const count = reviews.length;
+  const [editing, setEditing] = useState<Review | null>(null); // 아직 서버 수정/삭제 API 없으면 안 써도 됨
   const [nickname, setNickname] = useState<string>("익명");
-  const resolvedAlcoholName = Array.isArray(alcoholName) ? alcoholName[0] : (alcoholName ?? "");
+  const router = useRouter();
+  const { alcohol_id, alcoholName } = useLocalSearchParams<{
+    alcohol_id: string;
+    alcoholName?: string;
+  }>();
 
-  // 닉네임 로드
+  const resolvedAlcoholId = Array.isArray(alcohol_id) ? alcohol_id[0] : alcohol_id;
+  const resolvedAlcoholName = Array.isArray(alcoholName)
+    ? alcoholName[0]
+    : alcoholName ?? "";
+
   useEffect(() => {
     (async () => {
       const nick = (await AsyncStorage.getItem("nickname")) ?? "";
-      setNickname(nick);
+      setNickname(nick || "익명");
     })();
   }, []);
+  const count = reviews.length;
 
   useEffect(() => {
     let mounted = true;
+
     (async () => {
-      if (!alcoholId) {
+      if (!resolvedAlcoholId) {
         if (mounted) setLoading(false);
         return;
       }
-      const list = await getReviews(String(alcoholId));
+
+      setLoading(true);
+      const list = await fetchReviewsByAlcoholId(resolvedAlcoholId);
       if (mounted) {
-        setReviews(sortReviews(list));
+        setReviews(list);
         setLoading(false);
       }
     })();
-    return () => { mounted = false; };
-  }, [alcoholId]);
 
+    return () => {
+      mounted = false;
+    };
+  }, [resolvedAlcoholId]);
 
   if (loading) {
     return (
@@ -105,7 +186,7 @@ export default function ReviewList() {
       {/* 상단 헤더 */}
       <View style={styles.header}>
         <Text style={styles.headerTitle} numberOfLines={1}>
-          {alcoholName}
+          {resolvedAlcoholName}
         </Text>
       </View>
       <View style={styles.divider} />
@@ -114,6 +195,7 @@ export default function ReviewList() {
       <View style={styles.summaryBar}>
         <Text style={styles.summaryCount}>{count}건의 리뷰</Text>
       </View>
+
       {/* 목록 */}
       {count === 0 ? (
         <View style={styles.center}>
@@ -125,9 +207,9 @@ export default function ReviewList() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
           renderItem={({ item }) => {
-            // 작성자만 수정/삭제 허용(작성자 정보가 없으면 누구나 가능)
             const me = (nickname || "익명").trim();
-            const canEdit = !!item.author && item.author.trim() === me;
+            const canEdit = item.authorNickname.trim() === me;   // 내가 쓴 리뷰인지 체크
+
             return (
               <TouchableOpacity
                 style={styles.itemCard}
@@ -138,67 +220,88 @@ export default function ReviewList() {
                     params: {
                       reviewId: item.id,
                       alcoholId: item.alcoholId,
-                      alcoholName: resolvedAlcoholName, // 상단에서 받은 이름 그대로 전달
+                      alcoholName: resolvedAlcoholName,
                     },
                   })
                 }
               >
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 6 }}>
-                  {/* 작성자 표시는 필요에 따라 item.author로 바꿔도 됨 */}
-                  <Text style={styles.author}>{item.author ?? "익명"}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 6,
+                  }}
+                >
+                  <Text style={styles.author}>{item.authorNickname}</Text>
                   <Text style={styles.itemDate}>{formatKDate(item.createdAt)}</Text>
 
-                  {/* 오른쪽 정렬을 위한 스페이서 */}
+                  {/* 오른쪽 정렬용 spacer */}
                   <View style={{ flex: 1 }} />
 
                   {canEdit && (
-                    <TouchableOpacity
-                      onPress={() => setEditing(item)}            // 수정 모달 오픈
-                      style={{ padding: 6 }}
-                      accessibilityLabel="리뷰 수정"
-                    >
-                      <Ionicons name="create-outline" size={18} color="#374151" />
-                    </TouchableOpacity>
-                  )}
+                    <>
+                      {/* 수정 버튼 */}
+                      <TouchableOpacity
+                        onPress={() => setEditing(item)}
+                        style={{ padding: 6 }}
+                        accessibilityLabel="리뷰 수정"
+                      >
+                        <Ionicons name="create-outline" size={18} color="#374151" />
+                      </TouchableOpacity>
 
-                  {/* 삭제도 작성자만 허용하려면 canEdit로 감싸면 됨 */}
-                  {canEdit && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        Alert.alert("리뷰 삭제", "정말 이 리뷰를 삭제할까요?", [
-                          { text: "취소" },
-                          {
-                            text: "삭제",
-                            style: "destructive",
-                            onPress: async () => {
-                              const next = await removeReview(item.alcoholId, item.id);
-                              setReviews(sortReviews(next));
+                      {/* 삭제 버튼 */}
+                      <TouchableOpacity
+                        onPress={() => {
+                          Alert.alert("리뷰 삭제", "정말 이 리뷰를 삭제할까요?", [
+                            { text: "취소", style: "cancel" },
+                            {
+                              text: "삭제",
+                              style: "destructive",
+                              onPress: async () => {
+                                const ok = await deleteReviewOnServer(item.id);
+                                if (!ok) return;
+
+                                // 로컬 목록에서도 제거
+                                setReviews(prev => prev.filter(r => r.id !== item.id));
+                              },
                             },
-                          },
-                        ]);
-                      }}
-                      style={{ padding: 6 }}
-                      accessibilityLabel="리뷰 삭제"
-                    >
-                      <Ionicons name="trash-outline" size={18} color="#EF4444" />
-                    </TouchableOpacity>
+                          ]);
+                        }}
+                        style={{ padding: 6 }}
+                        accessibilityLabel="리뷰 삭제"
+                      >
+                        <Ionicons name="trash-outline" size={18} color="#EF4444" />
+                      </TouchableOpacity>
+                    </>
                   )}
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 6 }}>
-                  <Text style={styles.itemStars}>{"⭐".repeat(Math.round(Number(item.rating) || 0))}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 6,
+                  }}
+                >
+                  <Text style={styles.itemStars}>
+                    {"⭐".repeat(Math.round(Number(item.rating) || 0))}
+                  </Text>
                 </View>
+
                 <Text style={styles.itemContent}>{item.content}</Text>
 
-                {!!item.images?.length && (
+                {item.imageUrl && (
                   <View style={styles.imagesWrap}>
-                    {item.images!.map((img, idx) => (
-                      <Image
-                        key={idx}
-                        source={{ uri: img.uri }}
-                        style={{ width: 64, height: 64, borderRadius: 8, marginRight: 8, marginTop: 8 }}
-                      />
-                    ))}
+                    <Image
+                      source={{ uri: item.imageUrl }}
+                      style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 8,
+                        marginRight: 8,
+                        marginTop: 8,
+                      }}
+                    />
                   </View>
                 )}
               </TouchableOpacity>
@@ -213,20 +316,28 @@ export default function ReviewList() {
         onRequestClose={() => setEditing(null)}
       >
         <ReviewModal
-          mode="edit"                                // ← ReviewModal에 추가할 prop
+          mode="edit"
           alcoholName={resolvedAlcoholName}
-          defaultRating={editing?.rating ?? 0}       // ← 초기값 주입
+          defaultRating={editing?.rating ?? 0}
           defaultContent={editing?.content ?? ""}
-          defaultImages={editing?.images ?? []}
+          defaultImages={
+            editing?.imageUrl ? [{ uri: editing.imageUrl }] : []
+          }
           onRequestClose={() => setEditing(null)}
           onSubmit={async (payload) => {
             if (!editing) return;
-            const next = await updateReview(editing.alcoholId, editing.id, {
+
+            const ok = await patchReviewOnServer(editing.id, {
               rating: payload.rating,
               content: payload.content,
               images: payload.images,
             });
-            setReviews(sortReviews(next));
+            if (!ok) return;
+
+            if (!ok) return;
+
+            const list = await fetchReviewsByAlcoholId(resolvedAlcoholId);
+            setReviews(list);
             setEditing(null);
           }}
         />
@@ -242,24 +353,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 8,
     paddingTop: 15,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   summaryCount: {
-    marginBottom:10,
-
+    marginBottom: 10,
     fontSize: 12,
-    color: "#374151"
+    color: "#374151",
   },
   headerTitle: { fontSize: 18, fontWeight: "700", color: "#111827" },
-  headerSub: { fontSize: 12, color: "#6B7280" },
   summaryBar: {
     flexDirection: "row",
     justifyContent: "flex-end",
     marginHorizontal: 20,
   },
-  summaryScore: { 
-    fontSize: 28, fontWeight: "800", color: "#111827" },
-
   itemCard: {
     backgroundColor: "#FAFAFA",
     borderRadius: 12,
@@ -269,15 +375,14 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#E5E7EB",
     marginTop: 15,
-    marginBottom:5,
-
+    marginBottom: 5,
   },
   itemStars: { fontWeight: "700", marginRight: 8, color: "#111827" },
   itemDate: {
     marginLeft: 10,
     marginTop: 5,
     color: "#6B7280",
-    fontSize: 12
+    fontSize: 12,
   },
   itemContent: { marginTop: 4, color: "black", fontSize: 14, lineHeight: 20 },
   imagesWrap: { flexDirection: "row", flexWrap: "wrap" },

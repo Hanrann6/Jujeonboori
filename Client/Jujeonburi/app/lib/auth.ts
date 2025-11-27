@@ -178,6 +178,42 @@ export async function loginWithKakaoIdToken(idToken: string): Promise<{
   // 3) 화면 분기용 리턴
   return { isNewUser: Boolean(json.is_new_user) };
 }
+// --- 구글 로그인 ---
+export async function loginWithGoogleIdToken(authorization_code: string, redirect_uri: string): Promise<{
+  isNewUser: boolean;
+}> {
+  const res = await fetch(`${API_BASE}/oauth/login/google`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(
+      {authorization_code,       
+        redirect_uri,    
+      }),
+  });
+
+  const raw = await res.text();
+  if (!res.ok) {
+    throw new Error(`google login 실패 (${res.status}) ${raw}`);
+  }
+
+  const json = JSON.parse(raw) as KakaoLoginResponse;
+
+  // 1) 토큰은 신규/기존 모두 저장해야 이후 온보딩/프로필 저장 API 호출 가능
+  await saveTokens({
+    access_token: json.access_token,
+    refresh_token: json.refresh_token,
+    access_token_expires_in: Number.isFinite(Number(json.access_token_expires_in))
+      ? Number(json.access_token_expires_in)
+      : 3600,
+  });
+
+  // 2) 유저 식별자 + 프로필 캐시
+  await saveUserId(json.user.user_id);
+
+  // 3) 화면 분기용 리턴
+  return { isNewUser: Boolean(json.is_new_user) };
+}
+
 
 export async function isLoggedIn() {
   const t = await getValidAccessToken();
