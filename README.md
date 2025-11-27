@@ -97,7 +97,7 @@ HabitAI/
 
 | 이름       | 역할              |
 |------------|-------------------|
-| 육란     | 백엔드 / AI 설계. gpt 챗봇, Recombee 추천 api |
+| 육란     | 백엔드 / AI 설계. RAG 기반 챗봇, AWS Personalize 추천 기능, OCR, Jenkins CI/CD |
 | 송연우     | 백엔드. 전통주 세부 정보 크롤링, 위치 기반 날씨 api |
 | 안유경     | 프론트엔드, UI 설계, 문서 작업 |
 
@@ -105,8 +105,11 @@ HabitAI/
 
 ## 🔌 사용 API 및 리소스
 
-- [OpenAI GPT-4 API](https://platform.openai.com/)
-- [Recombee API](https://www.recombee.com/)
+- [OpenAI Google Gemini](https://ai.google.dev/gemini-api/docs?hl=ko)
+- [Huggingface MiniLM Embedding Model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
+- [Langchain](https://www.langchain.com/)
+- [Qdrant Vector DB](https://qdrant.tech/)
+- [Naver Clova OCR](https://www.ncloud.com/product/aiService/ocr)
 - [단기 예보 조회](http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0)
 - [웹 스크래핑 JS 라이브러리](https://cheerio.js.org/)
 - 전통주 데이터셋 (CSV, 약 720개 품목 포함)
@@ -115,8 +118,9 @@ HabitAI/
 
 ## ✅ 주요 기능
 
-- 음식, 날씨, 상황(기분) 키워드 기반 전통주 추천
-- GPT-4를 통한 자연어 입력 인식 및 응답
+- 날씨, 가격, 사용자 인터랙션 기반 전통주 맞춤 추천
+- RAG 기반 자연어 입력 인식 및 응답
+- 전통주 병 라벨 OCR
 
 ---
 
