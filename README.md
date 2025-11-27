@@ -13,10 +13,10 @@
 | 런타임         | Node.js                            |
 | 백엔드 프레임워크 | Express v4.18.2                      |
 | 프론트엔드 프레임워크 | React Navtive, Expo                      |
-| AI     | OpenAI GPT-4, Gemini, LangChain + Qdrant (RAG)    |
+| AI     | Qdrant, Huggingface MiniLM, LangChain, Gemini  |
 | 추천 시스템 | AWS Personalize, AWS S3 |
-| 데이터 처리   | `csv-parser`, CLOVA OCR              |
-| HTTP 클라이언트 | `axios`                            |
+| 데이터 처리   | Jimp, CLOVA OCR, Gemini          |
+| HTTP 클라이언트 | axios                            |
 | 플랫폼         | GitHub, VSCode, Terminal (CLI 기반), AWS (EC2·S3)|
 
 ---
@@ -26,19 +26,25 @@
 HabitAI/
 
 ├── Server/ </br>
-│ ├── chatbot/ # GPT 챗봇 관련 코드 </br>
-│ │ └── chat.js </br>
-│ ├── recommend/ # Recombee 기반 추천 로직 </br>
-│ │ └── recombeeWeatherTest.js # 날씨 기반 추천 </br>
-│ │ └── recommend_test1.js #사용자 선호도 기반 추천 </br>
-│ │ └── recommend_test2.js #사용자 선호도 + 행동 기록 기반 추천 </br>
-│ ├── weather-api/ # 날씨 기반 추천 </br>
-│ │ └── weatherService.js </br>
+│ ├── alcohol # 전통주 엔티티 관련 로직 </br>
+│ ├── auth # 사용자 인증 관련 로직 </br>
+│ ├── chatbot/ # RAG 챗봇 관련 코드 </br>
+│ ├── recommend/ # 전통주 추천 </br>
+│ │ └── aws-recommend # AWS Personalize 기반 추천 </br>
+│ │ └── price-recommend # 가격 기반 추천 </br>
+│ │ └── weather-recommend # 가격 기반 추천 </br>
 │ ├── alcohol_crawl # 전통주 데이터셋 크롤링 </br>
-│ │ └── crawl.js </br>
-│ │ └── sorted_traditional_alcohol.csv </br>
+│ ├── ocr # ocr 로직 </br>
+│ ├── pref-test # 전통주 선호도 테스트 </br>
+│ ├── personalize # 사용자 인터랙션 반영 </br>
+│ ├── bookmark # 북마크 기능 </br>
+│ ├── review # 리뷰 관련 </br>
+│ ├── festival # 전통주 축제 관련 </br>
+│ ├── config # 설정 파일 </br>
+│ ├── routes # 라우터 </br>
 │ ├── .env # 환경변수 파일 </br>
 │ ├── server.js #서버 실행 파일 </br>
+│ ├── Dockerfile # 배포 설정 </br>
 │ └── package.json </br>
 ├── Client/ </br>
 │ ├── app/ </br>
