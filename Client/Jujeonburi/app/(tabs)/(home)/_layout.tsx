@@ -41,6 +41,7 @@ export default function HomeLayout() {
                     headerTitleStyle: {fontFamily: "BagelFatOne",fontSize: 20},
                     headerTitleAlign: "center",
                     headerShadowVisible: true,
+                    headerLeft: () => <BackBtn />,
                 }} />
             <Stack.Screen
                 name="reviewList"

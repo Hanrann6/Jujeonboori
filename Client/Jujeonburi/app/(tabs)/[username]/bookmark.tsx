@@ -23,9 +23,21 @@ type ApiAlcohol = {
   alcohol_id: number | string;
   name: string;
   image_url?: string;
+  category?: string;
+  priceValue?: number;
   degree?: number;
 };
 type ApiAlcoholListResp = { alcohols: ApiAlcohol[] };
+
+type Item = {
+  alcoholIndex: number;        // 서버 북마크 토글에 사용
+  idForRoute: string;          // 상세 페이지 파라미터
+  name: string;
+  imageUrl?: string;
+  category?: string;
+  priceValue?: number;
+  degree?: number;
+};
 
 /** ===== 북마크 api ===== */
 async function fetchBookmarks(): Promise<number[]> {
@@ -46,12 +58,10 @@ async function deleteBookmark(alcoholIndex: number) {
   if (!res.ok) throw new Error(`DELETE /bookmark 실패(${res.status}) ${raw}`);
 }
 
-/** 메타 일괄 조회 시도 → 폴백(개별 조회) */
 async function fetchAlcoholMeta(ids: number[]): Promise<Map<number, ApiAlcohol>> {
   const map = new Map<number, ApiAlcohol>();
   if (ids.length === 0) return map;
 
-  // 1) bulk 시도: /alcohols?ids=1,2,3
   try {
     const qs = new URLSearchParams();
     qs.set("ids", ids.join(","));
@@ -64,24 +74,18 @@ async function fetchAlcoholMeta(ids: number[]): Promise<Map<number, ApiAlcohol>>
         const key = Number(a.alcohol_id);
         if (Number.isFinite(key)) map.set(key, a);
       }
-      // bulk로 다 못 받았으면 폴백으로 나머지만 채움
       const missing = ids.filter(id => !map.has(id));
       if (missing.length === 0) return map;
-      // 아래 폴백으로 이어짐
       ids = missing;
     } else {
-      // 실패 → 폴백
       throw new Error(raw);
     }
   } catch {
-    // bulk 미지원/오류 시 개별로 진행
   }
 
-  // 2) 개별 조회 폴백: /alcohols/:id 와 /alcohols?id= 형태 모두 시도
   await Promise.all(
     ids.map(async (id) => {
       if (map.has(id)) return;
-      // 우선 RESTful 경로 시도
       const tryUrls = [
         `${API_BASE}/alcohols/${id}`,
         `${API_BASE}/alcohols?id=${id}`,
@@ -91,7 +95,6 @@ async function fetchAlcoholMeta(ids: number[]): Promise<Map<number, ApiAlcohol>>
           const res = await authedFetch(url, { method: "GET" });
           const raw = await res.text();
           if (!res.ok) continue;
-          // 단건 또는 { alcohols:[...] } 모두 처리
           const parsed = JSON.parse(raw);
           const a: ApiAlcohol | undefined =
             Array.isArray(parsed?.alcohols)
@@ -102,7 +105,6 @@ async function fetchAlcoholMeta(ids: number[]): Promise<Map<number, ApiAlcohol>>
             break;
           }
         } catch {
-          // 다음 시도
         }
       }
     })
@@ -111,14 +113,6 @@ async function fetchAlcoholMeta(ids: number[]): Promise<Map<number, ApiAlcohol>>
   return map;
 }
 
-/** ===== 화면 아이템 ===== */
-type Item = {
-  alcoholIndex: number;        // 서버 북마크 토글에 사용
-  idForRoute: string;          // 상세 페이지 파라미터
-  name: string;
-  imageUrl?: string;
-  degree?: number;
-};
 
 /** ===== 컴포넌트 ===== */
 export default function BookmarkScreen() {
@@ -154,11 +148,14 @@ export default function BookmarkScreen() {
           idForRoute: String(alcoholIndex),                 // 상세 페이지로 넘길 id
           name: meta?.name ?? `#${alcoholIndex}`,
           imageUrl: meta?.image_url,
+          category: meta?.category,
           degree: meta?.degree,
+          priceValue: meta?.priceValue,
         };
       });
 
       setItems(list);
+      console.log(list);
     } catch (e: any) {
       setError(e?.message ?? "북마크를 불러오지 못했어요.");
       setItems([]);
@@ -209,7 +206,7 @@ export default function BookmarkScreen() {
             data={items}
             keyExtractor={(m) => String(m.alcoholIndex)}
             numColumns={2}
-            columnWrapperStyle={{ paddingHorizontal: 45, justifyContent: "space-between", marginBottom: 12 }}
+            columnWrapperStyle={{ paddingHorizontal: 40, justifyContent: "space-between", marginBottom: 12 }}
             contentContainerStyle={{ paddingBottom: 24, gap: 8 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             renderItem={({ item }) => (
               <View style={styles.card}>
@@ -227,9 +224,14 @@ export default function BookmarkScreen() {
                         : require("../../../assets/images/bottle_placeholder.png")
                     }
                     style={styles.thumb}
+                    resizeMode="cover"
+
                   />
                   <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
-                  <Text numberOfLines={2} style={styles.meta}>{item.degree}%</Text>
+                  {!!item.category && <Text style={styles.meta}>{item.category} • {typeof item.degree === "number" && !isNaN(item.degree) && (
+                    <Text style={styles.meta}>{item.degree}%</Text>
+                  )}</Text>}
+                  {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue.toLocaleString()}</Text>}
 
                 </Pressable>
 
@@ -249,7 +251,7 @@ export default function BookmarkScreen() {
                   hitSlop={12}
                   accessibilityLabel="찜 해제"
                 >
-                  <Ionicons name="heart" size={18} color="#F59E0B" />
+                  <Ionicons name="heart" size={22} color="#F59E0B" />
                 </Pressable>
               </View>
             )}
@@ -279,18 +281,18 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     padding: 10,
     alignItems: 'center',
-    minHeight: 200,
+    minHeight: 220,
     position: 'relative',
-},
-heart: {
+  },
+  heart: {
     position: "absolute",
     top: 6, right: 6,
     width: 28, height: 28, borderRadius: 14,
     backgroundColor: "white",
     alignItems: "center", justifyContent: "center",
     elevation: 2,
-},
-thumb: { width: 120, height: 160, resizeMode:"cover", borderRadius: 8, backgroundColor: "#F3F4F6" },
-name: { marginTop: 6, fontWeight: "700", color: "#111827" },
-meta: { color: "#6B7280", fontSize: 12, marginTop: 2 },
+  },
+  thumb: { width: 140, height: 150, borderRadius: 8, backgroundColor: "#F3F4F6" },
+  name: { textAlign: "left", marginTop: 8, color: "#111827", fontWeight: "700" },
+  meta: { textAlign: "left", color: "#6B7280", fontSize: 12, marginTop: 2 },
 });

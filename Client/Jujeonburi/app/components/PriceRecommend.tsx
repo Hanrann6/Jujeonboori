@@ -11,15 +11,19 @@ const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 type ApiItem = {
   alcoholId: string | number; // ← 서버가 주는 식별자(숫자 index 또는 문자열)
   name: string;
+  alcoholType?: string;
   degree?: number;
+  priceValue: number;
   imageUrl?: string;
 };
 
 /** ===== 화면 아이템 ===== */
 type Item = {
-  id: string;               // 상세페이지 이동용(문자열화)
+  id: string;               
   name: string;
   degree?: number;
+  category: string | undefined;
+  priceValue: number;
   imageUrl?: string;
   liked: boolean;           // 서버 북마크 기준
   alcoholIndex?: number;    // 서버 북마크 API용 index(숫자) — 없으면 토글 불가
@@ -71,7 +75,9 @@ function Card({ item, onToggle, onOpen }: { item: Item; onToggle: () => void; on
 
       <Pressable onPress={onOpen} android_ripple={{ color: "#F3F4F6" }}>
         <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
-        {!!item.degree && <Text style={styles.meta}>{item.degree}%</Text>}
+        {!!item.category && <Text style={styles.meta}>{item.category} • {!!item.degree && <Text style={styles.meta}>{item.degree}%</Text>}
+        {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue.toLocaleString()}</Text>}
+        </Text>}
       </Pressable>
     </View>
   );
@@ -123,8 +129,10 @@ export default function PriceRecommend({
             return {
               id: String(r.alcoholId ?? r.name),
               name: r.name,
+              category: r.alcoholType,
               degree: r.degree,
               imageUrl: r.imageUrl,
+              priceValue: r.priceValue,
               liked,
               alcoholIndex,
             };
@@ -204,16 +212,17 @@ const styles = StyleSheet.create({
   priceChip: { color: "#F59E0B" },
 
   card: {
-    width: 140,
+    width: 160,
+    minHeight: 200,
     borderWidth: 1, borderColor: "#E5E7EB",
-    borderRadius: 10, padding: 8, backgroundColor: "#fff",
+    borderRadius: 10, padding:10, backgroundColor: "#fff",
     position: "relative",
   },
   thumb: { width: "100%", height: 150, borderRadius: 8, backgroundColor: "#F3F4F6" },
   name: { marginTop: 6, fontWeight: "700", color: "#111827" },
-  meta: { color: "#6B7280", fontSize: 12 },
+  meta: { textAlign: "left", color: "#6B7280", fontSize: 12, marginTop: 2 },
   heart: {
-    position: "absolute", top: 5, right: 5,
+    position: "absolute", top: 15, right: 15,
     width: 28, height: 28, borderRadius: 999,
     backgroundColor: "white", alignItems: "center", justifyContent: "center", elevation: 1,
   },
