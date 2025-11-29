@@ -22,10 +22,10 @@ type BookmarkRow = { alcoholIndex: number };
 type ApiAlcohol = {
   alcohol_id: number | string;
   name: string;
-  image_url?: string;
-  category?: string;
-  priceValue?: number;
   degree?: number;
+  priceValue?: number;
+  category?: string;
+  image_url?: string;
 };
 type ApiAlcoholListResp = { alcohols: ApiAlcohol[] };
 
@@ -231,7 +231,7 @@ export default function BookmarkScreen() {
                   {!!item.category && <Text style={styles.meta}>{item.category} • {typeof item.degree === "number" && !isNaN(item.degree) && (
                     <Text style={styles.meta}>{item.degree}%</Text>
                   )}</Text>}
-                  {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue.toLocaleString()}</Text>}
+                  {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue}</Text>}
 
                 </Pressable>
 
