@@ -133,6 +133,7 @@ async function askChatbot(question: string) {
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(`POST /chatbot/recommend 실패 (${res.status}) ${text}`);
+    
   }
 
   const data = (await res.json()) as ChatbotResponse;
