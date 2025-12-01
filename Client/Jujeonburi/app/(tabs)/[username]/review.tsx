@@ -475,7 +475,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     margin: 20,
     flexDirection: "row",
-    paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 4,
   },

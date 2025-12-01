@@ -1,6 +1,7 @@
 import { authedFetch, getUserId } from "@/app/lib/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
@@ -123,7 +124,7 @@ export default function MyProfile() {
           <Text style={styles.title}>내 취향 프로필</Text>
           <View style={styles.emptyCard}>
             <Text style={styles.emptyText}>아직 취향 테스트 기록이 없어요.</Text>
-            <Pressable style={styles.cta} onPress={() => {/* router.replace("/(initialProfile)") */}}>
+            <Pressable style={styles.cta} onPress={() => {router.replace("/(initialProfile)")}}>
               <Text style={styles.ctaText}>취향 테스트 하러 가기</Text>
             </Pressable>
           </View>

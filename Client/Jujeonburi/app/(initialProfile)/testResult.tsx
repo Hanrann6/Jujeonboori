@@ -1,7 +1,8 @@
 //app/(initialProfile)/testResult.tsx
 import { authedFetch, getUserId } from "@/app/lib/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
@@ -36,9 +37,10 @@ const carbonationLabel = (c?: number) => {
 };
 
 export default function TestResult() {
-    const { nickname = "", profile: profileParam = "{}" } =
-        useLocalSearchParams<{ nickname?: string; profile?: string }>();
+    const [nickname, setNickname] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const { profile: profileParam = "{}" } =
+        useLocalSearchParams<{ profile?: string }>();
     const toNumOrUndef = (v: unknown) => {
         const n = Number(v);
         return Number.isFinite(n) ? n : undefined;
@@ -58,12 +60,25 @@ export default function TestResult() {
             return { sweetness: 0, sourness: 0, freshness: 0, body: 0 };
         }
     }, [profileParam]);
-
+    useEffect(() => {
+        (async () => {
+            try {
+                const stored = await AsyncStorage.getItem("nickname");
+                if (stored) {
+                    setNickname(stored);
+                }
+            } catch (e) {
+                console.log("닉네임 로드 실패:", e);
+            }
+        })();
+    }, []);
     const rows: { key: keyof Profile; label: string }[] = [
         { key: "sweetness", label: "단맛" },
         { key: "sourness", label: "신맛" },
         { key: "freshness", label: "청량감" },
         { key: "body", label: "바디감" },];
+
+
     //서버 전송 함수
     const postPreference = async () => {
         const payload = {
