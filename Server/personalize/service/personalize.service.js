@@ -24,7 +24,7 @@ export const sendBookmarkEvent = async (userId, itemId) => {
         eventType: "bookmark",
         sentAt: new Date(),
         itemId,
-        eventValue: 5,
+        eventValue: 4, // 가중치 = 1*4 = 4
       },
     ],
   });
@@ -48,7 +48,7 @@ export const sendViewDetailEvent = async (userId, itemId) => {
         eventType: "view_detail", // Personalize에서 이 eventType을 정의해줘야 함
         sentAt: new Date(),
         itemId,
-        eventValue: 5,
+        eventValue: 4, // 가중치 = 0.5*4 = 2.0
       },
     ],
   });
@@ -72,7 +72,7 @@ export const sendReviewEvent = async (userId, itemId, rating) => {
         eventType: "review",
         sentAt: new Date(),
         itemId,
-        eventValue: rating, // 점수 가중치. 3점 이상부터만 선호도 반영
+        eventValue: rating * 4, // 가중치(1점당) = 1*2 = 2 (평점 3점이면 가중치 6)
       },
     ],
   });
