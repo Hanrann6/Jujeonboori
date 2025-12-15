@@ -23,7 +23,7 @@ type ApiAlcohol = {
   alcohol_id: number | string;
   name: string;
   degree?: number;
-  priceValue?: number;
+  price_value?: number;
   category?: string;
   image_url?: string;
 };
@@ -35,7 +35,7 @@ type Item = {
   name: string;
   imageUrl?: string;
   category?: string;
-  priceValue?: number;
+  price_value?: number;
   degree?: number;
 };
 
@@ -145,12 +145,12 @@ export default function BookmarkScreen() {
         const meta = metaMap.get(alcoholIndex);
         return {
           alcoholIndex,
-          idForRoute: String(alcoholIndex),                 // 상세 페이지로 넘길 id
+          idForRoute: String(alcoholIndex),          
           name: meta?.name ?? `#${alcoholIndex}`,
           imageUrl: meta?.image_url,
           category: meta?.category,
           degree: meta?.degree,
-          priceValue: meta?.priceValue,
+          price_value: meta?.price_value,
         };
       });
 
@@ -231,7 +231,7 @@ export default function BookmarkScreen() {
                   {!!item.category && <Text style={styles.meta}>{item.category} • {typeof item.degree === "number" && !isNaN(item.degree) && (
                     <Text style={styles.meta}>{item.degree}%</Text>
                   )}</Text>}
-                  {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue}</Text>}
+                  {!!item.price_value && <Text style={styles.meta}>₩{item.price_value}</Text>}
 
                 </Pressable>
 
@@ -240,10 +240,8 @@ export default function BookmarkScreen() {
                   onPress={async () => {
                     try {
                       await deleteBookmark(item.alcoholIndex);
-                      // UI 즉시 반영
                       setItems(prev => prev.filter(x => x.alcoholIndex !== item.alcoholIndex));
                     } catch (e) {
-                      // 실패 시 필요하면 토스트/알림
                       console.log("unbookmark failed:", e);
                     }
                   }}

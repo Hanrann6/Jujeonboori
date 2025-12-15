@@ -23,7 +23,7 @@ type Filters = {
     keywords: string[];
 };
 
-const CATEGORIES = ["탁주", "약주청주", "과실주", "증류주", "기타 주류"];
+const CATEGORIES = ["탁주", "약주", "과실주", "증류주", "기타 주류"];
 const KEYWORDS = ["가성비", "가을", "겨울", "고문헌", "과일류", "기념일", "꿀", "드라이", "명절", "무감미료", "베리류", "삼(蔘)류", "선물", "소용량", "이색전통주", "저도수", "집들이", "진한맛", "탄산", "파티", "혼술", "홈술"];
 const BORDER = "#E5E7EB";
 const BLACK = "#111827";
@@ -179,7 +179,7 @@ export default function HomeScreen() {
                     <View style={s.personalRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>{nickname || "사용자"}</Text>님을 위한 추천 전통주</Text>
                         <Text style={s.recsub}>주류 취향을 반영해 AI가 피드백하여 전통주를 추천해드려요.</Text>          
-                        <AlcoholRecommend limit={5} />
+                        <AlcoholRecommend limit={10} />
                     </View>
                     <View style={s.pricedRec}>
                         <Text style={s.recTitle}><Text style={s.nick}>3만원 이하</Text> 추천 전통주</Text>

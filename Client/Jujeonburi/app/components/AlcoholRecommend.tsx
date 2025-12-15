@@ -1,8 +1,8 @@
 // app/components/AlcoholRecommend.tsx
 import { authedFetch } from "@/app/lib/auth";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const API_BASE = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
@@ -89,7 +89,7 @@ function RecCard({ item, onToggle, onOpen }: {
       <Pressable onPress={onOpen} android_ripple={{ color: "#F3F4F6" }}>
         <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
         {!!item.category && <Text style={styles.meta}>{item.category} • {!!item.degree && <Text style={styles.meta}>{item.degree}%</Text>}
-        {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue.toLocaleString()}</Text>}
+          {!!item.priceValue && <Text style={styles.meta}>{'\n'}₩{item.priceValue.toLocaleString()}</Text>}
         </Text>}
       </Pressable>
     </View>
@@ -97,61 +97,64 @@ function RecCard({ item, onToggle, onOpen }: {
 }
 
 /* ====== 메인 컴포넌트 ====== */
-export default function AlcoholRecommend({ limit = 5 }: { limit?: number }) {
+export default function AlcoholRecommend({ limit = 10 }: { limit?: number }) {
   const [items, setItems] = useState<RecItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        setLoading(true);
-        setErr(null);
+  useFocusEffect(
+    React.useCallback(() => {
+      let alive = true;
+      (async () => {
+        try {
+          setLoading(true);
+          setErr(null);
 
-        // 1) 추천 목록
-        const res = await authedFetch(`${API_BASE}/recommend/`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-        const raw = await res.text();
-        if (!res.ok) throw new Error(`GET /recommend 실패(${res.status}) ${raw}`);
-        const data = JSON.parse(raw) as ApiRes;
+          // 1) 추천 목록
+          const res = await authedFetch(`${API_BASE}/recommend/`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+          const raw = await res.text();
+          if (!res.ok) throw new Error(`GET /recommend 실패(${res.status}) ${raw}`);
+          const data = JSON.parse(raw) as ApiRes;
 
-        // 2) 서버 북마크 세트
-        const bookmarked = await fetchBookmarks();
+          // 2) 서버 북마크 세트
+          const bookmarked = await fetchBookmarks();
 
-        // 3) 매핑 + liked 채우기
-        const mapped: RecItem[] = (data ?? []).slice(0, limit).map((r, i) => {
-          const idStr = String(r?.alcoholId ?? r?.name ?? `idx-${i}`);
-          const idx = Number(r.alcoholId);
-          const alcoholIndex = Number.isFinite(idx) ? idx : undefined;
-          const liked = alcoholIndex != null ? bookmarked.has(alcoholIndex) : false;
+          // 3) 매핑 + liked 채우기
+          const source = (data ?? []).slice().reverse();  // 역순 정렬
 
-          return {
-            id: idStr,
-            degree: r.degree,
-            name: r.name,
-            category: r.alcoholType,
-            imageUrl: r.imageUrl,
-            priceValue: r.priceValue,
-            liked,
-            alcoholIndex,
-          };
-        });
+          const mapped: RecItem[] = source.slice(0, limit).map((r, i) => {
+            const idStr = String(r?.alcoholId ?? r?.name ?? `idx-${i}`);
+            const idx = Number(r.alcoholId);
+            const alcoholIndex = Number.isFinite(idx) ? idx : undefined;
+            const liked = alcoholIndex != null ? bookmarked.has(alcoholIndex) : false;
 
-        // 중복 제거
-        const uniq = Array.from(new Map(mapped.map(m => [m.id, m])).values());
+            return {
+              id: idStr,
+              degree: r.degree,
+              name: r.name,
+              category: r.alcoholType,
+              imageUrl: r.imageUrl,
+              priceValue: r.priceValue,
+              liked,
+              alcoholIndex,
+            };
+          });
 
-        if (alive) setItems(uniq);
-      } catch (e: any) {
-        if (alive) setErr(e?.message || "추천을 불러오는 중 오류가 발생했습니다.");
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-    return () => { alive = false; };
-  }, [limit]);
+          // 중복 제거
+          const uniq = Array.from(new Map(mapped.map(m => [m.id, m])).values());
+
+          if (alive) setItems(uniq);
+        } catch (e: any) {
+          if (alive) setErr(e?.message || "추천을 불러오는 중 오류가 발생했습니다.");
+        } finally {
+          if (alive) setLoading(false);
+        }
+      })();
+      return () => { alive = false; };
+    }, [limit]));
 
   if (loading) return <Text style={{ margin: 16, color: "#6B7280" }}>추천을 준비 중…</Text>;
   if (err) return <Text style={{ margin: 16, color: "red" }}>오류: {err}</Text>;
