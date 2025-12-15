@@ -2,6 +2,11 @@ import { GetRecommendationsCommand } from "@aws-sdk/client-personalize-runtime";
 import { personalizeClient } from "../../../config/personalize.js";
 import Alcohol from "../../../alcohol/model/alcohol.model.js"
 import { attachBookmarkStatus } from "../../../bookmark/service/bookmark.service.js";
+// // 임시
+// // S3 선호도 조회 함수
+// import { getPreferenceCsv } from "../../../pref-test/service/s3.service.js"; 
+// // 로컬 추천 로직
+// import { getFilteredRecommendations } from "./recommendTemp.js";
 
 export const getRecommendations = async (userId, numResults = 10) => {
   const command = new GetRecommendationsCommand({
@@ -77,4 +82,27 @@ export const getRecommendations = async (userId, numResults = 10) => {
     console.error("추천을 받아오는 중 에러가 발생", error);
     throw error;
   }
+
+  // // 임시 추천 코드
+  // try {
+  //   // S3에서 유저 선호도 가져오기
+  //   const userPref = await getPreferenceCsv(userId);
+
+  //   // 2. 분리한 파일에서 추천 리스트 받아오기 (CSV 로딩도 거기서 알아서 함)
+  //   const recommendedItems = await getFilteredRecommendations(
+  //     userPref,
+  //     numResults
+  //   );
+
+  //   // 3. 북마크 여부 붙이기
+  //   const resultsWithBookmarks = await attachBookmarkStatus(
+  //     userId,
+  //     recommendedItems
+  //   );
+
+  //   return resultsWithBookmarks;
+  // } catch (error) {
+  //   console.error("추천 로직 에러:", error);
+  //   return [];
+  // }
 };

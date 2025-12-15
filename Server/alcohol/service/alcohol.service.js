@@ -5,14 +5,6 @@ const __filename = fileURLToPath(import.meta.url);
 
 const getAlcoholList = async (filters = {}) => {
     try {
-        // 필터 조건이 하나도 없으면 검색어 필수
-        const hasAnyFilter = filters.search || filters.category || filters.keywords || filters.price_min !== undefined || filters.price_max !== undefined;
-        if (!hasAnyFilter) {
-            const error = new Error('검색어 또는 필터 조건이 필요합니다.');
-            error.statusCode = 400;
-            throw error;
-        }
-
         const searchQuery = buildSearchQuery(filters);
         const alcohols = await Alcohol.find(searchQuery).lean();
 
