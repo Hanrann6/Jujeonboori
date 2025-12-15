@@ -62,8 +62,7 @@ Jujeonboori/
 │ │ ├── (tabs)/ # 탭 라우터 구조 </br>
 │ │ │ ├── (activity)/index.tsx # 액티비티 탭 화면 </br>
 │ │ │ ├── (chatbot)/index.tsx # 챗봇 탭 화면 </br>
-│ │ │ ├── (festivals)/ <br>
-│ │ │ │ ├── index.tsx # 축제 탭 화면 </br>
+│ │ │ ├── (festivals)/index.tsx # 축제 탭 화면 </br>
 │ │ │ ├── (home)/ <br>
 │ │ │ │ ├── review/[reviewId].tsx # 개별 리뷰 화면 <br>
 │ │ │ │ ├── [id].tsx # 개별 전통주 상세페이지<br>
@@ -86,11 +85,6 @@ Jujeonboori/
 │ │ │ ├── Weathercard.tsx # 날씨 렌더링 컴포넌트 <br>
 │ │ │ ├── WeatherRecommend.tsx # 날씨 기반 추천 컴포넌트 <br>
 │ │ ├── lib/auth.ts #토큰 관련 함수 및 인증된 fetch 함수 코드<br>
-│ │ ├── _layout.tsx <br>
-│ │ ├── index.tsx <br>
-│ ├── assets/ </br>
-│ │ ├── data/trad_alcohol.csv # 전통주 데이터셋 <br>
-│ │ ├── fonts/BagelFatOne-Regular.ttf # 추가로 사용할 폰트 <br>
 │ ├── app.json/ </br>
 │ ├── package.json/ </br>
 └── README.md </br>
