@@ -1,6 +1,6 @@
 /* 사용자 선호도 테스트 */
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import QUESTIONS from "./taste_questions.json"; // JSON이 같은 폴더에 있다고 가정
@@ -33,17 +33,23 @@ const TOTAL = STEPS.length;
 
 export default function TasteTest() {
     const router = useRouter();
-    const { nickname = "" } = useLocalSearchParams<{ nickname?: string }>();
-
+    const [nickname, setNickname] = useState<string>("");
     const [step, setStep] = useState(0);
     const [answers, setAnswers] = useState<("A" | "B" | undefined)[]>(
         Array(TOTAL).fill(undefined)
     );
     const [selectedIdx, setSelectedIdx] = useState<0 | 1 | null>(null);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
     const current = STEPS[step];
 
+    // 닉네임 불러오기
+    useEffect(() => {
+        (async () => {
+          const saved = await AsyncStorage.getItem("nickname");
+          if (saved) setNickname(saved);
+        })();
+      }, []);
+      
     // 특성 벡터 집계
     const accumulateProfile = (finalAnswers: ("A" | "B" | undefined)[]) => {
         const profile: Required<Effects> = {
@@ -75,7 +81,7 @@ export default function TasteTest() {
         console.log("특성 프로필:", profile);
         await AsyncStorage.setItem("tasteProfile", JSON.stringify(profile));
         
-        router.replace({
+        router.push({
           pathname: "./(initialProfile)/testResult",
           params: {
             nickname,

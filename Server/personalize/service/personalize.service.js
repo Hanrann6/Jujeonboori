@@ -18,21 +18,22 @@ export const sendBookmarkEvent = async (userId, itemId) => {
   const command = new PutEventsCommand({
     trackingId: process.env.TRACKING_ID,
     userId,
-    sessionId: `bookmark-${userId}`, // 세션은 적당히 정함
+    sessionId: `session-${userId}`, // 세션 통일
     eventList: [
       {
         eventType: "bookmark",
         sentAt: new Date(),
         itemId,
+        eventValue: 4, // 가중치 = 1*4 = 4
       },
     ],
   });
 
   try {
     const result = await personalizeEventsClient.send(command);
-    console.log("이벤트 전송 성공:", result);
+    console.log("북마크 이벤트 전송 성공:", result);
   } catch (err) {
-    console.error("이벤트 전송 실패:", err.message);
+    console.error("북마크 이벤트 전송 실패:", err.message);
   }
 };
 
@@ -41,12 +42,13 @@ export const sendViewDetailEvent = async (userId, itemId) => {
   const command = new PutEventsCommand({
     trackingId: process.env.TRACKING_ID,
     userId,
-    sessionId: `view-${userId}`, // 다른 세션으로 구분
+    sessionId: `session-${userId}`,
     eventList: [
       {
         eventType: "view_detail", // Personalize에서 이 eventType을 정의해줘야 함
         sentAt: new Date(),
         itemId,
+        eventValue: 4, // 가중치 = 0.5*4 = 2.0
       },
     ],
   });
@@ -64,13 +66,13 @@ export const sendReviewEvent = async (userId, itemId, rating) => {
   const command = new PutEventsCommand({
     trackingId: process.env.TRACKING_ID,
     userId,
-    sessionId: `review-${userId}`,
+    sessionId: `session-${userId}`,
     eventList: [
       {
         eventType: "review",
         sentAt: new Date(),
         itemId,
-        eventValue: rating, // 점수 가중치. 3점 이상부터만 선호도 반영
+        eventValue: rating * 4, // 가중치(1점당) = 1*2 = 2 (평점 3점이면 가중치 6)
       },
     ],
   });

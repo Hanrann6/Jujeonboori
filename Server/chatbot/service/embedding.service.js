@@ -46,15 +46,6 @@ class XenovaEmbeddings extends Embeddings {
 }
 
 
-// // util 함수: 데이터를 batch로 나누기
-// function chunkArray(array, size) {
-//   const result = [];
-//   for (let i = 0; i < array.length; i += size) {
-//     result.push(array.slice(i, i + size));
-//   }
-//   return result;
-// }
-
 function cleanPayload(obj) {
   const cleaned = {};
   for (const [key, value] of Object.entries(obj)) {
@@ -69,15 +60,6 @@ function cleanPayload(obj) {
   return cleaned;
 }
 
-// // fetch로 Qdrant 업로드
-// async function upsertBatch(points) {
-//   const response = await fetch(`${QDRANT_URL}/collections/${COLLECTION_NAME}/points`, {
-//     method: "PUT",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ points }),
-//   });
-//   return await response.json();
-// }
 
 // ec2 init용 csv 경로
 const csvPath = process.env.QDRANT_INIT_CSV_PATH;
