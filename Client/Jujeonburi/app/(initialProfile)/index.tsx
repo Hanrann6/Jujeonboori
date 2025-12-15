@@ -84,7 +84,6 @@ export default function TasteTest() {
         router.push({
           pathname: "./(initialProfile)/testResult",
           params: {
-            nickname,
             profile: JSON.stringify(profile)
           }
         });

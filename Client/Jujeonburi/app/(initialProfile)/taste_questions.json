@@ -14,8 +14,7 @@
                 "id": "B",
                 "text": "아니요, 처음이에요.",
                 "effects": {
-                    "sweetness": 1,
-                    "carbonation": 1
+                    "sweetness": 1
                 }
             }
         ]

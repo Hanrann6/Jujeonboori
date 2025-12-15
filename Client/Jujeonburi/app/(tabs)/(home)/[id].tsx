@@ -13,6 +13,7 @@ import {
   Image,
   Linking,
   Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -111,7 +112,7 @@ const validHttpUrl = (u?: string) => !!u && /^https?:\/\//i.test(u.trim());
 const parseKeywords = (kw?: string) =>
   !kw ? [] : kw.split(/[,\s#]+/).map(s => s.trim()).filter(Boolean);
 
-/* ---------- 상세페이지 API 호출 ---------- */
+// ---------- 상세페이지 API 호출 ---------- 
 async function fetchAlcoholDetailById(id: string): Promise<AlcoholItem | null> {
   const res = await authedFetch(`${API_BASE}/alcohols/${encodeURIComponent(id)}`, {
     method: "GET",
@@ -144,6 +145,7 @@ async function fetchAlcoholDetailById(id: string): Promise<AlcoholItem | null> {
     website: j.website,
   };
 }
+
 // ---------- 특정 전통주 리뷰 목록 조회 API ----------
 async function fetchReviewsByAlcoholId(alcoholId: string): Promise<Review[]> {
   const url = `${API_BASE}/alcohols/${encodeURIComponent(alcoholId)}/reviews`;
@@ -167,13 +169,45 @@ async function fetchReviewsByAlcoholId(alcoholId: string): Promise<Review[]> {
     authorNickname: r.author?.nickname ?? "익명",
   }));
 }
+/** ===== 서버 북마크 API ===== */
+async function fetchBookmarks(): Promise<Set<number>> {
+  const res = await authedFetch(`${API_BASE}/bookmark`, { method: "GET" });
+  const raw = await res.text();
+  if (!res.ok) throw new Error(`GET /bookmark 실패(${res.status}) ${raw}`);
+  const arr = JSON.parse(raw) as { alcoholIndex: number }[];
+  return new Set((arr || []).map(x => Number(x.alcoholIndex)));
+}
 
+async function addBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  const raw = await res.text();
+  console.log("[POST /bookmark]", { alcoholIndex }, raw);
+  if (!res.ok) throw new Error(`POST /bookmark 실패(${res.status}) ${raw}`);
+}
+
+async function removeBookmark(alcoholIndex: number) {
+  const res = await authedFetch(`${API_BASE}/bookmark`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ alcoholIndex }),
+  });
+  const raw = await res.text();
+  console.log("[DELETE /bookmark]", { alcoholIndex }, raw);
+  if (!res.ok) throw new Error(`DELETE /bookmark 실패(${res.status}) ${raw}`);
+}
 
 /* ---------- 컴포넌트 ---------- */
 export default function AlcoholDetailRoute() {
   const router = useRouter();
-  // 이 페이지는 **id(= alcohol_id)** 로만 진입한다고 가정
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  // 북마크 api 호출시 사용
+  const targetIdStr = Array.isArray(id) ? id[0] : id;
+  const targetIdNum = targetIdStr ? Number(targetIdStr) : NaN;
 
   const [item, setItem] = useState<AlcoholItem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -182,6 +216,7 @@ export default function AlcoholDetailRoute() {
   const [topReview, setTopReview] = useState<Review | null>(null);
   const [openReview, setOpenReview] = useState(false);
   const [nickname, setNickname] = useState<string>("익명");
+  const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
 
   // 상세 로드
   useEffect(() => {
@@ -202,21 +237,84 @@ export default function AlcoholDetailRoute() {
   }, [id]);
 
   // 닉네임 & 리뷰
-  useEffect(() => {
-    (async () => {
-      const nick = (await AsyncStorage.getItem("nickname")) ?? "";
-      setNickname(nick || "익명");
-    })();
-  }, []);  
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+
+      (async () => {
+        const nick = (await AsyncStorage.getItem("nickname")) ?? "";
+        if (active) {
+          setNickname(nick || "익명");
+        }
+      })();
+
+      return () => {
+        active = false;
+      };
+    }, [])
+  );
+
+  //찜
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+
+      (async () => {
+        try {
+          const set = await fetchBookmarks();   // Set<number>
+          if (active) {
+            setBookmarks(set);
+          }
+        } catch (e) {
+          console.log("[bookmark] load error", e);
+        }
+      })();
+
+      return () => {
+        active = false;
+      };
+    }, [])
+  );
 
   const loadReviews = useCallback(async () => {
     const targetId = Array.isArray(id) ? id[0] : id;
     if (!targetId) return;
-  
+
     const list = await fetchReviewsByAlcoholId(targetId);
     setReviews(list);
   }, [id]);
-  
+
+  const onToggle = useCallback(async () => {
+    if (!targetIdStr) return;
+    const alcoholIndex = Number(targetIdStr);
+    if (Number.isNaN(alcoholIndex)) return;
+
+    const isLiked = bookmarks.has(alcoholIndex);
+
+    try {
+      if (isLiked) {
+        // 이미 찜 상태 → 삭제
+        await removeBookmark(alcoholIndex);
+        setBookmarks(prev => {
+          const next = new Set(prev);
+          next.delete(alcoholIndex);
+          return next;
+        });
+      } else {
+        // 찜 추가
+        await addBookmark(alcoholIndex);
+        setBookmarks(prev => {
+          const next = new Set(prev);
+          next.add(alcoholIndex);
+          return next;
+        });
+      }
+    } catch (e) {
+      console.log("[bookmark] toggle error", e);
+      Alert.alert("찜 실패", "잠시 후 다시 시도해 주세요.");
+    }
+  }, [targetIdStr, bookmarks]);
+
   useFocusEffect(React.useCallback(() => { loadReviews(); }, [loadReviews]));
   useEffect(() => { loadReviews(); }, [loadReviews]);
   useEffect(() => { setTopReview(pickTopReview(reviews)); }, [reviews]);
@@ -234,12 +332,12 @@ export default function AlcoholDetailRoute() {
   }) => {
     const targetId = Array.isArray(id) ? id[0] : id;
     if (!targetId) return;
-  
+
     try {
       const form = new FormData();
       form.append("rating", String(payload.rating));
       form.append("content", payload.content.trim());
-  
+
       if (payload.images && payload.images.length > 0) {
         const first = payload.images[0];
         form.append("image", {
@@ -247,24 +345,24 @@ export default function AlcoholDetailRoute() {
           name: "review.jpg",
           type: "image/jpeg",
         } as any);
-      }  
-      
+      }
+
       const url = `${API_BASE}/alcohols/${encodeURIComponent(targetId)}/reviews`;
       const res = await authedFetch(url, {
         method: "POST",
         body: form,
       });
-  
+
       if (!res.ok) {
         const text = await res.text().catch(() => "");
         console.log("[handleSubmitFromModal] error", res.status, text);
         Alert.alert("리뷰 등록 실패", "잠시 후 다시 시도해 주세요.");
         return;
       }
-  
+
       const data = await res.json();
       console.log("created review:", data);
-  
+
       // 새로 등록된 리뷰까지 포함해서 목록 다시 불러오기
       await loadReviews();
       setOpenReview(false);
@@ -283,7 +381,7 @@ export default function AlcoholDetailRoute() {
   if (!id || typeof id !== "string") return null;
   if (loading) return <Center><ActivityIndicator /><Text style={{ marginTop: 8 }}>불러오는 중…</Text></Center>;
   if (!item) return <Center><Text>해당 전통주를 찾지 못했어요.</Text></Center>;
-
+  const liked = targetIdNum && bookmarks.has(targetIdNum);
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 20, gap: 20 }}>
       <Image
@@ -292,9 +390,29 @@ export default function AlcoholDetailRoute() {
         resizeMode="contain"
       />
 
-      <Text style={styles.itemName}>{item.name}</Text>
+      <View style={styles.titleRow}>
+
+        <Text style={styles.itemName}>{item.name}</Text>
+
+        {/* 오른쪽 찜 영역 */}
+        <View style={styles.bookmarkWrap}>
+          <Text style={styles.bookmarkLabel}>찜</Text>
+          <Pressable
+            onPress={onToggle}
+            hitSlop={12}
+            style={styles.heart}
+            accessibilityLabel={liked ? "찜 취소" : "찜하기"}
+          >
+            <Ionicons
+              name={liked ? "heart" : "heart-outline"}
+              size={22}
+              color={liked ? "#F59E0B" : "#9CA3AF"}
+            />
+          </Pressable>
+        </View>
+      </View>
       <View style={styles.divider} />
-      
+
       <Card>
         <Row label="종류" value={item.category ?? ""} />
         <Row label="원재료" value={item.ingredients ?? ""} />
@@ -313,11 +431,13 @@ export default function AlcoholDetailRoute() {
         </ProfileCard>
       </View>
       {item.pairings && <Text style={{ fontSize: 14, marginHorizontal: 20, color: "black" }}>{item.pairings}</Text>}
-      {item.keywords && (
-        <View style={styles.chipsWrap}>
-          {parseKeywords(item.keywords).map((k, i) => (<Chip key={`${k}-${i}`} label={k} />))}
-        </View>
-      )}
+      {
+        item.keywords && (
+          <View style={styles.chipsWrap}>
+            {parseKeywords(item.keywords).map((k, i) => (<Chip key={`${k}-${i}`} label={k} />))}
+          </View>
+        )
+      }
 
       <Text style={styles.cardTitle}>양조장</Text>
       <Card>
@@ -387,10 +507,10 @@ export default function AlcoholDetailRoute() {
             alcoholName={item.name}
             onRequestClose={() => setOpenReview(false)}
             onSubmit={handleSubmitFromModal}
-            />
+          />
         </Modal>
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 }
 
@@ -453,7 +573,6 @@ function Chip({ label }: { label: string }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 15 },
-  itemName: { fontSize: 24, fontWeight: "700", textAlign: "center", color: "#111827" },
   divider: { marginHorizontal: -10, borderBottomWidth: 2, borderBottomColor: "black", marginTop: -8 },
   card: { backgroundColor: "#F5F5F5", padding: 20, paddingHorizontal: 25, gap: 3, borderRadius: 8, marginBottom: 8, marginHorizontal: 5 },
   profileCard: { padding: 30, gap: 5, borderRadius: 10, marginHorizontal: 20, marginBottom: -10, backgroundColor: "#FFF7EB", borderColor: '#FFD8A8', borderWidth: 2, borderStyle: 'dashed' },
@@ -467,7 +586,40 @@ const styles = StyleSheet.create({
   author: { fontSize: 16, fontWeight: "700", color: "#111827" },
   reviewDate: { marginTop: 2, fontSize: 13, color: "#6B7280" },
   reviewCount: { width: 70, color: "#374151" },
-  reviewBubble: { marginLeft:10, width: 180, backgroundColor: "white", borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12 },
+  reviewBubble: { marginLeft: 10, width: 180, backgroundColor: "white", borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12 },
   reviewText: { fontSize: 14, color: "#111827" },
   moreLink: { color: "#2563EB", fontSize: 13 },
+
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  itemName: {
+    flex: 10,
+    fontSize: 24,
+    fontWeight: "700",
+    textAlign: "left",
+    color: "#111827",
+  },
+  bookmarkWrap: {
+    flex:1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop:10,
+  },
+  bookmarkLabel: {
+    fontSize: 12,
+    color: "#4B5563",
+  },
+  heart: {
+    width: 30, height: 30,
+    borderRadius: 999,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 1,
+  },
 });
