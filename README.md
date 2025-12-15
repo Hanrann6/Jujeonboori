@@ -117,7 +117,7 @@ Jujeonboori/
 - [Naver Clova OCR](https://www.ncloud.com/product/aiService/ocr)
 - [단기 예보 조회](http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0)
 - [웹 스크래핑 JS 라이브러리](https://cheerio.js.org/)
-- 전통주 데이터셋 (CSV, 약 720개 품목 포함)
+- 전통주 데이터셋 (CSV, 약 650개 품목 포함)
 
 ---
 
