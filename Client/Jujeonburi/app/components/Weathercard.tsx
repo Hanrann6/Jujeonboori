@@ -117,17 +117,19 @@ function pickNearestFcstTime(items: any[], fallbackDate: string) {
   if (!items?.length) return { date: fallbackDate, time: "0000" };
 
   const now = new Date();
-  const cur = Number(
-    `${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`
-  );
+  const cur = Number(`${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`);
 
-  const sameDate = items.filter((it: any) => it.fcstDate === fallbackDate);
-  if (!sameDate.length) return { date: fallbackDate, time: "0000" };
+  let pool = items.filter((it: any) => it.fcstDate === fallbackDate);
 
-  let best = sameDate[0].fcstTime;
+  if (!pool.length) {
+    const firstDate = items[0]?.fcstDate;
+    pool = items.filter((it: any) => it.fcstDate === firstDate);
+    return { date: firstDate ?? fallbackDate, time: pool[0]?.fcstTime ?? "0000" };
+  }
+
+  let best = pool[0].fcstTime;
   let bestDiff = Infinity;
-
-  for (const it of sameDate) {
+  for (const it of pool) {
     const t = Number(it.fcstTime);
     const diff = Math.abs(t - cur);
     if (diff < bestDiff) {
@@ -135,6 +137,7 @@ function pickNearestFcstTime(items: any[], fallbackDate: string) {
       best = it.fcstTime;
     }
   }
+
   return { date: fallbackDate, time: best };
 }
 

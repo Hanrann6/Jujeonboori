@@ -5,6 +5,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+const API_BASE = process.env.EXPO_PUBLIC_API_URL!;
+
 const fetchFonts = async () => {
     await Font.loadAsync({
         'BagelFatOne': require('../../assets/fonts/BagelFatOne-Regular.ttf')
