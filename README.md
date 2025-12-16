@@ -150,6 +150,148 @@ npm install
 
 ---
 
+## 📊 Description of Sample Data
+### 1. 전통주 데이터 (650여개)
+**출처**: 네이버 지식백과 웹 크롤링<br>
+**파일**: `Server/alcohol_crawl/real_final.csv`<br><br>
+
+**샘플 데이터**:
+```csv
+index,alcoholName,normalizedName,foodPairing,sweetness,sourness,freshness,body,degree,
+alcoholType,keywords,volume,price,priceValue,ingredients,brewery,description,
+representative,address,contact,website,imageUrl,detailPageUrl,docId
+```
+<br>
+
+**필드 설명**:
+| 필드명 | 타입 | 설명 | 예시 |
+|--------|------|------|------|
+| `index` | Number | 데이터 고유 ID (unique) | 20 |
+| `alcoholName` | String | 전통주 이름 (필수) | "가평 잣 막걸리" |
+| `normalizedName` | String | 정규화된 이름 | "가평잣막걸리" |
+| `foodPairing` | String | 음식 페어링 정보 | "반찬으로 나오는 우리음식과 모두 잘 어울린다." |
+| `sweetness` | Number | 단맛 (1-5) | 2 |
+| `sourness` | Number | 신맛 (1-5) | 2 |
+| `freshness` | Number | 청량감 (1-5) | 3 |
+| `body` | Number | 바디감 (1-5) | 3 |
+| `degree` | Number | 도수 | 6 |
+| `alcoholType` | String | 주류 종류 | "탁주" |
+| `keywords` | [String] | 키워드 배열 | [] |
+| `volume` | String | 용량 | "750ml" |
+| `price` | String | 가격 (표시용) | "￦1,450" |
+| `priceValue` | Number | 가격 (숫자) | 1450 |
+| `ingredients` | String | 원재료 | "쌀, 정제수, 쌀입국, 잣, 효모, 정제효소 등" |
+| `brewery` | String | 제조사/양조장 | "가평 우리술" |
+| `description` | String | 상세 설명 | "가평의 특산물을 넣어 만드는..." |
+| `representative` | String | 대표자명 | "박성기" |
+| `address` | String | 주소 | "경기도 가평군 조종면 대보간선로 26, 29" |
+| `contact` | String | 연락처 | "070) 4115-8525" |
+| `website` | String | 웹사이트 URL | "http://www.woorisool.kr" |
+| `imageUrl` | String | 이미지 URL (S3) | "https://capstone-liquor-images.s3..." |
+| `detailPageUrl` | String | 네이버 출처 URL | "https://terms.naver.com/entry..." |
+| `docId` | String | 네이버 문서 ID | "3551492" |
+
+<br>
+
+**샘플 데이터**:
+```csv
+20,가평 잣 막걸리,가평잣막걸리,반찬으로 나오는 우리음식과 모두 잘 어울린다.,2,2,3,3,6,탁주,,750ml,"￦1,450",1450,"쌀, 정제수, 쌀입국, 잣, 효모, 정제효소 등",가평 우리술,"가평의 특산물을 넣어 만드는 막걸리...",박성기,"경기도 가평군 조종면 대보간선로 26, 29",070) 4115-8525,http://www.woorisool.kr,https://capstone-liquor-images.s3.ap-southeast-2.amazonaws.com/images/3551492-가평%20잣%20막걸리_main.jpg,https://terms.naver.com/entry.naver?docId=3551492&cid=58637&categoryId=58651,3551492
+```
+
+**MongoDB 저장 시 구조**:
+```javascript
+{
+  _id: ObjectId("..."), // DB 자동 생성
+  index: 20, // unique, required
+  alcoholName: "가평 잣 막걸리", // required
+  normalizedName: "가평잣막걸리",
+  foodPairing: "반찬으로 나오는 우리음식과...",
+  sweetness: 2,
+  sourness: 2,
+  freshness: 3,
+  body: 3,
+  degree: 6,
+  alcoholType: "탁주",
+  keywords: [],
+  volume: "750ml",
+  price: "￦1,450",
+  priceValue: 1450,
+  ingredients: "쌀, 정제수, 쌀입국, 잣, 효모, 정제효소 등",
+  brewery: "가평 우리술",
+  description: "가평의 특산물을 넣어 만드는...",
+  representative: "박성기",
+  address: "경기도 가평군 조종면 대보간선로 26, 29",
+  contact: "070) 4115-8525",
+  website: "http://www.woorisool.kr",
+  imageUrl: "https://capstone-liquor-images.s3...",
+  detailPageUrl: "https://terms.naver.com/entry...",
+  docId: "3551492",
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+<br>
+
+**데이터 특징**:
+- 맛 프로필 (단맛, 신맛, 청량감, 바디감) 1-5 척도로 수치화
+- 음식 페어링 정보 포함
+- AWS S3에 이미지 업로드 완료
+- 네이버 지식백과 원본 링크 보존
+
+<br>
+
+### 2. 축제 데이터 (2025년 기준)
+**출처**: 수동 수집  
+**파일**: `festival/festival-seed.js`
+**필드 설명**:
+| 필드명 | 타입 | 설명 | 예시 |
+|--------|------|------|------|
+| `festival_id` | Number | 축제 고유 ID (unique, required) | 2 |
+| `name` | String | 축제명 (required, max 255자) | "2025 대한민국 주류대상 박람회" |
+| `description` | String | 축제 설명 (required) | "한국 최대 규모의 주류 박람회..." |
+| `location` | String | 개최 장소 (required, max 255자) | "SETEC" |
+| `start_date` | Date | 시작일 (required) | "2025-03-07" |
+| `end_date` | Date | 종료일 (required) | "2025-03-09" |
+| `official_url` | String | 공식 웹사이트 (max 255자) | "https://korea-alcohol-expo.com" |
+| `image_url` | String | 포스터 이미지 URL (max 255자) | "https://static.onoffmix.com/..." |
+| `created_at` | Date | 생성일 (default: Date.now) | Date |
+
+<br>
+
+**샘플 데이터**:
+```javascript
+{
+  festival_id: 2,
+  name: "2025 대한민국 주류대상 박람회",
+  description: "한국 최대 규모의 주류 박람회로 다양한 전통주와 세계 각국의 주류를 만나볼 수 있습니다.",
+  location: "SETEC",
+  start_date: new Date("2025-03-07"),
+  end_date: new Date("2025-03-09"),
+  official_url: "https://korea-alcohol-expo.com",
+  image_url: "https://static.onoffmix.com/afv2/thumbnail/2025/01/23/v329b7b94977ac72fb05190e0d205a4310.jpg"
+}
+```
+<br>
+
+**MongoDB 저장 구조**:
+```javascript
+{
+  _id: ObjectId("..."),
+  festival_id: 2,
+  name: "2025 대한민국 주류대상 박람회",
+  description: "한국 최대 규모의 주류 박람회로...",
+  location: "SETEC",
+  start_date: ISODate("2025-03-07T00:00:00.000Z"),
+  end_date: ISODate("2025-03-09T00:00:00.000Z"),
+  official_url: "https://korea-alcohol-expo.com",
+  image_url: "https://static.onoffmix.com/afv2/thumbnail/...",
+  created_at: ISODate("2025-01-15T...")
+}
+```
+<br>
+
+---
+
 ## 🧾 커밋 메시지 규칙 (Conventional Commits)
 
 
