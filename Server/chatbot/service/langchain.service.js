@@ -112,7 +112,8 @@ const embeddings = new XenovaEmbeddings();
 // Gemini 모델
 const chatModel = new ChatGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
-  model: "gemini-2.0-flash",
+  model: "gemini-2.5-flash",
+  maxRetries: 5,
   temperature: 0.7,
 });
 
