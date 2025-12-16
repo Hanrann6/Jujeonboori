@@ -22,6 +22,7 @@ export default function IntroScreen() {
         };
         loadFonts();
     }, []);
+    console.log("API_BASE:", API_BASE);
 
 
     if (!fontsLoaded) {

@@ -341,7 +341,7 @@ const rows = useMemo(() => {
 
   for (const msg of sorted) {
     const d = new Date(msg.createdAt);
-    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 
     if (key !== lastKey) {
       const label = d.toLocaleDateString("ko-KR", {
@@ -400,7 +400,7 @@ const rows = useMemo(() => {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === thinkingId
-            ? { ...m, text: `오류가 발생했어요: ${e?.message ?? "요청 실패"}` }
+            ? { ...m, text: `현재 할당량 제한으로 챗봇 기능 사용이 어려워요.\n잠시 후 다시 시도해주세요.` }
             : m
         )
       );
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
   },
   // 메시지 행
   row: { width: "100%", flexDirection: "row" },
-  rowLeft: { justifyContent: "flex-start", alignItems: "flex-start" }, // ⬅️ 상단 정렬
+  rowLeft: { justifyContent: "flex-start", alignItems: "flex-start" },
   rowRight: { justifyContent: "flex-end" },
   avatar: {
     width: 43,
