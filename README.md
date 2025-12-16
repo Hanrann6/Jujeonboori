@@ -96,9 +96,9 @@ Jujeonboori/
 
 | 이름       | 역할              |
 |------------|-------------------|
-| 육란     | 백엔드 / AI 설계. RAG 기반 챗봇, AWS Personalize 추천 기능, OCR, Jenkins CI/CD |
-| 송연우     | 백엔드. 전통주 세부 정보 크롤링, 위치 기반 날씨 api |
-| 안유경     | 프론트엔드, UI 설계, BE-FE api 연결, 문서 작업 |
+| 육란     | 백엔드 / AI 설계. RAG 기반 챗봇, AWS Personalize 추천 기능, OCR, 선호도 테스트 API, 북마크 관리 API, Jenkins CI/CD |
+| 송연우     | 백엔드. 전통주 세부 정보 크롤링, 위치 기반 날씨 API, 회원 API(로그인/탈퇴), 상세 전통주 API, 리뷰 작성/삭제/관리 API, 검색 필터링 구현 |
+| 안유경     | 프론트엔드. UI 설계, BE-FE API 연결, 문서 작업 |
 
 ---
 
@@ -121,6 +121,32 @@ Jujeonboori/
 ② AWS Personalize 기반 취향 기반 추천 + 날씨, 가격 기반 전통주 추천 기능<br>
 ③ Gemini 기반 챗봇을 통한 전통주 추천 기능<br>
 ④ NAVER Clova OCR 기반 전통주 검색 기능<br>
+
+---
+
+## 🚀 How to Install
+
+### 1. 레포지토리 클론
+```
+git clone https://github.com/Hanrann6/Jujeonboori.git
+cd Server
+```
+
+### 2. 환경변수 설정
+`.env` 파일을 생성하고 다음 정보를 입력합니다:
+
+### 3. 의존성 설치
+```
+npm install
+```
+
+---
+
+## 🔨 How to Build
+
+---
+
+## ✅ How to Test
 
 ---
 
