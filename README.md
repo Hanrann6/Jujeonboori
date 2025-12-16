@@ -127,18 +127,6 @@ Jujeonboori/
 ## 🚀 How to Install
 
 ### 1. 레포지토리 클론
-```
-git clone https://github.com/Hanrann6/Jujeonboori.git
-cd Server
-```
-
-### 2. 환경변수 설정
-`.env` 파일을 생성하고 다음 정보를 입력합니다:
-
-### 3. 의존성 설치
-```
-npm install
-```
 
 ---
 
