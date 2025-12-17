@@ -136,6 +136,7 @@ Jujeonboori/
 - Node.js v22.14.0
 - npm
 - 로컬 실행시: 안드로이드 에뮬레이터 또는 Expo Go 앱이 설치된 안드로이드 기기
+
 ### Frontend
 1. VScode (또는 안드로이드 스튜디오)에서 Client\Jujeonburi 폴더 열기
 2. app 폴더 내부에 .env 추가
@@ -153,6 +154,24 @@ Jujeonboori/
   `npm run android`
 ```
 4) 터미널에 'a'를 입력해 안드로이드 에뮬레이터에서 바로 어플을 실행하거나, <br>터미널에 뜬 QR 코드를 expo go 앱에서 스캔하여 실행할 수 있다.
+
+### Backend
+1. VSCode에서 Jujeonburi 폴더 열기
+2. Server 폴더 루트에 .env 파일 추가 (API KEY, DB URI 등 환경변수 설정)
+3. 아래 코드에 따라 의존성 설치 및 실행
+
+```Bash
+
+  cd Server
+  
+  # 의존성 설치
+  npm install
+  
+  # 서버 실행
+  node server.js
+```
+4. 터미널에 서버 포트 실행 로그(예: Server running on port...)나 DB 연결 성공 메시지가 출력되면 정상적으로 실행된 것이다.
+
 
 ---
 
