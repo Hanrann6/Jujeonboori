@@ -51,6 +51,9 @@ async function generateWithRetry(prompt, retries = 5, initialDelay = 1000) {
 }
 
 export async function analyzeLiquorInfo(rawText) {
+  console.log("============= [DEBUG] INPUT TEXT =============");
+  console.log(rawText);
+  console.log("==============================================");
   const prompt = `
 당신은 전통주 상세 정보를 반환하는 AI 모델입니다.
 아래는 전통주 병에 쓰인 텍스트입니다:
@@ -58,11 +61,12 @@ export async function analyzeLiquorInfo(rawText) {
 ${rawText}
 """
 
-전통주의 이름, 도수, 단맛, 신맛, 쓴맛, 어울리는 음식, 구성 원재료를 검색하여 아래 형식의 JSON으로 응답하세요.
-도수, 단맛, 신맛, 쓴맛은 숫자 형식으로 응답하세요.
-
-정보가 없다면, 빈 문자열 ""로 응답하세요.
-절대로 정보를 지어내지 마세요.
+1. 전통주의 이름, 도수, 단맛, 신맛, 쓴맛, 어울리는 음식, 구성 원재료를 검색하여 아래 형식의 JSON으로 응답해.
+2. 오타가 있거나 정보가 불완전해도 최대한 추측해서 채워줘.
+3. 단맛, 신맛, 쓴맛: 검색하여 0~5 숫자로 추정해.(0: 아예 없음, 5: 매우 강함)
+4. 도수는 숫자로 응답해.
+5. 어울리는 음식: 전통주에 어울리는 안주나 음식이 있으면 나열해서 적어.
+6. 구성 원재료: 재료명으로 보이는 단어들을 나열해.
 
 {
   "이름": "",
@@ -74,7 +78,7 @@ ${rawText}
   "구성 원재료": ""
 }
   
-응답은 JSON 형식만 반환하세요.
+응답은 JSON 형식만 반환해.
 `.trim();
 
   //const result = await model.generateContent(prompt);
