@@ -172,6 +172,21 @@ Jujeonboori/
 ```
 4. 터미널에 서버 포트 실행 로그(예: Server running on port...)나 DB 연결 성공 메시지가 출력되면 정상적으로 실행된 것이다.
 
+### 챗봇
+- 챗봇을 로컬에서 사용 시, RAG 기능을 위해 로컬 환경에서 Qdrant 서버가 실행되어야 함.
+1. Docker Desktop 설치 및 실행
+2. 터미널(CMD 또는 PowerShell)을 열고 Qdrant 이미지 다운로드
+```Bash
+  docker pull qdrant/qdrant
+```
+3. Qdrant 컨테이너 실행 (포트 6333 필수)
+
+```Bash
+  docker run -p 6333:6333 qdrant/qdrant
+```
+4. 브라우저 주소창에 http://localhost:6333/dashboard (또는 http://localhost:6333) 접속 시 Qdrant 대시보드나 상태 정보가 뜨면 성공.
+
+Note: 백엔드 서버를 실행하기 전에 Qdrant 컨테이너가 먼저 실행 중이어야 한다.
 
 ---
 
