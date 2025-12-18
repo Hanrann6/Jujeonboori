@@ -20,6 +20,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
+      "usesCleartextTraffic": true,
       "package": "com.cozyu.Jujeonburi",
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",

@@ -1,6 +1,5 @@
 // app/(tabs)/(home)/ocr.tsx
 import * as ImagePicker from "expo-image-picker";
-import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -124,6 +123,23 @@ export default function OCRScreen() {
       });
       if (!res.ok) {
         const txt = await res.text().catch(() => "");
+
+        // 1) 429: 레이트리밋/할당량 케이스
+        const isQuota =
+          res.status === 429 ||
+          /Too Many Requests/i.test(txt) ||
+          /quota/i.test(txt) ||
+          /rate limit/i.test(txt);
+
+        if (isQuota) {
+          Alert.alert(
+            "할당량 제한",
+            "잠시 후 다시 시도해주세요.\n같은 메세지가 지속적으로 출력되는 경우,\n하루 할당량이 모두 소진되었을 수 있습니다."
+          );
+          return; 
+        }
+
+        // 2) 그 외 오류는 기존처럼 처리
         throw new Error(`OCR 실패 (${res.status}) ${txt}`);
       }
 
@@ -136,14 +152,6 @@ export default function OCRScreen() {
     } finally {
       setUploading(false);
     }
-  };
-
-  const gotoDetail = () => {
-    if (!result?.이름) return;
-    router.push({
-      pathname: "/(tabs)/(home)/[id]",
-      params: { id: encodeURIComponent(result.이름), alcoholName: result.이름 },
-    });
   };
 
   return (

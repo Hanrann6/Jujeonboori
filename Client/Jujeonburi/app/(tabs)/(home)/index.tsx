@@ -2,14 +2,10 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Asset } from "expo-asset";
-import * as FileSystem from "expo-file-system";
 import { router, useFocusEffect } from "expo-router";
-import Papa from "papaparse";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Animated, Easing, Image, Keyboard, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import csvAsset from "../../../assets/data/trad_alcohol.csv";
 import AlcoholRecommend from "../../components/AlcoholRecommend";
 import PriceRecommend from "../../components/PriceRecommend";
 import Weathercard from "../../components/Weathercard";
@@ -40,29 +36,6 @@ export default function HomeScreen() {
     const animH = useRef(new Animated.Value(0)).current;    // 높이
     const contentH = useRef(0);                             // 실제 컨텐츠 높이 저장
     const [backdropTop, setBackdropTop] = useState(0);
-
-    // 이름 검색 → 상세페이지 id를 우선 쓰고, 없으면 이름 인코딩하도록) 매핑
-    const [nameIndex, setNameIndex] = useState<Map<string, string>>(new Map());
-
-    useEffect(() => {
-        (async () => {
-            const asset = Asset.fromModule(csvAsset);
-            await asset.downloadAsync();
-            const csv = await FileSystem.readAsStringAsync(asset.localUri!);
-            const parsed = Papa.parse<any>(csv, { header: true, dynamicTyping: true, skipEmptyLines: true });
-
-            const map = new Map<string, string>();
-            for (const row of parsed.data) {
-                const rawName = row?.["alcoholName"];
-                if (!rawName) continue;
-                const name = String(rawName).trim();
-                const id = row?.["index"] != null ? String(row["index"]) : encodeURIComponent(name);
-                map.set(name.toLowerCase(), id); // 소문자 키로 보관(대/소문자 무시)
-            }
-            setNameIndex(map);
-        })();
-    }, []);
-
     const toggle = () => {
         // 필터 적용 패널 높이 (열릴 때는 350, 닫힐 때는 0)
         const to = open ? 0 : 680;
