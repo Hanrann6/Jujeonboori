@@ -138,20 +138,21 @@ Jujeonboori/
 - 로컬 실행시: 안드로이드 에뮬레이터 또는 Expo Go 앱이 설치된 안드로이드 기기
 
 ### Frontend
-1. VScode (또는 안드로이드 스튜디오)에서 Client\Jujeonburi 폴더 열기
-2. app 폴더 내부에 .env 추가
+1. VScode (또는 안드로이드 스튜디오)에서 Jujeonburi 폴더 열기
+2. app 폴더 내부에 .env 파일 추가 (API KEY, 서버 주소 등) 
 3. 아래 코드에 따라 빌드 밎 실행
 ``` bash
+  cd Client
   cd Jujeonburi
   
   #의존성 설치
-  `npm install`
+  npm install
   
   #expo dev server 실행
-  `npx expo start`
+  npx expo start
   
   # 클라이언트 실행
-  `npm run android`
+  npm run android
 ```
 4) 터미널에 'a'를 입력해 안드로이드 에뮬레이터에서 바로 어플을 실행하거나, <br>터미널에 뜬 QR 코드를 expo go 앱에서 스캔하여 실행할 수 있다.
 
