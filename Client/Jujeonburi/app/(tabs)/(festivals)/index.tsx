@@ -200,7 +200,7 @@ export default function FestivalScreen() {
             ) : error ? (
               <Text style={{ color: "red" }}>오류: {error}</Text>
             ) : (
-              <Text style={{ color: MUTED }}>{year}년에는 등록된 축제가 없어요.</Text>
+              <Text style={{ color: MUTED }}>{year}년 축제는 업데이트 예정입니다.</Text>
             )}
           </View>
         }
